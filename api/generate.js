@@ -3,9 +3,9 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { mode, prompt, imageBase64 } = req.body;
+  const { prompt } = req.body;
 
-  if (!prompt && !imageBase64) {
+  if (!prompt) {
     return res.status(400).json({ error: 'Prompt is required.' });
   }
 
@@ -16,16 +16,19 @@ module.exports = async function handler(req, res) {
 
   try {
     const response = await fetch(
-      'https://api-inference.huggingface.co/models/damo-vilab/text-to-video-ms-1.7b',
+      'https://router.huggingface.co/hf-inference/models/Lightricks/LTX-Video/v1/video/text-to-video',
       {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${HF_TOKEN}`,
           'Content-Type': 'application/json',
-          'x-wait-for-model': 'true'
         },
         body: JSON.stringify({
-          inputs: prompt || 'a beautiful scene',
+          prompt: prompt,
+          num_frames: 25,
+          num_inference_steps: 20,
+          width: 512,
+          height: 288,
         })
       }
     );
