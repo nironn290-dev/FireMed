@@ -5,7 +5,7 @@ module.exports = async function handler(req, res) {
 
   const { mode, prompt, imageBase64 } = req.body;
 
-  if (!prompt) {
+  if (!prompt && !imageBase64) {
     return res.status(400).json({ error: 'Prompt is required.' });
   }
 
@@ -15,46 +15,26 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    let response;
-
-    if (mode === 'image' && imageBase64) {
-      response = await fetch(
-        'https://api-inference.huggingface.co/models/stabilityai/stable-video-diffusion-img2vid-xt',
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${HF_TOKEN}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            inputs: imageBase64,
-            parameters: { num_frames: 25, num_inference_steps: 25 }
-          })
-        }
-      );
-    } else {
-      response = await fetch(
-        'https://api-inference.huggingface.co/models/Lightricks/LTX-Video',
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${HF_TOKEN}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            inputs: prompt,
-            parameters: { num_frames: 25, num_inference_steps: 25, guidance_scale: 3.5 }
-          })
-        }
-      );
-    }
+    const response = await fetch(
+      'https://api-inference.huggingface.co/models/damo-vilab/text-to-video-ms-1.7b',
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${HF_TOKEN}`,
+          'Content-Type': 'application/json',
+          'x-wait-for-model': 'true'
+        },
+        body: JSON.stringify({
+          inputs: prompt || 'a beautiful scene',
+        })
+      }
+    );
 
     if (!response.ok) {
+      const err = await response.text();
+      console.error('HF error:', response.status, err);
       if (response.status === 503) {
         return res.status(503).json({ error: 'AI is warming up. Please wait 30 seconds and try again.' });
-      }
-      if (response.status === 429) {
-        return res.status(429).json({ error: 'Too many requests. Please wait and try again.' });
       }
       return res.status(500).json({ error: 'Video generation failed. Please try again.' });
     }
