@@ -3,20 +3,17 @@
 let currentMode = 'image';
 let selectedStyle = 'realistic';
 let selectedImageBase64 = null;
-let pctInterval = null;
+let pollingInterval = null;
 
 // ---- Mode switch ----
 function switchMode(mode) {
   currentMode = mode;
-
   document.getElementById('btnImage').className = mode === 'image' ? 'mode-btn active' : 'mode-btn inactive';
   document.getElementById('btnText').className  = mode === 'text'  ? 'mode-btn active' : 'mode-btn inactive';
-
   document.getElementById('uploadSection').style.display = mode === 'image' ? 'block' : 'none';
   document.getElementById('descSection').style.display   = mode === 'image' ? 'block' : 'none';
   document.getElementById('textSection').style.display   = mode === 'text'  ? 'block' : 'none';
   document.getElementById('styleStepNum').textContent    = mode === 'image' ? '3' : '2';
-
   hideError();
   hideResult();
 }
@@ -25,7 +22,6 @@ function switchMode(mode) {
 function onFileSelected(event) {
   const file = event.target.files[0];
   if (!file) return;
-
   const reader = new FileReader();
   reader.onload = function(e) {
     selectedImageBase64 = e.target.result.split(',')[1];
@@ -43,19 +39,19 @@ function selectStyle(btn, style) {
   selectedStyle = style;
 }
 
-// ---- Example text prompts ----
+// ---- Example prompts ----
 function setTextPrompt(text) {
   document.getElementById('textPrompt').value = text;
   document.getElementById('textPrompt').focus();
 }
 
-// ---- Build full prompt ----
+// ---- Build prompt ----
 function buildPrompt(userPrompt, style) {
   const styleMap = {
-    realistic:  'photorealistic, high quality, natural lighting, detailed',
-    cinematic:  'cinematic film style, dramatic lighting, movie quality, wide angle shot',
-    animation:  'smooth animation, vibrant colors, animated style, fluid motion',
-    nature:     'nature documentary style, 4K, peaceful natural environment'
+    realistic:  'photorealistic, high quality, natural lighting',
+    cinematic:  'cinematic film style, dramatic lighting, movie quality',
+    animation:  'smooth animation, vibrant colors, animated style',
+    nature:     'nature documentary style, peaceful natural environment'
   };
   return `${userPrompt}. Style: ${styleMap[style] || styleMap.realistic}.`;
 }
@@ -64,15 +60,14 @@ function buildPrompt(userPrompt, style) {
 async function generateVideo() {
   hideError();
 
-  // Validate
   if (currentMode === 'image' && !selectedImageBase64) {
-    showError('Please choose a photo first by tapping "Choose Photo".');
+    showError('Please choose a photo first.');
     return;
   }
   if (currentMode === 'text') {
     const tp = document.getElementById('textPrompt').value.trim();
     if (!tp || tp.length < 5) {
-      showError('Please describe what you want to see in your video.');
+      showError('Please describe what you want to see.');
       return;
     }
   }
@@ -81,41 +76,83 @@ async function generateVideo() {
   showResultArea();
 
   try {
-    let body;
-
+    let prompt;
     if (currentMode === 'image') {
       const desc = document.getElementById('prompt').value.trim();
-      const prompt = buildPrompt(desc || 'Animate this image with natural smooth motion', selectedStyle);
-      body = { mode: 'image', imageBase64: selectedImageBase64, prompt };
+      prompt = buildPrompt(desc || 'Animate this image with natural smooth motion', selectedStyle);
     } else {
-      const prompt = buildPrompt(document.getElementById('textPrompt').value.trim(), selectedStyle);
-      body = { mode: 'text', prompt };
+      prompt = buildPrompt(document.getElementById('textPrompt').value.trim(), selectedStyle);
     }
 
+    // Start prediction
     const response = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      body: JSON.stringify({ prompt })
     });
 
     const data = await response.json();
 
     if (!response.ok || data.error) {
-      throw new Error(data.error || 'Something went wrong. Please try again.');
+      throw new Error(data.error || 'Something went wrong.');
     }
 
-    if (data.videoUrl) {
-      showVideo(data.videoUrl);
-    } else {
-      throw new Error('No video returned. Please try again.');
-    }
+    // Poll for result
+    pollResult(data.id);
 
   } catch (err) {
     showError(err.message || 'Could not generate video. Please try again.');
     hideResult();
-  } finally {
     setLoading(false);
   }
+}
+
+// ---- Polling ----
+async function pollResult(predictionId) {
+  let attempts = 0;
+  const maxAttempts = 60;
+
+  pollingInterval = setInterval(async () => {
+    attempts++;
+    if (attempts > maxAttempts) {
+      clearInterval(pollingInterval);
+      showError('Video generation timed out. Please try again.');
+      hideResult();
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ predictionId })
+      });
+
+      const result = await response.json();
+
+      if (result.status === 'succeeded' && result.output) {
+        clearInterval(pollingInterval);
+        setLoading(false);
+        showVideo(result.output);
+      } else if (result.status === 'failed') {
+        clearInterval(pollingInterval);
+        setLoading(false);
+        showError('Video generation failed. Please try again.');
+        hideResult();
+      }
+
+      // Update percent
+      const pct = Math.min(Math.round((attempts / maxAttempts) * 100), 95);
+      document.getElementById('loadingPct').textContent = pct + '%';
+
+    } catch (err) {
+      clearInterval(pollingInterval);
+      setLoading(false);
+      showError('Connection error. Please try again.');
+      hideResult();
+    }
+  }, 3000);
 }
 
 // ---- UI helpers ----
@@ -123,19 +160,6 @@ function setLoading(on) {
   const btn = document.getElementById('generateBtn');
   btn.disabled = on;
   btn.textContent = on ? 'GENERATING...' : 'GENERATE VIDEO';
-  if (on) startPct(); else finishPct();
-}
-
-function startPct() {
-  let p = 0;
-  const el = document.getElementById('loadingPct');
-  pctInterval = setInterval(() => {
-    if (p < 90) { p += Math.random() * 3; el.textContent = Math.round(p) + '%'; }
-  }, 700);
-}
-function finishPct() {
-  clearInterval(pctInterval);
-  document.getElementById('loadingPct').textContent = '100%';
 }
 
 function showResultArea() {
@@ -146,6 +170,7 @@ function showResultArea() {
   document.getElementById('resultFooter').style.display = 'none';
   document.getElementById('statusBadge').className = 'status-badge status-loading';
   document.getElementById('statusBadge').textContent = 'Generating...';
+  document.getElementById('loadingPct').textContent = '0%';
   area.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
@@ -161,6 +186,7 @@ function showVideo(url) {
   document.getElementById('resultFooter').style.display = 'flex';
   document.getElementById('statusBadge').className = 'status-badge status-done';
   document.getElementById('statusBadge').textContent = 'Ready!';
+  document.getElementById('loadingPct').textContent = '100%';
   document.getElementById('downloadBtn').onclick = () => {
     const a = document.createElement('a');
     a.href = url; a.download = 'firemed-video.mp4'; a.target = '_blank';
@@ -174,6 +200,7 @@ function showError(msg) {
   el.style.display = 'block';
   el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
+
 function hideError() {
   document.getElementById('errorMsg').style.display = 'none';
 }
