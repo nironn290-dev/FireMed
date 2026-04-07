@@ -4,49 +4,44 @@ module.exports = async function handler(req, res) {
   }
 
   const { prompt } = req.body;
+  if (!prompt) return res.status(400).json({ error: 'Prompt is required.' });
 
-  if (!prompt) {
-    return res.status(400).json({ error: 'Prompt is required.' });
-  }
-
-  const HF_TOKEN = process.env.HF_TOKEN;
-  if (!HF_TOKEN) {
-    return res.status(500).json({ error: 'API key not configured.' });
-  }
+  const REPLICATE_TOKEN = process.env.REPLICATE_TOKEN;
+  if (!REPLICATE_TOKEN) return res.status(500).json({ error: 'API key not configured.' });
 
   try {
-    const response = await fetch(
-      'https://router.huggingface.co/hf-inference/models/Lightricks/LTX-Video/v1/video/text-to-video',
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${HF_TOKEN}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          prompt: prompt,
-          num_frames: 25,
-          num_inference_steps: 20,
-          width: 512,
-          height: 288,
-        })
-      }
-    );
+    const response = await fetch('https://api.replicate.com/v1/models/minimax/video-01/predictions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${REPLICATE_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'wait'
+      },
+      body: JSON.stringify({ input: { prompt } })
+    });
 
-    if (!response.ok) {
-      const err = await response.text();
-      console.error('HF error:', response.status, err);
-      if (response.status === 503) {
-        return res.status(503).json({ error: 'AI is warming up. Please wait 30 seconds and try again.' });
-      }
+    const prediction = await response.json();
+
+    if (!prediction || prediction.error) {
+      return res.status(500).json({ error: prediction.error || 'Video generation failed.' });
+    }
+
+    let result = prediction;
+    let attempts = 0;
+    while (result.status !== 'succeeded' && result.status !== 'failed' && attempts < 30) {
+      await new Promise(r => setTimeout(r, 3000));
+      const poll = await fetch(`https://api.replicate.com/v1/predictions/${result.id}`, {
+        headers: { 'Authorization': `Bearer ${REPLICATE_TOKEN}` }
+      });
+      result = await poll.json();
+      attempts++;
+    }
+
+    if (result.status === 'failed' || !result.output) {
       return res.status(500).json({ error: 'Video generation failed. Please try again.' });
     }
 
-    const buffer = await response.arrayBuffer();
-    const base64 = Buffer.from(buffer).toString('base64');
-    const videoUrl = `data:video/mp4;base64,${base64}`;
-
-    return res.status(200).json({ videoUrl });
+    return res.status(200).json({ videoUrl: result.output });
 
   } catch (err) {
     console.error(err);
