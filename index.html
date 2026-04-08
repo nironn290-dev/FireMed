@@ -24,4 +24,201 @@
     .input-label { font-size:13px; color:var(--muted); margin-bottom:6px; display:block; }
     .auth-input { width:100%; background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; padding:13px 16px; color:white; font-family:'DM Sans',sans-serif; font-size:15px; outline:none; transition:border-color 0.2s; }
     .auth-input:focus { border-color:var(--fire); }
-    .auth-btn { width:100%; background:var(--fire); border:none; border-radius:12px; padding:16px; color:white; font-family:'DM
+    .auth-btn { width:100%; background:var(--fire); border:none; border-radius:12px; padding:16px; color:white; font-family:'DM Sans',sans-serif; font-size:16px; font-weight:700; cursor:pointer; margin-top:8px; letter-spacing:1px; }
+    .auth-btn:disabled { background:#333; color:#666; cursor:not-allowed; }
+    .auth-error { background:rgba(255,50,50,0.1); border:1px solid rgba(255,50,50,0.3); border-radius:10px; padding:12px; font-size:13px; color:#ff7777; margin-top:12px; display:none; }
+
+    /* MAIN APP */
+    #appScreen { display:none; }
+    header { display:flex; align-items:center; justify-content:space-between; padding:16px 24px; border-bottom:1px solid var(--border); background:var(--bg); position:sticky; top:0; z-index:100; }
+    .logo { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:3px; }
+    .logo span { color:var(--fire); }
+    .header-right { display:flex; align-items:center; gap:12px; }
+    .credits-pill { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:6px 14px; font-size:13px; color:var(--muted); }
+    .credits-num { color:var(--fire); font-weight:700; }
+    .logout-btn { background:transparent; border:1px solid var(--border); border-radius:20px; padding:6px 14px; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:13px; cursor:pointer; }
+    .logout-btn:hover { border-color:var(--fire); color:var(--fire); }
+
+    main { max-width:520px; margin:0 auto; padding:28px 20px 80px; }
+    .mode-toggle { display:flex; background:#fff; border-radius:16px; padding:5px; gap:5px; margin-bottom:24px; }
+    .mode-btn { flex:1; padding:13px 8px; border-radius:12px; border:none; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; }
+    .mode-btn.active { background:var(--fire); color:#fff; }
+    .mode-btn.inactive { background:transparent; color:#333; }
+    .section { background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:20px; margin-bottom:14px; }
+    .section-label { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+    .step-num { width:28px; height:28px; background:var(--fire); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:#fff; flex-shrink:0; }
+    .step-title { font-size:17px; font-weight:700; }
+    .step-hint { font-size:12px; color:var(--muted); margin-top:2px; }
+    .upload-box { border:2px dashed var(--fire); border-radius:14px; padding:30px 16px; display:flex; flex-direction:column; align-items:center; gap:10px; cursor:pointer; background:var(--surface2); }
+    .upload-icon { font-size:32px; }
+    .upload-title { font-size:18px; font-weight:700; }
+    .upload-sub { font-size:13px; color:var(--muted); text-align:center; line-height:1.6; }
+    .upload-cta { background:var(--fire); color:#fff; border:none; border-radius:10px; padding:11px 26px; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:700; cursor:pointer; }
+    #imagePreview { display:none; width:100%; border-radius:12px; margin-top:12px; max-height:220px; object-fit:cover; }
+    #fileInput { display:none; }
+    .or-row { display:flex; align-items:center; gap:10px; margin:4px 0 12px; }
+    .or-line { flex:1; height:1px; background:var(--border); }
+    .or-label { font-size:11px; color:#555; letter-spacing:1px; }
+    textarea { width:100%; background:var(--surface2); border:1.5px solid var(--border); border-radius:12px; padding:14px 16px; color:#fff; font-family:'DM Sans',sans-serif; font-size:15px; line-height:1.6; resize:none; min-height:90px; outline:none; transition:border-color 0.2s; }
+    textarea:focus { border-color:var(--fire); }
+    textarea::placeholder { color:#444; }
+    .chips { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
+    .chip { background:var(--surface2); border:1.5px solid var(--border); border-radius:20px; padding:6px 13px; font-size:12px; color:var(--muted); cursor:pointer; }
+    .chip:hover { border-color:var(--fire); color:var(--fire); }
+    .style-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .style-btn { background:var(--surface2); border:2px solid var(--border); border-radius:12px; padding:13px 10px; color:#ccc; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:8px; }
+    .style-btn.active { border-color:var(--fire); color:var(--fire); background:rgba(255,69,0,0.08); }
+    #generateBtn { width:100%; background:var(--fire); border:none; border-radius:22px; padding:22px 10px; color:#fff; font-family:'DM Sans',sans-serif; font-size:18px; font-weight:800; letter-spacing:3px; text-transform:uppercase; cursor:pointer; margin-top:8px; }
+    #generateBtn:disabled { background:#333; color:#666; cursor:not-allowed; }
+    #errorMsg { display:none; background:rgba(255,50,50,0.1); border:1px solid rgba(255,50,50,0.3); border-radius:12px; padding:14px; font-size:14px; color:#ff7777; margin-top:12px; }
+    #resultArea { display:none; margin-top:14px; }
+    .result-card { background:var(--surface); border:1px solid var(--border); border-radius:18px; overflow:hidden; }
+    .result-header { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .result-title { font-size:15px; font-weight:700; }
+    .status-badge { font-size:12px; padding:4px 12px; border-radius:20px; font-weight:600; }
+    .status-loading { background:rgba(255,140,0,0.15); color:#ff8c00; }
+    .status-done { background:rgba(0,200,100,0.15); color:#00c864; }
+    .video-wrapper { background:#000; min-height:200px; display:flex; align-items:center; justify-content:center; }
+    #resultVideo { width:100%; display:none; }
+    .loading-anim { display:flex; flex-direction:column; align-items:center; gap:14px; padding:44px 20px; }
+    .fire-bars { display:flex; gap:5px; align-items:flex-end; height:40px; }
+    .bar { width:7px; border-radius:4px; background:var(--fire); animation:barUp 0.8s ease-in-out infinite; }
+    .bar:nth-child(2) { animation-delay:0.15s; background:#ff8c00; }
+    .bar:nth-child(3) { animation-delay:0.30s; }
+    .bar:nth-child(4) { animation-delay:0.45s; background:#ff8c00; }
+    .bar:nth-child(5) { animation-delay:0.60s; }
+    @keyframes barUp { 0%,100%{height:8px;} 50%{height:36px;} }
+    .loading-text { font-size:15px; color:var(--muted); }
+    #loadingPct { font-size:14px; color:#ff8c00; font-weight:700; }
+    .result-footer { display:flex; gap:10px; padding:14px 18px; border-top:1px solid var(--border); }
+    .action-btn { flex:1; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:11px; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; text-align:center; }
+    .action-btn.primary { background:var(--fire); border-color:var(--fire); color:#fff; }
+
+    /* No credits */
+    .no-credits { text-align:center; padding:20px; background:rgba(255,69,0,0.08); border:1px solid rgba(255,69,0,0.3); border-radius:14px; margin-top:8px; }
+    .no-credits p { font-size:14px; color:#ff8c00; margin-bottom:10px; }
+    .buy-btn { background:var(--fire); color:#fff; border:none; border-radius:10px; padding:10px 24px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:700; cursor:pointer; }
+  </style>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="authScreen">
+  <div class="auth-box">
+    <div class="auth-logo">Fire<span>med</span></div>
+    <div class="auth-sub">Create amazing AI videos</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="auth-tab inactive" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div class="input-group">
+      <label class="input-label">Email</label>
+      <input type="email" id="authEmail" class="auth-input" placeholder="your@email.com" />
+    </div>
+    <div class="input-group">
+      <label class="input-label">Password</label>
+      <input type="password" id="authPassword" class="auth-input" placeholder="••••••••" />
+    </div>
+    <button class="auth-btn" id="authBtn" onclick="handleAuth()">SIGN IN</button>
+    <div class="auth-error" id="authError"></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="appScreen">
+  <header>
+    <div class="logo">Fire<span>med</span></div>
+    <div class="header-right">
+      <div class="credits-pill">Credits: <span class="credits-num" id="creditsDisplay">0</span></div>
+      <button class="logout-btn" onclick="logout()">Sign Out</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="btnImage" onclick="switchMode('image')">🖼️ Image to Video</button>
+      <button class="mode-btn inactive" id="btnText" onclick="switchMode('text')">✏️ Text to Video</button>
+    </div>
+
+    <div class="section" id="uploadSection">
+      <div class="section-label">
+        <div class="step-num">1</div>
+        <div><div class="step-title">Upload your photo</div><div class="step-hint">Choose any photo from your device</div></div>
+      </div>
+      <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+        <div class="upload-icon">📷</div>
+        <div class="upload-title">Tap to choose a photo</div>
+        <div class="upload-sub">Works with any photo — JPG, PNG, WEBP</div>
+        <button class="upload-cta" onclick="event.stopPropagation();document.getElementById('fileInput').click()">Choose Photo</button>
+      </div>
+      <input type="file" id="fileInput" accept="image/*" onchange="onFileSelected(event)" />
+      <img id="imagePreview" alt="Your photo" />
+    </div>
+
+    <div class="section" id="textSection" style="display:none;">
+      <div class="section-label">
+        <div class="step-num">1</div>
+        <div><div class="step-title">What do you want to see?</div><div class="step-hint">Describe your scene in simple words</div></div>
+      </div>
+      <textarea id="textPrompt" placeholder="Example: A lion walking through golden grass at sunset..."></textarea>
+      <div class="chips">
+        <div class="chip" onclick="setTextPrompt('A waterfall in a tropical jungle with mist')">🌊 Waterfall</div>
+        <div class="chip" onclick="setTextPrompt('A busy city street at night with neon lights')">🌃 City night</div>
+        <div class="chip" onclick="setTextPrompt('Waves crashing on a beach at sunrise')">🌅 Beach</div>
+        <div class="chip" onclick="setTextPrompt('Snow falling slowly in a quiet forest')">❄️ Snowy forest</div>
+      </div>
+    </div>
+
+    <div class="section" id="descSection">
+      <div class="section-label">
+        <div class="step-num">2</div>
+        <div><div class="step-title">What should happen?</div><div class="step-hint">Optional — you can skip this step</div></div>
+      </div>
+      <div class="or-row"><div class="or-line"></div><div class="or-label">OPTIONAL</div><div class="or-line"></div></div>
+      <textarea id="prompt" placeholder="Example: Make the flowers move gently in the wind..."></textarea>
+    </div>
+
+    <div class="section">
+      <div class="section-label">
+        <div class="step-num" id="styleStepNum">3</div>
+        <div><div class="step-title">Choose a style</div><div class="step-hint">Pick the look that fits your video</div></div>
+      </div>
+      <div class="style-grid">
+        <button class="style-btn active" onclick="selectStyle(this,'realistic')">📷 Realistic</button>
+        <button class="style-btn" onclick="selectStyle(this,'cinematic')">🎬 Cinematic</button>
+        <button class="style-btn" onclick="selectStyle(this,'animation')">✨ Animation</button>
+        <button class="style-btn" onclick="selectStyle(this,'nature')">🌿 Nature</button>
+      </div>
+    </div>
+
+    <button id="generateBtn" onclick="generateVideo()">GENERATE VIDEO</button>
+    <div id="errorMsg"></div>
+
+    <div id="resultArea">
+      <div class="result-card">
+        <div class="result-header">
+          <div class="result-title">Your Video</div>
+          <div class="status-badge status-loading" id="statusBadge">Generating...</div>
+        </div>
+        <div class="video-wrapper">
+          <video id="resultVideo" controls playsinline></video>
+          <div class="loading-anim" id="loadingAnim">
+            <div class="fire-bars">
+              <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            </div>
+            <div class="loading-text">Creating your video...</div>
+            <div id="loadingPct">0%</div>
+          </div>
+        </div>
+        <div class="result-footer" id="resultFooter" style="display:none;">
+          <button class="action-btn" onclick="generateVideo()">Try Again</button>
+          <button class="action-btn primary" id="downloadBtn">Download Video</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
