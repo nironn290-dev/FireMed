@@ -5,7 +5,6 @@ let selectedStyle = 'realistic';
 let selectedImageBase64 = null;
 let pollingInterval = null;
 
-// ---- Mode switch ----
 function switchMode(mode) {
   currentMode = mode;
   document.getElementById('btnImage').className = mode === 'image' ? 'mode-btn active' : 'mode-btn inactive';
@@ -18,7 +17,6 @@ function switchMode(mode) {
   hideResult();
 }
 
-// ---- File upload ----
 function onFileSelected(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -32,20 +30,17 @@ function onFileSelected(event) {
   reader.readAsDataURL(file);
 }
 
-// ---- Style selection ----
 function selectStyle(btn, style) {
   document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   selectedStyle = style;
 }
 
-// ---- Example prompts ----
 function setTextPrompt(text) {
   document.getElementById('textPrompt').value = text;
   document.getElementById('textPrompt').focus();
 }
 
-// ---- Build prompt ----
 function buildPrompt(userPrompt, style) {
   const styleMap = {
     realistic:  'photorealistic, high quality, natural lighting',
@@ -56,7 +51,6 @@ function buildPrompt(userPrompt, style) {
   return `${userPrompt}. Style: ${styleMap[style] || styleMap.realistic}.`;
 }
 
-// ---- Main generate ----
 async function generateVideo() {
   hideError();
 
@@ -84,11 +78,14 @@ async function generateVideo() {
       prompt = buildPrompt(document.getElementById('textPrompt').value.trim(), selectedStyle);
     }
 
-    // Start prediction
     const response = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt })
+      body: JSON.stringify({ 
+        prompt,
+        mode: currentMode,
+        imageBase64: selectedImageBase64
+      })
     });
 
     const data = await response.json();
@@ -97,7 +94,6 @@ async function generateVideo() {
       throw new Error(data.error || 'Something went wrong.');
     }
 
-    // Poll for result
     pollResult(data.id);
 
   } catch (err) {
@@ -107,7 +103,6 @@ async function generateVideo() {
   }
 }
 
-// ---- Polling ----
 async function pollResult(predictionId) {
   let attempts = 0;
   const maxAttempts = 60;
@@ -142,7 +137,6 @@ async function pollResult(predictionId) {
         hideResult();
       }
 
-      // Update percent
       const pct = Math.min(Math.round((attempts / maxAttempts) * 100), 95);
       document.getElementById('loadingPct').textContent = pct + '%';
 
@@ -155,52 +149,10 @@ async function pollResult(predictionId) {
   }, 3000);
 }
 
-// ---- UI helpers ----
 function setLoading(on) {
   const btn = document.getElementById('generateBtn');
   btn.disabled = on;
   btn.textContent = on ? 'GENERATING...' : 'GENERATE VIDEO';
 }
 
-function showResultArea() {
-  const area = document.getElementById('resultArea');
-  area.style.display = 'block';
-  document.getElementById('loadingAnim').style.display = 'flex';
-  document.getElementById('resultVideo').style.display = 'none';
-  document.getElementById('resultFooter').style.display = 'none';
-  document.getElementById('statusBadge').className = 'status-badge status-loading';
-  document.getElementById('statusBadge').textContent = 'Generating...';
-  document.getElementById('loadingPct').textContent = '0%';
-  area.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-function hideResult() {
-  document.getElementById('resultArea').style.display = 'none';
-}
-
-function showVideo(url) {
-  const video = document.getElementById('resultVideo');
-  video.src = url;
-  video.style.display = 'block';
-  document.getElementById('loadingAnim').style.display = 'none';
-  document.getElementById('resultFooter').style.display = 'flex';
-  document.getElementById('statusBadge').className = 'status-badge status-done';
-  document.getElementById('statusBadge').textContent = 'Ready!';
-  document.getElementById('loadingPct').textContent = '100%';
-  document.getElementById('downloadBtn').onclick = () => {
-    const a = document.createElement('a');
-    a.href = url; a.download = 'firemed-video.mp4'; a.target = '_blank';
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  };
-}
-
-function showError(msg) {
-  const el = document.getElementById('errorMsg');
-  el.textContent = '⚠ ' + msg;
-  el.style.display = 'block';
-  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-function hideError() {
-  document.getElementById('errorMsg').style.display = 'none';
-}
+funct
