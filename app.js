@@ -105,7 +105,7 @@ async function generateVideo() {
 
 async function pollResult(predictionId) {
   let attempts = 0;
-  const maxAttempts = 60;
+  const maxAttempts = 120;
 
   pollingInterval = setInterval(async () => {
     attempts++;
