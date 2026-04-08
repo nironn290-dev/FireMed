@@ -4,7 +4,118 @@ let currentMode = 'image';
 let selectedStyle = 'realistic';
 let selectedImageBase64 = null;
 let pollingInterval = null;
+let currentUser = null;
+let currentSession = null;
+let userCredits = 0;
 
+// ---- AUTH ----
+function switchAuthTab(tab) {
+  const loginBtn = document.querySelector('.auth-tab:first-child');
+  const signupBtn = document.querySelector('.auth-tab:last-child');
+  const authBtn = document.getElementById('authBtn');
+
+  if (tab === 'login') {
+    loginBtn.className = 'auth-tab active';
+    signupBtn.className = 'auth-tab inactive';
+    authBtn.textContent = 'SIGN IN';
+  } else {
+    loginBtn.className = 'auth-tab inactive';
+    signupBtn.className = 'auth-tab active';
+    authBtn.textContent = 'SIGN UP';
+  }
+  authBtn.dataset.tab = tab;
+  document.getElementById('authError').style.display = 'none';
+}
+
+async function handleAuth() {
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value.trim();
+  const tab = document.getElementById('authBtn').dataset.tab || 'login';
+
+  if (!email || !password) {
+    showAuthError('Please enter email and password.');
+    return;
+  }
+
+  const btn = document.getElementById('authBtn');
+  btn.disabled = true;
+  btn.textContent = 'Please wait...';
+
+  try {
+    const response = await fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: tab, email, password })
+    });
+
+    const data = await response.json();
+
+    if (data.error) {
+      showAuthError(data.error);
+      return;
+    }
+
+    if (tab === 'signup') {
+      showAuthError('Account created! Please sign in.');
+      switchAuthTab('login');
+      return;
+    }
+
+    currentUser = data.user;
+    currentSession = data.session;
+    await loadProfile();
+    showApp();
+
+  } catch (err) {
+    showAuthError('Something went wrong. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = tab === 'login' ? 'SIGN IN' : 'SIGN UP';
+  }
+}
+
+async function loadProfile() {
+  try {
+    const response = await fetch('/api/auth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentSession.access_token}`
+      },
+      body: JSON.stringify({ action: 'getProfile' })
+    });
+    const data = await response.json();
+    if (data.profile) {
+      userCredits = data.profile.credits || 0;
+      document.getElementById('creditsDisplay').textContent = userCredits;
+    }
+  } catch (err) {
+    console.error('Profile load error:', err);
+  }
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('authError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function showApp() {
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('appScreen').style.display = 'block';
+}
+
+function logout() {
+  currentUser = null;
+  currentSession = null;
+  userCredits = 0;
+  document.getElementById('authScreen').style.display = 'flex';
+  document.getElementById('appScreen').style.display = 'none';
+  document.getElementById('authEmail').value = '';
+  document.getElementById('authPassword').value = '';
+}
+
+// ---- Mode switch ----
 function switchMode(mode) {
   currentMode = mode;
   document.getElementById('btnImage').className = mode === 'image' ? 'mode-btn active' : 'mode-btn inactive';
@@ -17,6 +128,7 @@ function switchMode(mode) {
   hideResult();
 }
 
+// ---- File upload ----
 function onFileSelected(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -30,29 +142,37 @@ function onFileSelected(event) {
   reader.readAsDataURL(file);
 }
 
+// ---- Style selection ----
 function selectStyle(btn, style) {
   document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   selectedStyle = style;
 }
 
+// ---- Example prompts ----
 function setTextPrompt(text) {
   document.getElementById('textPrompt').value = text;
-  document.getElementById('textPrompt').focus();
 }
 
+// ---- Build prompt ----
 function buildPrompt(userPrompt, style) {
   const styleMap = {
-    realistic:  'photorealistic, high quality, natural lighting',
-    cinematic:  'cinematic film style, dramatic lighting, movie quality',
-    animation:  'smooth animation, vibrant colors, animated style',
-    nature:     'nature documentary style, peaceful natural environment'
+    realistic: 'photorealistic, high quality, natural lighting',
+    cinematic: 'cinematic film style, dramatic lighting, movie quality',
+    animation: 'smooth animation, vibrant colors, animated style',
+    nature:    'nature documentary style, peaceful natural environment'
   };
   return `${userPrompt}. Style: ${styleMap[style] || styleMap.realistic}.`;
 }
 
+// ---- Main generate ----
 async function generateVideo() {
   hideError();
+
+  if (userCredits <= 0) {
+    showError('You have no credits left. Please purchase more credits.');
+    return;
+  }
 
   if (currentMode === 'image' && !selectedImageBase64) {
     showError('Please choose a photo first.');
@@ -80,8 +200,11 @@ async function generateVideo() {
 
     const response = await fetch('/api/generate', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentSession.access_token}`
+      },
+      body: JSON.stringify({
         prompt,
         mode: currentMode,
         imageBase64: selectedImageBase64
@@ -103,7 +226,8 @@ async function generateVideo() {
   }
 }
 
-async function pollResult(predictionId) {
+// ---- Polling ----
+async function pollResult(taskId) {
   let attempts = 0;
   const maxAttempts = 120;
 
@@ -120,8 +244,11 @@ async function pollResult(predictionId) {
     try {
       const response = await fetch('/api/generate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ taskId: predictionId })
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${currentSession.access_token}`
+        },
+        body: JSON.stringify({ taskId })
       });
 
       const result = await response.json();
@@ -129,6 +256,8 @@ async function pollResult(predictionId) {
       if (result.status === 'succeeded' && result.output) {
         clearInterval(pollingInterval);
         setLoading(false);
+        userCredits--;
+        document.getElementById('creditsDisplay').textContent = userCredits;
         showVideo(result.output);
       } else if (result.status === 'failed') {
         clearInterval(pollingInterval);
@@ -149,6 +278,7 @@ async function pollResult(predictionId) {
   }, 3000);
 }
 
+// ---- UI helpers ----
 function setLoading(on) {
   const btn = document.getElementById('generateBtn');
   btn.disabled = on;
