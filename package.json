@@ -2,5 +2,8 @@
   "name": "firemed",
   "version": "1.0.0",
   "description": "Firemed — AI Video Generator",
-  "engines": { "node": "24.x" }
+  "engines": { "node": "24.x" },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  }
 }
