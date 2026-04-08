@@ -19,9 +19,7 @@ module.exports = async function handler(req, res) {
     let response;
 
     if (mode === 'image' && imageBase64) {
-      // Image to Video
-      const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
-      response = await fetch('https://api.replicate.com/v1/models/stability-ai/stable-video-diffusion/predictions', {
+      response = await fetch('https://api.replicate.com/v1/models/minimax/video-01-live/predictions', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${REPLICATE_TOKEN}`,
@@ -29,16 +27,12 @@ module.exports = async function handler(req, res) {
         },
         body: JSON.stringify({
           input: {
-            input_image: imageUrl,
-            video_length: 'short',
-            sizing_strategy: 'maintain_aspect_ratio',
-            motion_bucket_id: 127,
-            frames_per_second: 6
+            prompt: prompt || 'animate this image naturally with smooth motion',
+            first_frame_image: `data:image/jpeg;base64,${imageBase64}`
           }
         })
       });
     } else {
-      // Text to Video
       if (!prompt) return res.status(400).json({ error: 'Prompt is required.' });
       response = await fetch('https://api.replicate.com/v1/models/minimax/video-01/predictions', {
         method: 'POST',
