@@ -3,6 +3,20 @@ const SUPABASE_URL = 'https://odydlckpnygxgwrewvcw.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9keWRsY2tucHlneGd3cmV3dmN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwNjI0NTYsImV4cCI6MjA1OTYzODQ1Nn0.eyJpc3MiOiJzdXBhYmFzZSJ9';
 
 async function handleGoogleAuth() {
+  // Google auth callback handler
+async function checkAuthSession() {
+  const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    currentSession = session;
+    await loadProfile();
+    showApp();
+  }
+}
+
+checkAuthSession();
   const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   const { error } = await supabase.auth.signInWithOAuth({
