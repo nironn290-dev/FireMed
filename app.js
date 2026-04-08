@@ -121,7 +121,7 @@ async function pollResult(predictionId) {
       const response = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ predictionId })
+        body: JSON.stringify({ taskId: predictionId })
       });
 
       const result = await response.json();
