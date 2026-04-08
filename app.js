@@ -155,4 +155,45 @@ function setLoading(on) {
   btn.textContent = on ? 'GENERATING...' : 'GENERATE VIDEO';
 }
 
-funct
+function showResultArea() {
+  const area = document.getElementById('resultArea');
+  area.style.display = 'block';
+  document.getElementById('loadingAnim').style.display = 'flex';
+  document.getElementById('resultVideo').style.display = 'none';
+  document.getElementById('resultFooter').style.display = 'none';
+  document.getElementById('statusBadge').className = 'status-badge status-loading';
+  document.getElementById('statusBadge').textContent = 'Generating...';
+  document.getElementById('loadingPct').textContent = '0%';
+  area.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function hideResult() {
+  document.getElementById('resultArea').style.display = 'none';
+}
+
+function showVideo(url) {
+  const video = document.getElementById('resultVideo');
+  video.src = url;
+  video.style.display = 'block';
+  document.getElementById('loadingAnim').style.display = 'none';
+  document.getElementById('resultFooter').style.display = 'flex';
+  document.getElementById('statusBadge').className = 'status-badge status-done';
+  document.getElementById('statusBadge').textContent = 'Ready!';
+  document.getElementById('loadingPct').textContent = '100%';
+  document.getElementById('downloadBtn').onclick = () => {
+    const a = document.createElement('a');
+    a.href = url; a.download = 'firemed-video.mp4'; a.target = '_blank';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  };
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = '⚠ ' + msg;
+  el.style.display = 'block';
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function hideError() {
+  document.getElementById('errorMsg').style.display = 'none';
+}
