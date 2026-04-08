@@ -26,6 +26,11 @@
     .auth-input:focus { border-color:var(--fire); }
     .auth-btn { width:100%; background:var(--fire); border:none; border-radius:12px; padding:16px; color:white; font-family:'DM Sans',sans-serif; font-size:16px; font-weight:700; cursor:pointer; margin-top:8px; letter-spacing:1px; }
     .auth-btn:disabled { background:#333; color:#666; cursor:not-allowed; }
+    .google-btn { width:100%; background:#fff; border:1.5px solid #ddd; border-radius:12px; padding:14px; color:#333; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:12px; margin-top:8px; }
+.google-btn:hover { border-color:#aaa; background:#f9f9f9; }
+.or-divider { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.or-divider::before, .or-divider::after { content:''; flex:1; height:1px; background:var(--border); }
+.or-divider span { font-size:12px; color:var(--muted); }
     .auth-error { background:rgba(255,50,50,0.1); border:1px solid rgba(255,50,50,0.3); border-radius:10px; padding:12px; font-size:13px; color:#ff7777; margin-top:12px; display:none; }
 
     /* MAIN APP */
