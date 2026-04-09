@@ -19,7 +19,7 @@ async function handleGoogleAuth() {
 
 async function initAuth() {
   const supabase = await getSupabase();
-  supabase.auth.onAuthStateChange(async (event, session) => {
+  supabase.auth.onAuthStateChange((event, session) => {
     if (session) {
       currentUser = session.user;
       currentSession = session;
@@ -44,6 +44,7 @@ function switchAuthTab(tab) {
   const loginBtn = document.querySelector('.auth-tab:first-child');
   const signupBtn = document.querySelector('.auth-tab:last-child');
   const authBtn = document.getElementById('authBtn');
+
   if (tab === 'login') {
     loginBtn.className = 'auth-tab active';
     signupBtn.className = 'auth-tab inactive';
@@ -77,21 +78,26 @@ async function handleAuth() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: tab, email, password })
     });
+
     const data = await response.json();
+
     if (data.error) {
       showAuthError(data.error);
       return;
     }
+
     if (tab === 'signup') {
       showAuthError('Account created! Please sign in.');
       switchAuthTab('login');
       return;
     }
+
     currentUser = data.user;
     currentSession = data.session;
     userCredits = 10;
     document.getElementById('creditsDisplay').textContent = userCredits;
     showApp();
+
   } catch (err) {
     showAuthError('Something went wrong. Please try again.');
   } finally {
@@ -121,6 +127,7 @@ function logout() {
   document.getElementById('authPassword').value = '';
 }
 
+// ---- Mode switch ----
 function switchMode(mode) {
   currentMode = mode;
   document.getElementById('btnImage').className = mode === 'image' ? 'mode-btn active' : 'mode-btn inactive';
@@ -133,6 +140,7 @@ function switchMode(mode) {
   hideResult();
 }
 
+// ---- File upload ----
 function onFileSelected(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -146,16 +154,19 @@ function onFileSelected(event) {
   reader.readAsDataURL(file);
 }
 
+// ---- Style selection ----
 function selectStyle(btn, style) {
   document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   selectedStyle = style;
 }
 
+// ---- Example prompts ----
 function setTextPrompt(text) {
   document.getElementById('textPrompt').value = text;
 }
 
+// ---- Build prompt ----
 function buildPrompt(userPrompt, style) {
   const styleMap = {
     realistic: 'photorealistic, high quality, natural lighting',
@@ -166,12 +177,15 @@ function buildPrompt(userPrompt, style) {
   return `${userPrompt}. Style: ${styleMap[style] || styleMap.realistic}.`;
 }
 
+// ---- Main generate ----
 async function generateVideo() {
   hideError();
-  if (userCredits < 6) {
-    showError('You need at least 6 credits to generate a video.');
+
+  if (userCredits <= 0) {
+    showError('You have no credits left. Please purchase more credits.');
     return;
   }
+
   if (currentMode === 'image' && !selectedImageBase64) {
     showError('Please choose a photo first.');
     return;
@@ -183,8 +197,10 @@ async function generateVideo() {
       return;
     }
   }
+
   setLoading(true);
   showResultArea();
+
   try {
     let prompt;
     if (currentMode === 'image') {
@@ -193,17 +209,28 @@ async function generateVideo() {
     } else {
       prompt = buildPrompt(document.getElementById('textPrompt').value.trim(), selectedStyle);
     }
+
     const response = await fetch('/api/generate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${currentSession.access_token}`
       },
-      body: JSON.stringify({ prompt, mode: currentMode, imageBase64: selectedImageBase64 })
+      body: JSON.stringify({
+        prompt,
+        mode: currentMode,
+        imageBase64: selectedImageBase64
+      })
     });
+
     const data = await response.json();
-    if (!response.ok || data.error) throw new Error(data.error || 'Something went wrong.');
+
+    if (!response.ok || data.error) {
+      throw new Error(data.error || 'Something went wrong.');
+    }
+
     pollResult(data.id);
+
   } catch (err) {
     showError(err.message || 'Could not generate video. Please try again.');
     hideResult();
@@ -211,9 +238,11 @@ async function generateVideo() {
   }
 }
 
+// ---- Polling ----
 async function pollResult(taskId) {
   let attempts = 0;
   const maxAttempts = 120;
+
   pollingInterval = setInterval(async () => {
     attempts++;
     if (attempts > maxAttempts) {
@@ -223,6 +252,7 @@ async function pollResult(taskId) {
       setLoading(false);
       return;
     }
+
     try {
       const response = await fetch('/api/generate', {
         method: 'POST',
@@ -232,11 +262,13 @@ async function pollResult(taskId) {
         },
         body: JSON.stringify({ taskId })
       });
+
       const result = await response.json();
+
       if (result.status === 'succeeded' && result.output) {
         clearInterval(pollingInterval);
         setLoading(false);
-        userCredits -= 6;
+        userCredits--;
         document.getElementById('creditsDisplay').textContent = userCredits;
         showVideo(result.output);
       } else if (result.status === 'failed') {
@@ -245,8 +277,10 @@ async function pollResult(taskId) {
         showError('Video generation failed. Please try again.');
         hideResult();
       }
+
       const pct = Math.min(Math.round((attempts / maxAttempts) * 100), 95);
       document.getElementById('loadingPct').textContent = pct + '%';
+
     } catch (err) {
       clearInterval(pollingInterval);
       setLoading(false);
@@ -256,6 +290,7 @@ async function pollResult(taskId) {
   }, 3000);
 }
 
+// ---- UI helpers ----
 function setLoading(on) {
   const btn = document.getElementById('generateBtn');
   btn.disabled = on;
@@ -305,4 +340,5 @@ function hideError() {
   document.getElementById('errorMsg').style.display = 'none';
 }
 
+// Başlat
 initAuth();
