@@ -1,8 +1,7 @@
 // Firemed — app.js
 
 const SUPABASE_URL = 'https://odydlckpnygxgwrewvcw.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9keWRsY2tucHlneGd3cmV3dmN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwNjI0NTYsImV4cCI6MjA1OTYzODQ1Nn0.eyJpc3MiOiJzdXBhYmFzZSJ9';
-
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9keWRsY2twbnlneGd3cmV3dmN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2Mzg1NzIsImV4cCI6MjA5MTIxNDU3Mn0.DwOAd5jKJsVHFCtGNmWOlIQULDEihkP6o4xxwnKvln0';
 async function handleGoogleAuth() {
   const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
