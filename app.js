@@ -2,9 +2,14 @@
 
 const SUPABASE_URL = 'https://odydlckpnygxgwrewvcw.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9keWRsY2twbnlneGd3cmV3dmN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2Mzg1NzIsImV4cCI6MjA5MTIxNDU3Mn0.DwOAd5jKJsVHFCtGNmWOlIQULDEihkP6o4xxwnKvln0';
-async function handleGoogleAuth() {
+
+async function getSupabase() {
   const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  return createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+async function handleGoogleAuth() {
+  const supabase = await getSupabase();
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: { redirectTo: 'https://fire-med.vercel.app' }
@@ -12,21 +17,8 @@ async function handleGoogleAuth() {
   if (error) showAuthError(error.message);
 }
 
-async function checkAuthSession() {
-  const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  
-  const { data: { session } } = await supabase.auth.getSession();
-  
-  if (session) {
-    currentUser = session.user;
-    currentSession = session;
-    userCredits = 10;
-    document.getElementById('creditsDisplay').textContent = userCredits;
-    showApp();
-    return;
-  }
-
+async function initAuth() {
+  const supabase = await getSupabase();
   supabase.auth.onAuthStateChange((event, session) => {
     if (session) {
       currentUser = session.user;
@@ -36,9 +28,8 @@ async function checkAuthSession() {
       showApp();
     }
   });
+  await supabase.auth.getSession();
 }
-
-checkAuthSession();
 
 let currentMode = 'image';
 let selectedStyle = 'realistic';
@@ -103,7 +94,8 @@ async function handleAuth() {
 
     currentUser = data.user;
     currentSession = data.session;
-    await loadProfile();
+    userCredits = 10;
+    document.getElementById('creditsDisplay').textContent = userCredits;
     showApp();
 
   } catch (err) {
@@ -111,26 +103,6 @@ async function handleAuth() {
   } finally {
     btn.disabled = false;
     btn.textContent = tab === 'login' ? 'SIGN IN' : 'SIGN UP';
-  }
-}
-
-async function loadProfile() {
-  try {
-    const response = await fetch('/api/auth', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${currentSession.access_token}`
-      },
-      body: JSON.stringify({ action: 'getProfile' })
-    });
-    const data = await response.json();
-    if (data.profile) {
-      userCredits = data.profile.credits || 0;
-      document.getElementById('creditsDisplay').textContent = userCredits;
-    }
-  } catch (err) {
-    console.error('Profile load error:', err);
   }
 }
 
@@ -367,3 +339,6 @@ function showError(msg) {
 function hideError() {
   document.getElementById('errorMsg').style.display = 'none';
 }
+
+// Başlat
+initAuth();
