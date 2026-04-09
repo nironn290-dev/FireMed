@@ -16,14 +16,27 @@ async function handleGoogleAuth() {
 async function checkAuthSession() {
   const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  
   const { data: { session } } = await supabase.auth.getSession();
+  
   if (session) {
     currentUser = session.user;
     currentSession = session;
     userCredits = 10;
     document.getElementById('creditsDisplay').textContent = userCredits;
     showApp();
+    return;
   }
+
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (session) {
+      currentUser = session.user;
+      currentSession = session;
+      userCredits = 10;
+      document.getElementById('creditsDisplay').textContent = userCredits;
+      showApp();
+    }
+  });
 }
 
 checkAuthSession();
