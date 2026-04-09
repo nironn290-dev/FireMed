@@ -181,7 +181,7 @@ function buildPrompt(userPrompt, style) {
 async function generateVideo() {
   hideError();
 
-  if (userCredits <= 0) {
+  if (userCredits < 6) {
     showError('You have no credits left. Please purchase more credits.');
     return;
   }
