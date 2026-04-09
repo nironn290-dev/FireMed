@@ -19,11 +19,24 @@ async function handleGoogleAuth() {
 
 async function initAuth() {
   const supabase = await getSupabase();
-  supabase.auth.onAuthStateChange((event, session) => {
+  supabase.auth.onAuthStateChange(async (event, session) => {
     if (session) {
       currentUser = session.user;
       currentSession = session;
-      userCredits = 10;
+      try {
+        const response = await fetch('/api/auth', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`
+          },
+          body: JSON.stringify({ action: 'getProfile' })
+        });
+        const data = await response.json();
+        userCredits = data.profile?.credits ?? 10;
+      } catch (err) {
+        userCredits = 10;
+      }
       document.getElementById('creditsDisplay').textContent = userCredits;
       showApp();
     }
@@ -44,7 +57,6 @@ function switchAuthTab(tab) {
   const loginBtn = document.querySelector('.auth-tab:first-child');
   const signupBtn = document.querySelector('.auth-tab:last-child');
   const authBtn = document.getElementById('authBtn');
-
   if (tab === 'login') {
     loginBtn.className = 'auth-tab active';
     signupBtn.className = 'auth-tab inactive';
@@ -94,7 +106,20 @@ async function handleAuth() {
 
     currentUser = data.user;
     currentSession = data.session;
-    userCredits = 10;
+    try {
+      const profileRes = await fetch('/api/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${data.session.access_token}`
+        },
+        body: JSON.stringify({ action: 'getProfile' })
+      });
+      const profileData = await profileRes.json();
+      userCredits = profileData.profile?.credits ?? 10;
+    } catch (err) {
+      userCredits = 10;
+    }
     document.getElementById('creditsDisplay').textContent = userCredits;
     showApp();
 
@@ -181,8 +206,8 @@ function buildPrompt(userPrompt, style) {
 async function generateVideo() {
   hideError();
 
-  if (userCredits <= 0) {
-    showError('You have no credits left. Please purchase more credits.');
+  if (userCredits < 6) {
+    showError('You need at least 6 credits to generate a video. Please purchase more credits.');
     return;
   }
 
@@ -268,7 +293,7 @@ async function pollResult(taskId) {
       if (result.status === 'succeeded' && result.output) {
         clearInterval(pollingInterval);
         setLoading(false);
-        userCredits--;
+        userCredits -= 6;
         document.getElementById('creditsDisplay').textContent = userCredits;
         showVideo(result.output);
       } else if (result.status === 'failed') {
