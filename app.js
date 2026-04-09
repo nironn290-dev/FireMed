@@ -268,7 +268,7 @@ async function pollResult(taskId) {
       if (result.status === 'succeeded' && result.output) {
         clearInterval(pollingInterval);
         setLoading(false);
-        userCredits--;
+        userCredits -= 6;
         document.getElementById('creditsDisplay').textContent = userCredits;
         showVideo(result.output);
       } else if (result.status === 'failed') {
