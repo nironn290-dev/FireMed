@@ -160,35 +160,35 @@
 
     <!-- IMAGE UPLOAD -->
     <div class="section" id="uploadSection">
-      <div class="section-label">
-        <div class="step-num">1</div>
-        <div><div class="step-title">Upload start photo</div><div class="step-hint">Main photo for your video</div></div>
-      </div>
-      <div class="upload-box" onclick="document.getElementById('fileInput').click()">
-        <div class="upload-icon">📷</div>
-        <div class="upload-title">Tap to choose a photo</div>
-        <div class="upload-sub">JPG, PNG, WEBP</div>
-        <button class="upload-cta" onclick="event.stopPropagation();document.getElementById('fileInput').click()">Choose Photo</button>
+  <div class="section-label">
+    <div class="step-num">1</div>
+    <div><div class="step-title">Upload photo(s)</div><div class="step-hint">Start photo required, end photo optional</div></div>
+  </div>
+  <div style="display:flex; gap:10px;">
+    <div style="flex:1;">
+      <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">📷 Start Photo</div>
+      <div class="upload-box" style="padding:16px 10px;" onclick="document.getElementById('fileInput').click()">
+        <div style="font-size:24px;">📷</div>
+        <div style="font-size:13px; font-weight:700;">Start Photo</div>
+        <div style="font-size:11px; color:var(--muted);">Required</div>
+        <button class="upload-cta" style="padding:8px 14px; font-size:13px;" onclick="event.stopPropagation();document.getElementById('fileInput').click()">Choose</button>
       </div>
       <input type="file" id="fileInput" accept="image/*" onchange="onFileSelected(event)" />
       <img id="imagePreview" alt="Start photo" />
     </div>
-
-    <!-- END FRAME -->
-    <div class="section" id="endFrameSection">
-      <div class="section-label">
-        <div class="step-num">2</div>
-        <div><div class="step-title">End photo <span style="color:var(--muted);font-size:13px;">(optional)</span></div><div class="step-hint">Add end frame for Start/End mode</div></div>
-      </div>
-      <div class="upload-box" onclick="document.getElementById('endFileInput').click()">
-        <div class="upload-icon">🏁</div>
-        <div class="upload-title">Tap to choose end photo</div>
-        <div class="upload-sub">Optional — creates Start/End Frame video</div>
-        <button class="upload-cta" onclick="event.stopPropagation();document.getElementById('endFileInput').click()">Choose End Photo</button>
+    <div style="flex:1;" id="endFrameSection">
+      <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">🏁 End Photo <span style="color:#555;">(optional)</span></div>
+      <div class="upload-box" style="padding:16px 10px;" onclick="document.getElementById('endFileInput').click()">
+        <div style="font-size:24px;">🏁</div>
+        <div style="font-size:13px; font-weight:700;">End Photo</div>
+        <div style="font-size:11px; color:var(--muted);">Optional</div>
+        <button class="upload-cta" style="padding:8px 14px; font-size:13px;" onclick="event.stopPropagation();document.getElementById('endFileInput').click()">Choose</button>
       </div>
       <input type="file" id="endFileInput" accept="image/*" onchange="onEndFileSelected(event)" />
       <img id="endImagePreview" alt="End photo" />
     </div>
+  </div>
+</div>
 
     <!-- TEXT SECTION -->
     <div class="section" id="textSection" style="display:none;">
