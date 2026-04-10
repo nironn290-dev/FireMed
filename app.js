@@ -158,12 +158,22 @@ function onEndFileSelected(event) {
   reader.readAsDataURL(file);
 }
 
-// ---- Model selection ----
 function selectModel(btn, model) {
   document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   selectedModel = model;
   updateCreditDisplay();
+  
+  // Start/End frame sadece PRO ve V3'te çalışır
+  const supportsEndFrame = model !== 'kling-v2-5-turbo-std';
+  const endSection = document.getElementById('endFrameSection');
+  endSection.style.display = (currentMode === 'image' && supportsEndFrame) ? 'block' : 'none';
+  
+  // STD seçilince end image'ı sıfırla
+  if (!supportsEndFrame) {
+    selectedEndImageBase64 = null;
+    document.getElementById('endImagePreview').style.display = 'none';
+  }
 }
 
 // ---- Duration selection ----
