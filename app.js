@@ -182,7 +182,7 @@ function selectModel(btn, model) {
 
 // ---- Duration selection ----
 function selectDuration(btn, duration) {
-  document.querySelectorAll('.duration-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#dur-5, #dur-10').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   selectedDuration = duration;
   updateCreditDisplay();
@@ -195,7 +195,12 @@ function updateCreditDisplay() {
 
 // ---- Style selection ----
 function selectStyle(btn, style) {
-  document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.mini-btn').forEach(b => b.classList.remove('active'));
+  if (selectedDuration === '10') {
+    document.getElementById('dur-10').classList.add('active');
+  } else {
+    document.getElementById('dur-5').classList.add('active');
+  }
   btn.classList.add('active');
   selectedStyle = style;
 }
