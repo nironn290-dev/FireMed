@@ -379,4 +379,5 @@ function hideError() {
 
 // Başlat
 updateCreditDisplay();
+document.getElementById('endFrameSection').style.display = 'none';
 initAuth();
