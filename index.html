@@ -244,33 +244,18 @@
         </button>
       </div>
     </div>
-
-    <!-- DURATION -->
-    <div class="section">
-      <div class="section-label">
-        <div class="step-num" id="durationStepNum">5</div>
-        <div><div class="step-title">Video duration</div><div class="step-hint">Longer = more credits</div></div>
-      </div>
-      <div class="duration-grid">
-        <button class="duration-btn active" id="dur-5" onclick="selectDuration(this,'5')">⚡ 5 seconds</button>
-        <button class="duration-btn" id="dur-10" onclick="selectDuration(this,'10')">🎬 10 seconds (+credits)</button>
-      </div>
-    </div>
-
-    <!-- STYLE -->
-    <div class="section">
-      <div class="section-label">
-        <div class="step-num" id="styleStepNum">6</div>
-        <div><div class="step-title">Choose a style</div><div class="step-hint">Pick the look</div></div>
-      </div>
-      <div class="style-grid">
-        <button class="style-btn active" onclick="selectStyle(this,'realistic')">📷 Realistic</button>
-        <button class="style-btn" onclick="selectStyle(this,'cinematic')">🎬 Cinematic</button>
-        <button class="style-btn" onclick="selectStyle(this,'animation')">✨ Animation</button>
-        <button class="style-btn" onclick="selectStyle(this,'nature')">🌿 Nature</button>
-      </div>
-    </div>
-
+<div style="margin-top:10px; display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
+  <button class="mini-btn active" id="dur-5" onclick="selectDuration(this,'5')">⚡ 5s</button>
+  <button class="mini-btn" id="dur-10" onclick="selectDuration(this,'10')">🎬 10s</button>
+  <div style="width:1px; height:20px; background:var(--border); margin:0 4px;"></div>
+  <button class="mini-btn active" onclick="selectStyle(this,'realistic')">📷 Realistic</button>
+  <button class="mini-btn" onclick="selectStyle(this,'cinematic')">🎬 Cinematic</button>
+  <button class="mini-btn" onclick="selectStyle(this,'animation')">✨ Animation</button>
+  <button class="mini-btn" onclick="selectStyle(this,'nature')">🌿 Nature</button>
+  <button class="mini-btn" onclick="selectStyle(this,'lego')">🧱 Lego</button>
+  <button class="mini-btn" onclick="selectStyle(this,'balloon')">🎈 Balloon</button>
+  <button class="mini-btn" onclick="selectStyle(this,'plush')">🧸 Plush</button>
+</div>
     <button id="generateBtn" onclick="generateVideo()">GENERATE VIDEO</button>
     <div id="errorMsg"></div>
 
