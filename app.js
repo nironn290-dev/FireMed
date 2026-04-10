@@ -3,6 +3,24 @@
 const SUPABASE_URL = 'https://odydlckpnygxgwrewvcw.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9keWRsY2twbnlneGd3cmV3dmN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2Mzg1NzIsImV4cCI6MjA5MTIxNDU3Mn0.DwOAd5jKJsVHFCtGNmWOlIQULDEihkP6o4xxwnKvln0';
 
+const CREDIT_COSTS = {
+  'kling-v2-5-turbo-std': { '5': 4, '10': 7 },
+  'kling-v2-5-turbo-pro': { '5': 6, '10': 10 },
+  'kling-v2-6-pro':       { '5': 6, '10': 10 },
+  'kling-v3-std':         { '5': 8, '10': 14 },
+};
+
+let currentMode = 'image';
+let selectedStyle = 'realistic';
+let selectedImageBase64 = null;
+let selectedEndImageBase64 = null;
+let selectedModel = 'kling-v2-5-turbo-std';
+let selectedDuration = '5';
+let pollingInterval = null;
+let currentUser = null;
+let currentSession = null;
+let userCredits = 0;
+
 async function getSupabase() {
   const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
   return createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -31,20 +49,11 @@ async function initAuth() {
   await supabase.auth.getSession();
 }
 
-let currentMode = 'image';
-let selectedStyle = 'realistic';
-let selectedImageBase64 = null;
-let pollingInterval = null;
-let currentUser = null;
-let currentSession = null;
-let userCredits = 0;
-
 // ---- AUTH ----
 function switchAuthTab(tab) {
   const loginBtn = document.querySelector('.auth-tab:first-child');
   const signupBtn = document.querySelector('.auth-tab:last-child');
   const authBtn = document.getElementById('authBtn');
-
   if (tab === 'login') {
     loginBtn.className = 'auth-tab active';
     signupBtn.className = 'auth-tab inactive';
@@ -62,42 +71,24 @@ async function handleAuth() {
   const email = document.getElementById('authEmail').value.trim();
   const password = document.getElementById('authPassword').value.trim();
   const tab = document.getElementById('authBtn').dataset.tab || 'login';
-
-  if (!email || !password) {
-    showAuthError('Please enter email and password.');
-    return;
-  }
-
+  if (!email || !password) { showAuthError('Please enter email and password.'); return; }
   const btn = document.getElementById('authBtn');
   btn.disabled = true;
   btn.textContent = 'Please wait...';
-
   try {
     const response = await fetch('/api/auth', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: tab, email, password })
     });
-
     const data = await response.json();
-
-    if (data.error) {
-      showAuthError(data.error);
-      return;
-    }
-
-    if (tab === 'signup') {
-      showAuthError('Account created! Please sign in.');
-      switchAuthTab('login');
-      return;
-    }
-
+    if (data.error) { showAuthError(data.error); return; }
+    if (tab === 'signup') { showAuthError('Account created! Please sign in.'); switchAuthTab('login'); return; }
     currentUser = data.user;
     currentSession = data.session;
     userCredits = 10;
     document.getElementById('creditsDisplay').textContent = userCredits;
     showApp();
-
   } catch (err) {
     showAuthError('Something went wrong. Please try again.');
   } finally {
@@ -133,9 +124,9 @@ function switchMode(mode) {
   document.getElementById('btnImage').className = mode === 'image' ? 'mode-btn active' : 'mode-btn inactive';
   document.getElementById('btnText').className  = mode === 'text'  ? 'mode-btn active' : 'mode-btn inactive';
   document.getElementById('uploadSection').style.display = mode === 'image' ? 'block' : 'none';
+  document.getElementById('endFrameSection').style.display = mode === 'image' ? 'block' : 'none';
   document.getElementById('descSection').style.display   = mode === 'image' ? 'block' : 'none';
   document.getElementById('textSection').style.display   = mode === 'text'  ? 'block' : 'none';
-  document.getElementById('styleStepNum').textContent    = mode === 'image' ? '3' : '2';
   hideError();
   hideResult();
 }
@@ -152,6 +143,40 @@ function onFileSelected(event) {
     preview.style.display = 'block';
   };
   reader.readAsDataURL(file);
+}
+
+function onEndFileSelected(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    selectedEndImageBase64 = e.target.result.split(',')[1];
+    const preview = document.getElementById('endImagePreview');
+    preview.src = e.target.result;
+    preview.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ---- Model selection ----
+function selectModel(btn, model) {
+  document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedModel = model;
+  updateCreditDisplay();
+}
+
+// ---- Duration selection ----
+function selectDuration(btn, duration) {
+  document.querySelectorAll('.duration-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedDuration = duration;
+  updateCreditDisplay();
+}
+
+function updateCreditDisplay() {
+  const cost = CREDIT_COSTS[selectedModel]?.[selectedDuration] || 4;
+  document.getElementById('generateBtn').textContent = `GENERATE VIDEO (${cost} credits)`;
 }
 
 // ---- Style selection ----
@@ -181,8 +206,10 @@ function buildPrompt(userPrompt, style) {
 async function generateVideo() {
   hideError();
 
-  if (userCredits < 6) {
-    showError('You have no credits left. Please purchase more credits.');
+  const cost = CREDIT_COSTS[selectedModel]?.[selectedDuration] || 4;
+
+  if (userCredits < cost) {
+    showError(`You need ${cost} credits for this video. You have ${userCredits} credits.`);
     return;
   }
 
@@ -219,17 +246,16 @@ async function generateVideo() {
       body: JSON.stringify({
         prompt,
         mode: currentMode,
-        imageBase64: selectedImageBase64
+        imageBase64: selectedImageBase64,
+        endImageBase64: selectedEndImageBase64,
+        selectedModel,
+        duration: selectedDuration
       })
     });
 
     const data = await response.json();
-
-    if (!response.ok || data.error) {
-      throw new Error(data.error || 'Something went wrong.');
-    }
-
-    pollResult(data.id);
+    if (!response.ok || data.error) throw new Error(data.error || 'Something went wrong.');
+    pollResult(data.id, data.videoMode || currentMode, cost);
 
   } catch (err) {
     showError(err.message || 'Could not generate video. Please try again.');
@@ -239,7 +265,7 @@ async function generateVideo() {
 }
 
 // ---- Polling ----
-async function pollResult(taskId) {
+async function pollResult(taskId, videoMode, cost) {
   let attempts = 0;
   const maxAttempts = 120;
 
@@ -260,7 +286,7 @@ async function pollResult(taskId) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${currentSession.access_token}`
         },
-        body: JSON.stringify({ taskId })
+        body: JSON.stringify({ taskId, mode: videoMode })
       });
 
       const result = await response.json();
@@ -268,7 +294,7 @@ async function pollResult(taskId) {
       if (result.status === 'succeeded' && result.output) {
         clearInterval(pollingInterval);
         setLoading(false);
-        userCredits -= 6;
+        userCredits -= cost;
         document.getElementById('creditsDisplay').textContent = userCredits;
         showVideo(result.output);
       } else if (result.status === 'failed') {
@@ -294,7 +320,8 @@ async function pollResult(taskId) {
 function setLoading(on) {
   const btn = document.getElementById('generateBtn');
   btn.disabled = on;
-  btn.textContent = on ? 'GENERATING...' : 'GENERATE VIDEO';
+  const cost = CREDIT_COSTS[selectedModel]?.[selectedDuration] || 4;
+  btn.textContent = on ? 'GENERATING...' : `GENERATE VIDEO (${cost} credits)`;
 }
 
 function showResultArea() {
@@ -341,4 +368,5 @@ function hideError() {
 }
 
 // Başlat
+updateCreditDisplay();
 initAuth();
