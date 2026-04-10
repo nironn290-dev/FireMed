@@ -10,7 +10,6 @@
     * { box-sizing:border-box; margin:0; padding:0; }
     body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
 
-    /* AUTH SCREEN */
     #authScreen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:20px; }
     .auth-box { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:32px 28px; width:100%; max-width:400px; }
     .auth-logo { font-family:'Bebas Neue',sans-serif; font-size:36px; letter-spacing:3px; text-align:center; margin-bottom:8px; }
@@ -27,13 +26,12 @@
     .auth-btn { width:100%; background:var(--fire); border:none; border-radius:12px; padding:16px; color:white; font-family:'DM Sans',sans-serif; font-size:16px; font-weight:700; cursor:pointer; margin-top:8px; letter-spacing:1px; }
     .auth-btn:disabled { background:#333; color:#666; cursor:not-allowed; }
     .google-btn { width:100%; background:#fff; border:1.5px solid #ddd; border-radius:12px; padding:14px; color:#333; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:12px; margin-top:8px; }
-.google-btn:hover { border-color:#aaa; background:#f9f9f9; }
-.or-divider { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
-.or-divider::before, .or-divider::after { content:''; flex:1; height:1px; background:var(--border); }
-.or-divider span { font-size:12px; color:var(--muted); }
+    .google-btn:hover { border-color:#aaa; background:#f9f9f9; }
+    .or-divider { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+    .or-divider::before, .or-divider::after { content:''; flex:1; height:1px; background:var(--border); }
+    .or-divider span { font-size:12px; color:var(--muted); }
     .auth-error { background:rgba(255,50,50,0.1); border:1px solid rgba(255,50,50,0.3); border-radius:10px; padding:12px; font-size:13px; color:#ff7777; margin-top:12px; display:none; }
 
-    /* MAIN APP */
     #appScreen { display:none; }
     header { display:flex; align-items:center; justify-content:space-between; padding:16px 24px; border-bottom:1px solid var(--border); background:var(--bg); position:sticky; top:0; z-index:100; }
     .logo { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:3px; }
@@ -46,7 +44,7 @@
 
     main { max-width:520px; margin:0 auto; padding:28px 20px 80px; }
     .mode-toggle { display:flex; background:#fff; border-radius:16px; padding:5px; gap:5px; margin-bottom:24px; }
-    .mode-btn { flex:1; padding:13px 8px; border-radius:12px; border:none; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; }
+    .mode-btn { flex:1; padding:13px 8px; border-radius:12px; border:none; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; }
     .mode-btn.active { background:var(--fire); color:#fff; }
     .mode-btn.inactive { background:transparent; color:#333; }
     .section { background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:20px; margin-bottom:14px; }
@@ -60,7 +58,9 @@
     .upload-sub { font-size:13px; color:var(--muted); text-align:center; line-height:1.6; }
     .upload-cta { background:var(--fire); color:#fff; border:none; border-radius:10px; padding:11px 26px; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:700; cursor:pointer; }
     #imagePreview { display:none; width:100%; border-radius:12px; margin-top:12px; max-height:220px; object-fit:cover; }
+    #endImagePreview { display:none; width:100%; border-radius:12px; margin-top:12px; max-height:220px; object-fit:cover; }
     #fileInput { display:none; }
+    #endFileInput { display:none; }
     .or-row { display:flex; align-items:center; gap:10px; margin:4px 0 12px; }
     .or-line { flex:1; height:1px; background:var(--border); }
     .or-label { font-size:11px; color:#555; letter-spacing:1px; }
@@ -70,9 +70,22 @@
     .chips { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
     .chip { background:var(--surface2); border:1.5px solid var(--border); border-radius:20px; padding:6px 13px; font-size:12px; color:var(--muted); cursor:pointer; }
     .chip:hover { border-color:var(--fire); color:var(--fire); }
+
+    .model-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .model-btn { background:var(--surface2); border:2px solid var(--border); border-radius:12px; padding:12px 10px; color:#ccc; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; cursor:pointer; text-align:left; }
+    .model-btn.active { border-color:var(--fire); color:var(--fire); background:rgba(255,69,0,0.08); }
+    .model-name { font-size:14px; font-weight:700; margin-bottom:3px; }
+    .model-desc { font-size:11px; color:var(--muted); }
+    .model-credit { font-size:11px; color:var(--fire); margin-top:4px; }
+
+    .duration-grid { display:flex; gap:8px; margin-top:8px; }
+    .duration-btn { flex:1; background:var(--surface2); border:2px solid var(--border); border-radius:10px; padding:10px; color:#ccc; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; text-align:center; }
+    .duration-btn.active { border-color:var(--fire); color:var(--fire); background:rgba(255,69,0,0.08); }
+
     .style-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
     .style-btn { background:var(--surface2); border:2px solid var(--border); border-radius:12px; padding:13px 10px; color:#ccc; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:8px; }
     .style-btn.active { border-color:var(--fire); color:var(--fire); background:rgba(255,69,0,0.08); }
+
     #generateBtn { width:100%; background:var(--fire); border:none; border-radius:22px; padding:22px 10px; color:#fff; font-family:'DM Sans',sans-serif; font-size:18px; font-weight:800; letter-spacing:3px; text-transform:uppercase; cursor:pointer; margin-top:8px; }
     #generateBtn:disabled { background:#333; color:#666; cursor:not-allowed; }
     #errorMsg { display:none; background:rgba(255,50,50,0.1); border:1px solid rgba(255,50,50,0.3); border-radius:12px; padding:14px; font-size:14px; color:#ff7777; margin-top:12px; }
@@ -98,11 +111,6 @@
     .result-footer { display:flex; gap:10px; padding:14px 18px; border-top:1px solid var(--border); }
     .action-btn { flex:1; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:11px; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; text-align:center; }
     .action-btn.primary { background:var(--fire); border-color:var(--fire); color:#fff; }
-
-    /* No credits */
-    .no-credits { text-align:center; padding:20px; background:rgba(255,69,0,0.08); border:1px solid rgba(255,69,0,0.3); border-radius:14px; margin-top:8px; }
-    .no-credits p { font-size:14px; color:#ff8c00; margin-bottom:10px; }
-    .buy-btn { background:var(--fire); color:#fff; border:none; border-radius:10px; padding:10px 24px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:700; cursor:pointer; }
   </style>
 </head>
 <body>
@@ -124,8 +132,11 @@
       <label class="input-label">Password</label>
       <input type="password" id="authPassword" class="auth-input" placeholder="••••••••" />
     </div>
-    <button class="google-btn" onclick="handleGoogleAuth()"><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.7 2.5 30.2 0 24 0 14.7 0 6.7 5.5 2.8 13.5l7.8 6C12.5 13 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17z"/><path fill="#FBBC05" d="M10.6 28.5A14.8 14.8 0 0 1 9.5 24c0-1.6.3-3.1.8-4.5l-7.8-6A24 24 0 0 0 0 24c0 3.9.9 7.5 2.5 10.8l8.1-6.3z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.5-5.8c-2 1.4-4.6 2.2-7.7 2.2-6.2 0-11.5-4.2-13.4-9.9l-8.1 6.3C6.7 42.5 14.7 48 24 48z"/></svg> Google ile Giriş Yap</button>
-<div class="or-divider"><span>veya</span></div>
+    <button class="google-btn" onclick="handleGoogleAuth()">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.7 2.5 30.2 0 24 0 14.7 0 6.7 5.5 2.8 13.5l7.8 6C12.5 13 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17z"/><path fill="#FBBC05" d="M10.6 28.5A14.8 14.8 0 0 1 9.5 24c0-1.6.3-3.1.8-4.5l-7.8-6A24 24 0 0 0 0 24c0 3.9.9 7.5 2.5 10.8l8.1-6.3z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.5-5.8c-2 1.4-4.6 2.2-7.7 2.2-6.2 0-11.5-4.2-13.4-9.9l-8.1 6.3C6.7 42.5 14.7 48 24 48z"/></svg>
+      Google ile Giriş Yap
+    </button>
+    <div class="or-divider"><span>veya</span></div>
     <button class="auth-btn" id="authBtn" onclick="handleAuth()">SIGN IN</button>
     <div class="auth-error" id="authError"></div>
   </div>
@@ -147,25 +158,43 @@
       <button class="mode-btn inactive" id="btnText" onclick="switchMode('text')">✏️ Text to Video</button>
     </div>
 
+    <!-- IMAGE UPLOAD -->
     <div class="section" id="uploadSection">
       <div class="section-label">
         <div class="step-num">1</div>
-        <div><div class="step-title">Upload your photo</div><div class="step-hint">Choose any photo from your device</div></div>
+        <div><div class="step-title">Upload start photo</div><div class="step-hint">Main photo for your video</div></div>
       </div>
       <div class="upload-box" onclick="document.getElementById('fileInput').click()">
         <div class="upload-icon">📷</div>
         <div class="upload-title">Tap to choose a photo</div>
-        <div class="upload-sub">Works with any photo — JPG, PNG, WEBP</div>
+        <div class="upload-sub">JPG, PNG, WEBP</div>
         <button class="upload-cta" onclick="event.stopPropagation();document.getElementById('fileInput').click()">Choose Photo</button>
       </div>
       <input type="file" id="fileInput" accept="image/*" onchange="onFileSelected(event)" />
-      <img id="imagePreview" alt="Your photo" />
+      <img id="imagePreview" alt="Start photo" />
     </div>
 
+    <!-- END FRAME -->
+    <div class="section" id="endFrameSection">
+      <div class="section-label">
+        <div class="step-num">2</div>
+        <div><div class="step-title">End photo <span style="color:var(--muted);font-size:13px;">(optional)</span></div><div class="step-hint">Add end frame for Start/End mode</div></div>
+      </div>
+      <div class="upload-box" onclick="document.getElementById('endFileInput').click()">
+        <div class="upload-icon">🏁</div>
+        <div class="upload-title">Tap to choose end photo</div>
+        <div class="upload-sub">Optional — creates Start/End Frame video</div>
+        <button class="upload-cta" onclick="event.stopPropagation();document.getElementById('endFileInput').click()">Choose End Photo</button>
+      </div>
+      <input type="file" id="endFileInput" accept="image/*" onchange="onEndFileSelected(event)" />
+      <img id="endImagePreview" alt="End photo" />
+    </div>
+
+    <!-- TEXT SECTION -->
     <div class="section" id="textSection" style="display:none;">
       <div class="section-label">
         <div class="step-num">1</div>
-        <div><div class="step-title">What do you want to see?</div><div class="step-hint">Describe your scene in simple words</div></div>
+        <div><div class="step-title">What do you want to see?</div><div class="step-hint">Describe your scene</div></div>
       </div>
       <textarea id="textPrompt" placeholder="Example: A lion walking through golden grass at sunset..."></textarea>
       <div class="chips">
@@ -176,19 +205,63 @@
       </div>
     </div>
 
+    <!-- DESCRIPTION -->
     <div class="section" id="descSection">
       <div class="section-label">
-        <div class="step-num">2</div>
-        <div><div class="step-title">What should happen?</div><div class="step-hint">Optional — you can skip this step</div></div>
+        <div class="step-num" id="descStepNum">3</div>
+        <div><div class="step-title">What should happen?</div><div class="step-hint">Optional</div></div>
       </div>
       <div class="or-row"><div class="or-line"></div><div class="or-label">OPTIONAL</div><div class="or-line"></div></div>
       <textarea id="prompt" placeholder="Example: Make the flowers move gently in the wind..."></textarea>
     </div>
 
+    <!-- MODEL SELECTION -->
     <div class="section">
       <div class="section-label">
-        <div class="step-num" id="styleStepNum">3</div>
-        <div><div class="step-title">Choose a style</div><div class="step-hint">Pick the look that fits your video</div></div>
+        <div class="step-num" id="modelStepNum">4</div>
+        <div><div class="step-title">Choose model</div><div class="step-hint">Higher model = better quality</div></div>
+      </div>
+      <div class="model-grid">
+        <button class="model-btn active" id="model-kling-v2-5-turbo-std" onclick="selectModel(this,'kling-v2-5-turbo-std')">
+          <div class="model-name">⚡ V2.5 Turbo STD</div>
+          <div class="model-desc">Fast & efficient</div>
+          <div class="model-credit">4 credits / 5s</div>
+        </button>
+        <button class="model-btn" id="model-kling-v2-5-turbo-pro" onclick="selectModel(this,'kling-v2-5-turbo-pro')">
+          <div class="model-name">🎬 V2.5 Turbo PRO</div>
+          <div class="model-desc">High quality</div>
+          <div class="model-credit">6 credits / 5s</div>
+        </button>
+        <button class="model-btn" id="model-kling-v2-6-pro" onclick="selectModel(this,'kling-v2-6-pro')">
+          <div class="model-name">💎 V2.6 PRO</div>
+          <div class="model-desc">Premium quality</div>
+          <div class="model-credit">6 credits / 5s</div>
+        </button>
+        <button class="model-btn" id="model-kling-v3-std" onclick="selectModel(this,'kling-v3-std')">
+          <div class="model-name">👑 V3</div>
+          <div class="model-desc">Latest & best</div>
+          <div class="model-credit">8 credits / 5s</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- DURATION -->
+    <div class="section">
+      <div class="section-label">
+        <div class="step-num" id="durationStepNum">5</div>
+        <div><div class="step-title">Video duration</div><div class="step-hint">Longer = more credits</div></div>
+      </div>
+      <div class="duration-grid">
+        <button class="duration-btn active" id="dur-5" onclick="selectDuration(this,'5')">⚡ 5 seconds</button>
+        <button class="duration-btn" id="dur-10" onclick="selectDuration(this,'10')">🎬 10 seconds (+credits)</button>
+      </div>
+    </div>
+
+    <!-- STYLE -->
+    <div class="section">
+      <div class="section-label">
+        <div class="step-num" id="styleStepNum">6</div>
+        <div><div class="step-title">Choose a style</div><div class="step-hint">Pick the look</div></div>
       </div>
       <div class="style-grid">
         <button class="style-btn active" onclick="selectStyle(this,'realistic')">📷 Realistic</button>
