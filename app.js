@@ -124,9 +124,13 @@ function switchMode(mode) {
   document.getElementById('btnImage').className = mode === 'image' ? 'mode-btn active' : 'mode-btn inactive';
   document.getElementById('btnText').className  = mode === 'text'  ? 'mode-btn active' : 'mode-btn inactive';
   document.getElementById('uploadSection').style.display = mode === 'image' ? 'block' : 'none';
-  document.getElementById('endFrameSection').style.display = mode === 'image' ? 'block' : 'none';
   document.getElementById('descSection').style.display   = mode === 'image' ? 'block' : 'none';
   document.getElementById('textSection').style.display   = mode === 'text'  ? 'block' : 'none';
+  
+  // End frame sadece image modunda ve STD olmayan modelde göster
+  const supportsEndFrame = selectedModel !== 'kling-v2-5-turbo-std';
+  document.getElementById('endFrameSection').style.display = (mode === 'image' && supportsEndFrame) ? 'block' : 'none';
+  
   hideError();
   hideResult();
 }
