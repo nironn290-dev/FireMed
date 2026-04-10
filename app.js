@@ -211,7 +211,10 @@ function buildPrompt(userPrompt, style) {
     realistic: 'photorealistic, high quality, natural lighting',
     cinematic: 'cinematic film style, dramatic lighting, movie quality',
     animation: 'smooth animation, vibrant colors, animated style',
-    nature:    'nature documentary style, peaceful natural environment'
+    nature:    'nature documentary style, peaceful natural environment',
+    lego:      'LEGO brick style, plastic toy aesthetic, colorful blocks',
+    balloon:   'inflatable balloon style, puffy glossy surface, smooth rounded shapes',
+    plush:     'plush toy style, soft fabric texture, cute stuffed animal aesthetic',
   };
   return `${userPrompt}. Style: ${styleMap[style] || styleMap.realistic}.`;
 }
