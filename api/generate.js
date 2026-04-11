@@ -1,4 +1,17 @@
 const crypto = require('crypto');
+const { createClient } = require('@supabase/supabase-js');
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
+
+const CREDIT_COSTS = {
+  'kling-v2-5-turbo-std': { '5': 4, '10': 7 },
+  'kling-v2-5-turbo-pro': { '5': 6, '10': 10 },
+  'kling-v2-6-pro':       { '5': 6, '10': 10 },
+  'kling-v3-std':         { '5': 8, '10': 14 },
+};
 
 function generateJWT(accessKey, secretKey) {
   const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
@@ -24,6 +37,7 @@ module.exports = async function handler(req, res) {
   }
 
   const { prompt, taskId, mode, imageBase64, endImageBase64, selectedModel, duration } = req.body;
+  const token = req.headers.authorization?.replace('Bearer ', '');
   const ACCESS_KEY = process.env.KLING_ACCESS_KEY;
   const SECRET_KEY = process.env.KLING_SECRET_KEY;
 
@@ -31,17 +45,44 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'API keys not configured.' });
   }
 
-  const token = generateJWT(ACCESS_KEY, SECRET_KEY);
+  // Polling için kredi kontrolü gerekmez
+  if (!taskId) {
+    if (!token) return res.status(401).json({ error: 'No token.' });
+
+    const { data: { user } } = await supabase.auth.getUser(token);
+    if (!user) return res.status(401).json({ error: 'Invalid token.' });
+
+    const modelKey = selectedModel || 'kling-v2-5-turbo-std';
+    const videoDuration = duration || '5';
+    const cost = CREDIT_COSTS[modelKey]?.[videoDuration] || 4;
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('credits')
+      .eq('id', user.id)
+      .single();
+
+    if (!profile || profile.credits < cost) {
+      return res.status(400).json({ error: `Insufficient credits. You need ${cost} credits.` });
+    }
+
+    // Krediyi düş
+    await supabase
+      .from('profiles')
+      .update({ credits: profile.credits - cost })
+      .eq('id', user.id);
+  }
+
+  const klingToken = generateJWT(ACCESS_KEY, SECRET_KEY);
 
   try {
-    // Polling
     if (taskId) {
       const endpoint = mode === 'text'
         ? `https://api.klingai.com/v1/videos/text2video/${taskId}`
         : `https://api.klingai.com/v1/videos/image2video/${taskId}`;
 
       const poll = await fetch(endpoint, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { 'Authorization': `Bearer ${klingToken}` }
       });
       const result = await poll.json();
 
@@ -64,7 +105,7 @@ module.exports = async function handler(req, res) {
       response = await fetch('https://api.klingai.com/v1/videos/text2video', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${klingToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -76,11 +117,10 @@ module.exports = async function handler(req, res) {
         })
       });
     } else if (imageBase64 && endImageBase64) {
-      // Start/End Frame
       response = await fetch('https://api.klingai.com/v1/videos/image2video', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${klingToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -94,11 +134,10 @@ module.exports = async function handler(req, res) {
         })
       });
     } else {
-      // Normal Image to Video
       response = await fetch('https://api.klingai.com/v1/videos/image2video', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${klingToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
