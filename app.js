@@ -389,6 +389,57 @@ function hideError() {
   document.getElementById('errorMsg').style.display = 'none';
 }
 
+function setAiImagePrompt(text) {
+  document.getElementById('aiImagePrompt').value = text;
+}
+
+async function generateImage() {
+  const prompt = document.getElementById('aiImagePrompt').value.trim();
+  if (!prompt) {
+    document.getElementById('aiImageError').textContent = 'Please describe your image.';
+    document.getElementById('aiImageError').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('aiImageError').style.display = 'none';
+  document.getElementById('aiImageLoading').style.display = 'block';
+  document.getElementById('aiImageResult').style.display = 'none';
+
+  try {
+    const response = await fetch('/api/image', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentSession.access_token}`
+      },
+      body: JSON.stringify({ prompt })
+    });
+
+    const data = await response.json();
+    if (data.error) throw new Error(data.error);
+
+    document.getElementById('aiImageOutput').src = data.imageUrl;
+    document.getElementById('aiImageResult').style.display = 'block';
+    document.getElementById('aiImageDownloadBtn').onclick = () => {
+      const a = document.createElement('a');
+      a.href = data.imageUrl;
+      a.download = 'firemed-image.png';
+      a.target = '_blank';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    };
+
+    userCredits -= 2;
+    document.getElementById('creditsDisplay').textContent = userCredits;
+
+  } catch (err) {
+    document.getElementById('aiImageError').textContent = '⚠ ' + (err.message || 'Something went wrong.');
+    document.getElementById('aiImageError').style.display = 'block';
+  } finally {
+    document.getElementById('aiImageLoading').style.display = 'none';
+  }
+}
 // Başlat
 updateCreditDisplay();
 document.getElementById('endFrameSection').style.display = 'none';
