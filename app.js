@@ -473,6 +473,29 @@ async function generateImage() {
     document.getElementById('aiImageLoading').style.display = 'none';
   }
 }
+async function deductCredits(amount) {
+  try {
+    const response = await fetch('/api/auth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentSession.access_token}`
+      },
+      body: JSON.stringify({ action: 'deductCredits', amount })
+    });
+    const data = await response.json();
+    if (data.error) {
+      showError('Insufficient credits!');
+      return false;
+    }
+    userCredits = data.credits;
+    document.getElementById('creditsDisplay').textContent = userCredits;
+    return true;
+  } catch (err) {
+    console.error('Credit deduction error:', err);
+    return false;
+  }
+}
 // Başlat
 updateCreditDisplay();
 document.getElementById('endFrameSection').style.display = 'none';
