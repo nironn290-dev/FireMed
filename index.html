@@ -259,6 +259,28 @@
   <button class="mini-btn" onclick="selectStyle(this,'balloon')">🎈 Balloon</button>
   <button class="mini-btn" onclick="selectStyle(this,'plush')">🧸 Plush</button>
 </div>
+    <!-- AI IMAGE SECTION -->
+<div class="section" id="aiImageSection" style="display:none;">
+  <div class="section-label">
+    <div class="step-num">1</div>
+    <div><div class="step-title">Describe your image</div><div class="step-hint">AI will generate it for you</div></div>
+  </div>
+  <textarea id="aiImagePrompt" placeholder="Example: A beautiful sunset over mountains, photorealistic, 8k..."></textarea>
+  <div class="chips" style="margin-top:10px;">
+    <div class="chip" onclick="setAiImagePrompt('A beautiful sunset over mountains, photorealistic, 8k')">🌅 Sunset</div>
+    <div class="chip" onclick="setAiImagePrompt('A futuristic city at night with neon lights, cyberpunk style')">🌃 Cyberpunk</div>
+    <div class="chip" onclick="setAiImagePrompt('A cute cat sitting on a windowsill, soft lighting, realistic')">🐱 Cat</div>
+    <div class="chip" onclick="setAiImagePrompt('An astronaut floating in space, earth in background, cinematic')">🚀 Space</div>
+  </div>
+  <div id="aiImageResult" style="display:none; margin-top:16px;">
+    <img id="aiImageOutput" style="width:100%; border-radius:12px;" alt="Generated image" />
+    <button class="action-btn primary" style="width:100%; margin-top:10px;" id="aiImageDownloadBtn">Download Image</button>
+  </div>
+  <div id="aiImageLoading" style="display:none; text-align:center; padding:20px; color:var(--muted);">
+    ✨ Generating your image...
+  </div>
+  <div id="aiImageError" style="display:none; color:#ff7777; font-size:13px; margin-top:8px;"></div>
+</div>
     <button id="generateBtn" onclick="generateVideo()">GENERATE VIDEO</button>
     <div id="errorMsg"></div>
 
