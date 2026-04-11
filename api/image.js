@@ -77,7 +77,13 @@ if (data.error) return res.status(500).json({ error: data.error });
       const poll = await fetch(`https://api.replicate.com/v1/predictions/${predictionId}`, {
         headers: { 'Authorization': `Bearer ${REPLICATE_TOKEN}` }
       });
-      const result = await poll.json();
+      let result;
+try {
+  result = await poll.json();
+} catch (e) {
+  attempts++;
+  continue;
+}
       
       if (result.status === 'succeeded' && result.output) {
         const imageUrl = Array.isArray(result.output) ? result.output[0] : result.output;
