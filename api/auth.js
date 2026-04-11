@@ -50,6 +50,34 @@ module.exports = async function handler(req, res) {
 
       return res.status(200).json({ profile });
     }
+    if (action === 'deductCredits') {
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  if (!token) return res.status(401).json({ error: 'No token' });
+  
+  const { data: { user } } = await supabase.auth.getUser(token);
+  if (!user) return res.status(401).json({ error: 'Invalid token' });
+
+  const amount = req.body.amount || 1;
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('credits')
+    .eq('id', user.id)
+    .single();
+
+  if (!profile || profile.credits < amount) {
+    return res.status(400).json({ error: 'Insufficient credits' });
+  }
+
+  const { data: updated } = await supabase
+    .from('profiles')
+    .update({ credits: profile.credits - amount })
+    .eq('id', user.id)
+    .select()
+    .single();
+
+  return res.status(200).json({ credits: updated.credits });
+}
 
   } catch (err) {
     console.error(err);
