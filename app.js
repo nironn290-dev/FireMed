@@ -455,7 +455,11 @@ async function generateImage() {
         const statusRes = await fetch('/api/image-status', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ predictionId })
+          body: JSON.stringify({ 
+  predictionId,
+  userId: currentUser.id,
+  prompt: prompt
+})
         });
         const statusData = await statusRes.json();
         if (statusData.status === 'succeeded') {
