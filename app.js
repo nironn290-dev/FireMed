@@ -140,29 +140,22 @@ function switchMode(mode) {
   document.getElementById('btnImage').className = mode === 'image' ? 'mode-btn active' : 'mode-btn inactive';
   document.getElementById('btnText').className  = mode === 'text'  ? 'mode-btn active' : 'mode-btn inactive';
   document.getElementById('btnAiImage').className = mode === 'aiimage' ? 'mode-btn active' : 'mode-btn inactive';
+
   document.getElementById('uploadSection').style.display = mode === 'image' ? 'block' : 'none';
-  document.getElementById('descSection').style.display   = mode === 'image' ? 'block' : 'none';
-  document.getElementById('textSection').style.display   = mode === 'text'  ? 'block' : 'none';
+  document.getElementById('descSection').style.display = mode === 'image' ? 'block' : 'none';
+  document.getElementById('textSection').style.display = mode === 'text' ? 'block' : 'none';
   document.getElementById('aiImageSection').style.display = mode === 'aiimage' ? 'block' : 'none';
   document.getElementById('generateBtn').style.display = mode === 'aiimage' ? 'none' : 'block';
 
-  // Model ve stil seçeneklerini gizle/göster
-  const videoSections = document.querySelectorAll('.section');
-  videoSections.forEach(s => {
-    if (s.id === 'aiImageSection' || s.id === 'uploadSection' || s.id === 'descSection') return;
-    if (mode === 'aiimage') {
-      s.style.display = 'none';
-    } else {
-      s.style.display = 'block';
-    }
-  });
+  // Model section ve mini butonları sadece aiimage'da gizle
+  const modelSection = document.getElementById('model-kling-v2-5-turbo-std')?.closest('.section');
+  if (modelSection) modelSection.style.display = mode === 'aiimage' ? 'none' : 'block';
+
+  const miniBtnDiv = document.querySelector('div[style*="flex-wrap"]');
+  if (miniBtnDiv) miniBtnDiv.style.display = mode === 'aiimage' ? 'none' : 'flex';
 
   const supportsEndFrame = selectedModel !== 'kling-v2-5-turbo-std';
   document.getElementById('endFrameSection').style.display = (mode === 'image' && supportsEndFrame) ? 'block' : 'none';
-  
-  // Mini butonları gizle/göster
-  document.querySelector('.mini-btn')?.closest('div[style*="margin-top:10px"]') && 
-    (document.querySelector('div[style*="flex-wrap"]').style.display = mode === 'aiimage' ? 'none' : 'flex');
 
   hideError();
   hideResult();
