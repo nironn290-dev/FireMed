@@ -349,8 +349,7 @@ async function pollResult(taskId, videoMode, cost) {
       if (result.status === 'succeeded' && result.output) {
         clearInterval(pollingInterval);
         setLoading(false);
-        userCredits -= cost;
-        document.getElementById('creditsDisplay').textContent = userCredits;
+        await deductCredits(cost);
         showVideo(result.output);
       } else if (result.status === 'failed') {
         clearInterval(pollingInterval);
