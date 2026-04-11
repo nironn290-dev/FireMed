@@ -56,8 +56,13 @@ module.exports = async function handler(req, res) {
       })
     });
 
-    const data = await response.json();
-    if (data.error) return res.status(500).json({ error: data.error });
+   let data;
+try {
+  data = await response.json();
+} catch (e) {
+  return res.status(500).json({ error: 'Replicate API error. Please try again.' });
+}
+if (data.error) return res.status(500).json({ error: data.error });
 
     if (data.status === 'succeeded' && data.output) {
       const imageUrl = Array.isArray(data.output) ? data.output[0] : data.output;
