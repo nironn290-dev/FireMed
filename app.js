@@ -515,6 +515,65 @@ async function deductCredits(amount) {
     return false;
   }
 }
+let currentGalleryTab = 'video';
+
+function showGallery() {
+  document.getElementById('appScreen').querySelector('main').style.display = 'none';
+  document.getElementById('galleryScreen').style.display = 'block';
+  loadGallery('video');
+}
+
+function hideGallery() {
+  document.getElementById('galleryScreen').style.display = 'none';
+  document.getElementById('appScreen').querySelector('main').style.display = 'block';
+}
+
+function switchGalleryTab(tab) {
+  currentGalleryTab = tab;
+  document.getElementById('galleryTabVideo').className = tab === 'video' ? 'mini-btn active' : 'mini-btn';
+  document.getElementById('galleryTabImage').className = tab === 'image' ? 'mini-btn active' : 'mini-btn';
+  loadGallery(tab);
+}
+
+async function loadGallery(type) {
+  const grid = document.getElementById('galleryGrid');
+  grid.innerHTML = '<div style="text-align:center; color:var(--muted); padding:40px; grid-column:1/-1;">Loading...</div>';
+
+  try {
+    const response = await fetch('/api/gallery', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentSession.access_token}`
+      },
+      body: JSON.stringify({ type })
+    });
+
+    const data = await response.json();
+
+    if (!data.generations || data.generations.length === 0) {
+      grid.innerHTML = `<div style="text-align:center; color:var(--muted); padding:40px; grid-column:1/-1;">No ${type === 'video' ? 'videos' : 'images'} yet. Create your first one!</div>`;
+      return;
+    }
+
+    grid.innerHTML = data.generations.map(item => `
+      <div style="background:var(--surface); border-radius:12px; overflow:hidden; border:1px solid var(--border);">
+        ${type === 'video' 
+          ? `<video src="${item.url}" style="width:100%;" controls playsinline></video>`
+          : `<img src="${item.url}" style="width:100%; display:block;" />`
+        }
+        <div style="padding:8px;">
+          <div style="font-size:11px; color:var(--muted); margin-bottom:6px;">${new Date(item.created_at).toLocaleDateString()}</div>
+          <div style="font-size:12px; color:#ccc; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.prompt || ''}</div>
+          <a href="${item.url}" download style="display:block; text-align:center; background:var(--fire); color:#fff; border-radius:8px; padding:6px; font-size:12px; font-weight:700; margin-top:8px; text-decoration:none;">Download</a>
+        </div>
+      </div>
+    `).join('');
+
+  } catch (err) {
+    grid.innerHTML = '<div style="text-align:center; color:#ff7777; padding:40px; grid-column:1/-1;">Error loading gallery.</div>';
+  }
+}
 // Başlat
 updateCreditDisplay();
 document.getElementById('endFrameSection').style.display = 'none';
