@@ -520,7 +520,7 @@ let currentGalleryTab = 'video';
 function showGallery() {
   document.getElementById('appScreen').querySelector('main').style.display = 'none';
   document.getElementById('galleryScreen').style.display = 'block';
-  loadGallery('video');
+  loadGallery(currentGalleryTab);
 }
 
 function hideGallery() {
