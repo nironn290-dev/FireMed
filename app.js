@@ -37,11 +37,27 @@ async function handleGoogleAuth() {
 
 async function initAuth() {
   const supabase = await getSupabase();
-  supabase.auth.onAuthStateChange((event, session) => {
+  supabase.auth.onAuthStateChange(async (event, session) => {
     if (session) {
       currentUser = session.user;
       currentSession = session;
-      userCredits = 10;
+      
+      // Gerçek krediyi Supabase'den çek
+      try {
+        const response = await fetch('/api/auth', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`
+          },
+          body: JSON.stringify({ action: 'getProfile' })
+        });
+        const data = await response.json();
+        userCredits = data.profile?.credits ?? 0;
+      } catch (err) {
+        userCredits = 0;
+      }
+      
       document.getElementById('creditsDisplay').textContent = userCredits;
       showApp();
     }
