@@ -425,11 +425,9 @@ async function generateImage() {
     document.getElementById('aiImageError').style.display = 'block';
     return;
   }
-
   document.getElementById('aiImageError').style.display = 'none';
   document.getElementById('aiImageLoading').style.display = 'block';
   document.getElementById('aiImageResult').style.display = 'none';
-
   try {
     const response = await fetch('/api/image', {
       method: 'POST',
@@ -439,28 +437,55 @@ async function generateImage() {
       },
       body: JSON.stringify({ prompt })
     });
-
     const data = await response.json();
     if (data.error) throw new Error(data.error);
-
-    document.getElementById('aiImageOutput').src = data.imageUrl;
-    document.getElementById('aiImageResult').style.display = 'block';
-    document.getElementById('aiImageDownloadBtn').onclick = () => {
-      const a = document.createElement('a');
-      a.href = data.imageUrl;
-      a.download = 'firemed-image.png';
-      a.target = '_blank';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    };
-
-    await deductCredits(2);
+    const predictionId = data.predictionId;
+    let attempts = 0;
+    const maxAttempts = 150;
+    const pollInterval = setInterval(async () => {
+      attempts++;
+      if (attempts > maxAttempts) {
+        clearInterval(pollInterval);
+        document.getElementById('aiImageLoading').style.display = 'none';
+        document.getElementById('aiImageError').textContent = '⚠ Timeout. Please try again.';
+        document.getElementById('aiImageError').style.display = 'block';
+        return;
+      }
+      try {
+        const statusRes = await fetch('/api/image-status', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ predictionId })
+        });
+        const statusData = await statusRes.json();
+        if (statusData.status === 'succeeded') {
+          clearInterval(pollInterval);
+          document.getElementById('aiImageOutput').src = statusData.imageUrl;
+          document.getElementById('aiImageResult').style.display = 'block';
+          document.getElementById('aiImageLoading').style.display = 'none';
+          document.getElementById('aiImageDownloadBtn').onclick = () => {
+            const a = document.createElement('a');
+            a.href = statusData.imageUrl;
+            a.download = 'firemed-image.png';
+            a.target = '_blank';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+          };
+          userCredits -= 2;
+          document.getElementById('creditsDisplay').textContent = userCredits;
+        } else if (statusData.status === 'failed') {
+          clearInterval(pollInterval);
+          document.getElementById('aiImageLoading').style.display = 'none';
+          document.getElementById('aiImageError').textContent = '⚠ Image generation failed. Please try again.';
+          document.getElementById('aiImageError').style.display = 'block';
+        }
+      } catch (err) {}
+    }, 2000);
   } catch (err) {
+    document.getElementById('aiImageLoading').style.display = 'none';
     document.getElementById('aiImageError').textContent = '⚠ ' + (err.message || 'Something went wrong.');
     document.getElementById('aiImageError').style.display = 'block';
-  } finally {
-    document.getElementById('aiImageLoading').style.display = 'none';
   }
 }
 async function deductCredits(amount) {
