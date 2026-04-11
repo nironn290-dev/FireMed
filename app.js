@@ -462,9 +462,7 @@ async function generateImage() {
       document.body.removeChild(a);
     };
 
-    userCredits -= 2;
-    document.getElementById('creditsDisplay').textContent = userCredits;
-
+    await deductCredits(2);
   } catch (err) {
     document.getElementById('aiImageError').textContent = '⚠ ' + (err.message || 'Something went wrong.');
     document.getElementById('aiImageError').style.display = 'block';
