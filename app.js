@@ -216,6 +216,18 @@ function selectDuration(btn, duration) {
   updateCreditDisplay();
 }
 
+function selectRatio(btn, ratio) {
+  document.querySelectorAll('#ratio-16-9, #ratio-9-16, #ratio-1-1').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedRatio = ratio;
+}
+
+function selectImageRatio(btn, ratio) {
+  document.querySelectorAll('#img-ratio-1-1, #img-ratio-16-9, #img-ratio-9-16, #img-ratio-4-3, #img-ratio-3-4').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedImageRatio = ratio;
+}
+
 function updateCreditDisplay() {
   const cost = CREDIT_COSTS[selectedModel]?.[selectedDuration] || 4;
   document.getElementById('generateBtn').textContent = `GENERATE VIDEO (${cost} credits)`;
