@@ -517,9 +517,30 @@ async function deductCredits(amount) {
 }
 let currentGalleryTab = 'image';
 
-function showGallery() {
+async function showGallery() {
   document.getElementById('appScreen').querySelector('main').style.display = 'none';
   document.getElementById('galleryScreen').style.display = 'block';
+
+  // En son üretilen ne ise onu bul
+  try {
+    const response = await fetch('/api/gallery', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentSession.access_token}`
+      },
+      body: JSON.stringify({})  // type yok = hepsini getir
+    });
+    const data = await response.json();
+    if (data.generations && data.generations.length > 0) {
+      currentGalleryTab = data.generations[0].type; // en son üretilen
+    }
+  } catch(e) {}
+
+  // Sekme butonlarını güncelle
+  document.getElementById('galleryTabVideo').className = currentGalleryTab === 'video' ? 'mini-btn active' : 'mini-btn';
+  document.getElementById('galleryTabImage').className = currentGalleryTab === 'image' ? 'mini-btn active' : 'mini-btn';
+
   loadGallery(currentGalleryTab);
 }
 
