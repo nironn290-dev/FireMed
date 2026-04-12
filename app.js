@@ -538,6 +538,8 @@ function switchGalleryTab(tab) {
 async function loadGallery(type) {
   const grid = document.getElementById('galleryGrid');
   grid.innerHTML = '<div style="text-align:center; color:var(--muted); padding:40px; grid-column:1/-1;">Loading...</div>';
+  console.log('Loading gallery for type:', type);
+  console.log('User session:', currentSession?.access_token ? 'OK' : 'NO SESSION');
 
   try {
     const response = await fetch('/api/gallery', {
