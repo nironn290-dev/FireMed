@@ -22,20 +22,56 @@ module.exports = async function handler(req, res) {
     const result = await response.json();
 
     if (result.status === 'succeeded' && result.output) {
-      const imageUrl = Array.isArray(result.output) ? result.output[0] : result.output;
+      const replicateUrl = Array.isArray(result.output) ? result.output[0] : result.output;
 
-      // Supabase'e kaydet
+      // Resmi Replicate'ten indir
+      const imageResponse = await fetch(replicateUrl);
+      const imageBuffer = await imageResponse.arrayBuffer();
+      const imageBytes = new Uint8Array(imageBuffer);
+
+      // Supabase Storage'a yükle
+      const fileName = `${userId || 'anon'}_${Date.now()}.png`;
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('images')
+        .upload(fileName, imageBytes, {
+          contentType: 'image/png',
+          upsert: false
+        });
+
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        if (userId) {
+          await supabase.from('generations').insert({
+            user_id: userId,
+            type: 'image',
+            url: replicateUrl,
+            prompt: prompt || '',
+            model: 'z-image-turbo'
+          });
+        }
+        return res.status(200).json({ status: 'succeeded', imageUrl: replicateUrl });
+      }
+
+      // Public URL al
+      const { data: publicUrlData } = supabase.storage
+        .from('images')
+        .getPublicUrl(fileName);
+
+      const permanentUrl = publicUrlData.publicUrl;
+
+      // Supabase'e kalıcı URL ile kaydet
       if (userId) {
         await supabase.from('generations').insert({
           user_id: userId,
           type: 'image',
-          url: imageUrl,
+          url: permanentUrl,
           prompt: prompt || '',
           model: 'z-image-turbo'
         });
       }
 
-      return res.status(200).json({ status: 'succeeded', imageUrl });
+      return res.status(200).json({ status: 'succeeded', imageUrl: permanentUrl });
+
     } else if (result.status === 'failed') {
       return res.status(200).json({ status: 'failed' });
     }
@@ -43,6 +79,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ status: 'processing' });
 
   } catch (err) {
+    console.error(err);
     return res.status(500).json({ error: 'Something went wrong.' });
   }
 }
