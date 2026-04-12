@@ -18,13 +18,19 @@ module.exports = async function handler(req, res) {
   const { type } = req.body;
 
   try {
-    const { data: generations, error } = await supabase
+    let query = supabase
       .from('generations')
       .select('*')
       .eq('user_id', user.id)
-      .eq('type', type || 'video')
       .order('created_at', { ascending: false })
       .limit(50);
+
+    // Sadece type gönderilmişse filtrele, gönderilmemişse hepsini getir
+    if (type) {
+      query = query.eq('type', type);
+    }
+
+    const { data: generations, error } = await query;
 
     if (error) {
       console.error('Supabase error:', error);
