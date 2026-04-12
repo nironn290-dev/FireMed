@@ -597,6 +597,16 @@ async function loadGallery(type) {
     grid.innerHTML = '<div style="text-align:center; color:#ff7777; padding:40px; grid-column:1/-1;">Error loading gallery.</div>';
   }
 }
+function openLightbox(url) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);z-index:9999;display:flex;align-items:center;justify-content:center;';
+  overlay.onclick = () => overlay.remove();
+  const img = document.createElement('img');
+  img.src = url;
+  img.style.cssText = 'max-width:95%;max-height:95%;border-radius:12px;';
+  overlay.appendChild(img);
+  document.body.appendChild(overlay);
+}
 // Başlat
 updateCreditDisplay();
 document.getElementById('endFrameSection').style.display = 'none';
