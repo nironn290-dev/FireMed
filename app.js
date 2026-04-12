@@ -515,7 +515,7 @@ async function deductCredits(amount) {
     return false;
   }
 }
-let currentGalleryTab = 'video';
+let currentGalleryTab = 'image';
 
 function showGallery() {
   document.getElementById('appScreen').querySelector('main').style.display = 'none';
