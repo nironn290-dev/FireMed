@@ -305,13 +305,14 @@ async function generateVideo() {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${currentSession.access_token}`
       },
-      body: JSON.stringify({
+body: JSON.stringify({
         prompt,
         mode: currentMode,
         imageBase64: selectedImageBase64,
         endImageBase64: selectedEndImageBase64,
         selectedModel,
-        duration: selectedDuration
+        duration: selectedDuration,
+        aspectRatio: selectedRatio
       })
     });
 
