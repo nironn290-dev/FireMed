@@ -450,7 +450,7 @@ async function generateImage() {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${currentSession.access_token}`
       },
-      body: JSON.stringify({ prompt })
+      body: JSON.stringify({ prompt, aspectRatio: selectedImageRatio })
     });
     const data = await response.json();
     if (data.error) throw new Error(data.error);
