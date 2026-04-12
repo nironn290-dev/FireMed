@@ -587,7 +587,7 @@ async function loadGallery(type) {
         }
         <div style="padding:6px 8px; display:flex; align-items:center; justify-content:space-between; gap:8px;">
           <div style="font-size:11px; color:var(--muted);">${new Date(item.created_at).toLocaleDateString()}</div>
-          <a href="${item.url}" target="_blank" style="background:var(--fire); color:#fff; border-radius:8px; padding:5px 12px; font-size:12px; font-weight:700; text-decoration:none; white-space:nowrap;">Download</a>
+          <a href="${item.url}" download="firemed-image.png" onclick="downloadFile('${item.url}', 'firemed-image.png'); return false;" style="background:var(--fire); color:#fff; border-radius:8px; padding:5px 12px; font-size:12px; font-weight:700; text-decoration:none; white-space:nowrap;">Download</a>
         </div>
       </div>
     `).join('');
