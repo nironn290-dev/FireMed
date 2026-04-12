@@ -586,9 +586,8 @@ async function loadGallery(type) {
           : `<img src="${item.url}" style="width:100%; height:auto; max-height:200px; object-fit:contain; display:block; background:#111;" onclick="openLightbox('${item.url}')" onerror="this.parentElement.style.display='none'" />`
         }
         <div style="padding:6px 8px; display:flex; align-items:center; justify-content:space-between; gap:8px;">
-          <div style="font-size:11px; color:var(--muted); margin-bottom:4px;">${new Date(item.created_at).toLocaleDateString()}</div>
-          <div style="font-size:11px; color:#ccc; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.prompt || ''}</div>
-          <a href="${item.url}" target="_blank" style="display:block; text-align:center; background:var(--fire); color:#fff; border-radius:8px; padding:6px; font-size:12px; font-weight:700; margin-top:8px; text-decoration:none;">Download</a>
+          <div style="font-size:11px; color:var(--muted);">${new Date(item.created_at).toLocaleDateString()}</div>
+          <a href="${item.url}" target="_blank" style="background:var(--fire); color:#fff; border-radius:8px; padding:5px 12px; font-size:12px; font-weight:700; text-decoration:none; white-space:nowrap;">Download</a>
         </div>
       </div>
     `).join('');
