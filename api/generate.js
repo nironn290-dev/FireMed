@@ -131,6 +131,7 @@ module.exports = async function handler(req, res) {
           prompt: prompt || '',
           duration: videoDuration,
           mode: config.mode,
+          aspect_ratio: aspectRatio,
           cfg_scale: 0.5
         })
       });
