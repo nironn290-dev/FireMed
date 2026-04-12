@@ -9,7 +9,7 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { prompt } = req.body;
+  const { prompt, aspectRatio } = req.body;
   const token = req.headers.authorization?.replace('Bearer ', '');
   const REPLICATE_TOKEN = process.env.REPLICATE_TOKEN;
 
