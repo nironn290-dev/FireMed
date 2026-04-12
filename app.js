@@ -580,15 +580,15 @@ async function loadGallery(type) {
     }
 
     grid.innerHTML = data.generations.map(item => `
-      <div style="background:var(--surface); border-radius:12px; overflow:hidden; border:1px solid var(--border);">
-        ${type === 'video' 
-          ? `<video src="${item.url}" style="width:100%;" controls playsinline></video>`
-          : `<img src="${item.url}" style="width:100%; display:block;" />`
+      <div style="background:var(--surface); border-radius:12px; overflow:hidden; border:1px solid var(--border); cursor:pointer;">
+        ${type === 'video'
+          ? `<video src="${item.url}" style="width:100%; height:160px; object-fit:cover;" controls playsinline></video>`
+          : `<img src="${item.url}" style="width:100%; height:160px; object-fit:cover; display:block;" onclick="openLightbox('${item.url}')" onerror="this.parentElement.style.display='none'" />`
         }
         <div style="padding:8px;">
-          <div style="font-size:11px; color:var(--muted); margin-bottom:6px;">${new Date(item.created_at).toLocaleDateString()}</div>
-          <div style="font-size:12px; color:#ccc; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.prompt || ''}</div>
-          <a href="${item.url}" download style="display:block; text-align:center; background:var(--fire); color:#fff; border-radius:8px; padding:6px; font-size:12px; font-weight:700; margin-top:8px; text-decoration:none;">Download</a>
+          <div style="font-size:11px; color:var(--muted); margin-bottom:4px;">${new Date(item.created_at).toLocaleDateString()}</div>
+          <div style="font-size:11px; color:#ccc; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.prompt || ''}</div>
+          <a href="${item.url}" target="_blank" style="display:block; text-align:center; background:var(--fire); color:#fff; border-radius:8px; padding:6px; font-size:12px; font-weight:700; margin-top:8px; text-decoration:none;">Download</a>
         </div>
       </div>
     `).join('');
