@@ -606,6 +606,23 @@ function openLightbox(url) {
   overlay.appendChild(img);
   document.body.appendChild(overlay);
 }
+
+async function downloadFile(url, filename) {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  } catch(err) {
+    window.open(url, '_blank');
+  }
+}
+
 // Başlat
 updateCreditDisplay();
 document.getElementById('endFrameSection').style.display = 'none';
