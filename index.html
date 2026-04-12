@@ -271,6 +271,13 @@
     <div><div class="step-title">Describe your image</div><div class="step-hint">AI will generate it for you</div></div>
   </div>
   <textarea id="aiImagePrompt" placeholder="Example: A beautiful sunset over mountains, photorealistic, 8k..."></textarea>
+  <div style="display:flex; gap:6px; margin-top:10px; flex-wrap:wrap;">
+  <button class="mini-btn active" id="img-ratio-1-1" onclick="selectImageRatio(this,'1:1')">⬛ 1:1</button>
+  <button class="mini-btn" id="img-ratio-16-9" onclick="selectImageRatio(this,'16:9')">▬ 16:9</button>
+  <button class="mini-btn" id="img-ratio-9-16" onclick="selectImageRatio(this,'9:16')">▮ 9:16</button>
+  <button class="mini-btn" id="img-ratio-4-3" onclick="selectImageRatio(this,'4:3')">▭ 4:3</button>
+  <button class="mini-btn" id="img-ratio-3-4" onclick="selectImageRatio(this,'3:4')">▯ 3:4</button>
+</div>
   <div class="chips" style="margin-top:10px;">
     <div class="chip" onclick="setAiImagePrompt('A beautiful sunset over mountains, photorealistic, 8k')">🌅 Sunset</div>
     <div class="chip" onclick="setAiImagePrompt('A futuristic city at night with neon lights, cyberpunk style')">🌃 Cyberpunk</div>
