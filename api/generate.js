@@ -7,10 +7,11 @@ const supabase = createClient(
 );
 
 const CREDIT_COSTS = {
-  'kling-v2-5-turbo-std': { '5': 4, '10': 7 },
-  'kling-v2-5-turbo-pro': { '5': 6, '10': 10 },
-  'kling-v2-6-pro':       { '5': 6, '10': 10 },
-  'kling-v3-std':         { '5': 8, '10': 14 },
+  'kling-v2-5-turbo-std': { '5': 6, '10': 11 },
+  'kling-v2-5-turbo-pro': { '5': 11, '10': 18 },
+  'kling-v2-6-std':       { '5': 6, '10': 11 },
+  'kling-v2-6-pro':       { '5': 11, '10': 18 },
+  'kling-v3-std':         { '5': 13, '10': 22 },
 };
 
 function generateJWT(accessKey, secretKey) {
