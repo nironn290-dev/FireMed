@@ -188,9 +188,10 @@ function onEndFileSelected(event) {
   reader.onload = function(e) {
     selectedEndImageBase64 = e.target.result.split(',')[1];
     const preview = document.getElementById('endImagePreview');
-    const uploadBox = preview.previousElementSibling.previousElementSibling;
+    const wrapper = document.getElementById('endImagePreviewWrapper');
+    const uploadBox = document.querySelector('#endFrameSection .upload-box');
     preview.src = e.target.result;
-    preview.style.display = 'block';
+    wrapper.style.display = 'block';
     uploadBox.style.display = 'none';
   };
   reader.readAsDataURL(file);
