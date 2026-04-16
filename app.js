@@ -197,6 +197,28 @@ function onEndFileSelected(event) {
   reader.readAsDataURL(file);
 }
 
+function clearStartImage() {
+  selectedImageBase64 = null;
+  const preview = document.getElementById('imagePreview');
+  const wrapper = document.getElementById('imagePreviewWrapper');
+  const uploadBox = document.querySelector('#uploadSection .upload-box');
+  preview.src = '';
+  wrapper.style.display = 'none';
+  uploadBox.style.display = 'flex';
+  document.getElementById('fileInput').value = '';
+}
+
+function clearEndImage() {
+  selectedEndImageBase64 = null;
+  const preview = document.getElementById('endImagePreview');
+  const wrapper = document.getElementById('endImagePreviewWrapper');
+  const uploadBox = document.querySelector('#endFrameSection .upload-box');
+  preview.src = '';
+  wrapper.style.display = 'none';
+  uploadBox.style.display = 'flex';
+  document.getElementById('endFileInput').value = '';
+}
+
 function selectModel(btn, model) {
   document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
