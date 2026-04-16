@@ -198,7 +198,7 @@ function selectModel(btn, model) {
   updateCreditDisplay();
   
   // Start/End frame sadece PRO ve V3'te çalışır
-  const supportsEndFrame = model !== 'kling-v2-5-turbo-std';
+  const supportsEndFrame = model !== 'kling-v2-5-turbo-std' && model !== 'kling-v2-6-std';
   const endSection = document.getElementById('endFrameSection');
   endSection.style.display = (currentMode === 'image' && supportsEndFrame) ? 'block' : 'none';
   
