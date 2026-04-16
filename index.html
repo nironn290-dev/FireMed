@@ -192,7 +192,10 @@
         <button class="upload-cta" style="padding:8px 14px; font-size:13px;" onclick="event.stopPropagation();document.getElementById('endFileInput').click()">Choose</button>
       </div>
       <input type="file" id="endFileInput" accept="image/*" onchange="onEndFileSelected(event)" />
-      <img id="endImagePreview" alt="End photo" style="display:none; width:100%; height:auto; border-radius:12px; margin-top:0; cursor:pointer; object-fit:contain;" onclick="document.getElementById('endFileInput').click()" />
+      <div style="position:relative; display:none;" id="endImagePreviewWrapper">
+        <img id="endImagePreview" alt="End photo" style="width:100%; height:auto; border-radius:12px; cursor:pointer; object-fit:contain;" onclick="document.getElementById('endFileInput').click()" />
+        <button onclick="clearEndImage()" style="position:absolute; top:6px; right:6px; background:rgba(0,0,0,0.7); border:none; color:white; border-radius:50%; width:26px; height:26px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center;">✕</button>
+      </div>
     </div>
   </div>
   <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
