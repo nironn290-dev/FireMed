@@ -172,9 +172,10 @@ function onFileSelected(event) {
   reader.onload = function(e) {
     selectedImageBase64 = e.target.result.split(',')[1];
     const preview = document.getElementById('imagePreview');
-    const uploadBox = preview.previousElementSibling.previousElementSibling;
+    const wrapper = document.getElementById('imagePreviewWrapper');
+    const uploadBox = document.querySelector('#uploadSection .upload-box');
     preview.src = e.target.result;
-    preview.style.display = 'block';
+    wrapper.style.display = 'block';
     uploadBox.style.display = 'none';
   };
   reader.readAsDataURL(file);
