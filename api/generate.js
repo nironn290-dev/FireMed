@@ -27,6 +27,7 @@ function generateJWT(accessKey, secretKey) {
 const MODEL_CONFIG = {
   'kling-v2-5-turbo-std': { model_name: 'kling-v2-5-turbo', mode: 'std' },
   'kling-v2-5-turbo-pro': { model_name: 'kling-v2-5-turbo', mode: 'pro' },
+  'kling-v2-6-std':       { model_name: 'kling-v2-6', mode: 'std' },
   'kling-v2-6-pro':       { model_name: 'kling-v2-6', mode: 'pro' },
   'kling-v3-std':         { model_name: 'kling-v3', mode: 'std' },
 };
