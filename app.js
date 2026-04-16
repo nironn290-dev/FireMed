@@ -4,10 +4,11 @@ const SUPABASE_URL = 'https://odydlckpnygxgwrewvcw.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9keWRsY2twbnlneGd3cmV3dmN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2Mzg1NzIsImV4cCI6MjA5MTIxNDU3Mn0.DwOAd5jKJsVHFCtGNmWOlIQULDEihkP6o4xxwnKvln0';
 
 const CREDIT_COSTS = {
-  'kling-v2-5-turbo-std': { '5': 4, '10': 7 },
-  'kling-v2-5-turbo-pro': { '5': 6, '10': 10 },
-  'kling-v2-6-pro':       { '5': 6, '10': 10 },
-  'kling-v3-std':         { '5': 8, '10': 14 },
+  'kling-v2-5-turbo-std': { '5': 6, '10': 11 },
+  'kling-v2-5-turbo-pro': { '5': 11, '10': 18 },
+  'kling-v2-6-std':       { '5': 6, '10': 11 },
+  'kling-v2-6-pro':       { '5': 11, '10': 18 },
+  'kling-v3-std':         { '5': 13, '10': 22 },
 };
 
 let currentMode = 'image';
