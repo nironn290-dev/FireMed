@@ -193,6 +193,7 @@ function onEndFileSelected(event) {
     const wrapper = document.getElementById('endImagePreviewWrapper');
     const uploadBox = document.querySelector('#endFrameSection .upload-box');
     preview.src = e.target.result;
+    preview.style.display = 'block';
     wrapper.style.display = 'block';
     uploadBox.style.display = 'none';
   };
