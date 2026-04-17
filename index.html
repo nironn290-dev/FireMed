@@ -269,9 +269,13 @@
           <div class="model-desc">Premium quality</div>
           <div class="model-credit">11 credits / 5s</div>
         </button>
-        <div id="audioOptions" style="display:none; grid-column:1/-1; gap:6px; margin-top:4px; flex-wrap:wrap;">
-  <button class="mini-btn" id="btn-audio" onclick="toggleAudio()">🔊 Add Sound Effects</button>
-  <button class="mini-btn" id="btn-voice" onclick="toggleVoice()">🎙️ Add My Voice</button>
+        <div id="audioOptions" style="display:none; grid-column:1/-1; gap:6px; margin-top:4px; flex-wrap:wrap; flex-direction:column;">
+  <div style="display:flex; gap:6px;">
+    <button class="mini-btn" id="btn-audio" onclick="toggleAudio()">🔊 Add Sound Effects</button>
+    <button class="mini-btn" id="btn-voice" onclick="toggleVoice()">🎙️ Add My Voice</button>
+  </div>
+  <div id="audio-tip" style="display:none; font-size:11px; color:var(--muted); margin-top:4px;">💡 Prompt'unuza ses açıklaması yazın. Örnek: 'dalgaların sesi, kuşların ötüşü'</div>
+  <div id="voice-tip" style="display:none; font-size:11px; color:var(--muted); margin-top:4px;">💡 Prompt'unuza konuşma yazın. Örnek: 'bir adam merhaba dünya diyor'</div>
 </div>
         <button class="model-btn" id="model-kling-v3-std" onclick="selectModel(this,'kling-v3-std')">
           <div class="model-name">👑 V3</div>
