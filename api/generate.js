@@ -155,7 +155,9 @@ module.exports = async function handler(req, res) {
           duration: videoDuration,
           mode: config.mode,
           aspect_ratio: aspectRatio,
-          cfg_scale: 0.5
+          cfg_scale: 0.5,
+          ...(enableAudio && { enable_audio: true }),
+          ...(enableVoice && { voice_language: 'en' })
         })
       });
     }
