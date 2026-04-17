@@ -231,6 +231,10 @@ function selectMotionModel(btn, model) {
   document.querySelectorAll('#motion-model-v2-6-std, #motion-model-v2-6-pro, #motion-model-v3-std').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   selectedMotionModel = model;
+  if (selectedMotionVideoDuration) {
+    const credits = calculateMotionCredits(selectedMotionVideoDuration);
+    document.getElementById('motionGenerateBtn').textContent = `🎬 GENERATE MOTION VIDEO (${credits} credits • ${selectedMotionVideoDuration}s)`;
+  }
 }
 
 function onMotionImageSelected(event) {
