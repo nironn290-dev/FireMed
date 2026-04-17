@@ -158,7 +158,7 @@ document.getElementById('motionSection').style.display = mode === 'motion' ? 'bl
 if (modelSection) modelSection.style.display = (mode === 'aiimage' || mode === 'motion') ? 'none' : 'block';
 
   const miniBtnDiv = document.querySelector('div[style*="flex-wrap"]');
-  if (miniBtnDiv) miniBtnDiv.style.display = mode === 'aiimage' ? 'none' : 'flex';
+if (miniBtnDiv) miniBtnDiv.style.display = (mode === 'aiimage' || mode === 'motion') ? 'none' : 'flex';
 
   const supportsEndFrame = selectedModel !== 'kling-v2-5-turbo-std';
   document.getElementById('endFrameSection').style.display = (mode === 'image' && supportsEndFrame) ? 'block' : 'none';
