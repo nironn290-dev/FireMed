@@ -152,8 +152,7 @@ document.getElementById('btnMotion').className = mode === 'motion' ? 'mode-btn a
   document.getElementById('textSection').style.display = mode === 'text' ? 'block' : 'none';
   document.getElementById('aiImageSection').style.display = mode === 'aiimage' ? 'block' : 'none';
 document.getElementById('motionSection').style.display = mode === 'motion' ? 'block' : 'none';
-  document.getElementById('generateBtn').style.display = mode === 'aiimage' ? 'none' : 'block';
-
+  document.getElementById('generateBtn').style.display = (mode === 'aiimage' || mode === 'motion') ? 'none' : 'block';
   // Model section ve mini butonları sadece aiimage'da gizle
   const modelSection = document.getElementById('model-kling-v2-5-turbo-std')?.closest('.section');
   if (modelSection) modelSection.style.display = mode === 'aiimage' ? 'none' : 'block';
