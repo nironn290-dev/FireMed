@@ -108,7 +108,7 @@ module.exports = async function handler(req, res) {
 
     // Kling API'ye gönder
     const modelName = selectedModel === 'kling-v3-std' ? 'kling-v3' : 'kling-v2-6';
-    const mode = selectedModel === 'kling-v3-std' ? 'std' : 'pro';
+const mode = selectedModel === 'kling-v3-std' ? 'std' : selectedModel === 'kling-v2-6-std' ? 'std' : 'pro';
 
     const response = await fetch('https://api.klingai.com/v1/videos/motion-control', {
       method: 'POST',
