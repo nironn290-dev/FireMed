@@ -812,7 +812,7 @@ async function generateMotionVideo() {
     showError('Please upload a reference video first.');
     return;
   }
-  const cost = selectedMotionModel === 'kling-v3-std' ? 13 : 11;
+  const cost = calculateMotionCredits(selectedMotionVideoDuration || 5);
   if (userCredits < cost) {
     showError(`You need ${cost} credits. You have ${userCredits} credits.`);
     return;
