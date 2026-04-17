@@ -209,6 +209,56 @@
   </div>
 </div>
 
+    <!-- MOTION CONTROL SECTION -->
+<div class="section" id="motionSection" style="display:none;">
+  <div class="section-label">
+    <div class="step-num">1</div>
+    <div><div class="step-title">Upload character photo</div><div class="step-hint">The person or subject to animate</div></div>
+  </div>
+  <div class="upload-box" id="motionImageBox" onclick="document.getElementById('motionImageInput').click()">
+    <div style="font-size:24px;">📷</div>
+    <div style="font-size:13px; font-weight:700;">Character Photo</div>
+    <div style="font-size:11px; color:var(--muted);">Required</div>
+    <button class="upload-cta" style="padding:8px 14px; font-size:13px;" onclick="event.stopPropagation();document.getElementById('motionImageInput').click()">Choose</button>
+  </div>
+  <input type="file" id="motionImageInput" accept="image/*" style="display:none;" onchange="onMotionImageSelected(event)" />
+  <div style="position:relative; display:none;" id="motionImagePreviewWrapper">
+    <img id="motionImagePreview" style="width:100%; height:auto; border-radius:12px; cursor:pointer; object-fit:contain;" onclick="document.getElementById('motionImageInput').click()" />
+    <button onclick="clearMotionImage()" style="position:absolute; top:6px; right:6px; background:rgba(0,0,0,0.7); border:none; color:white; border-radius:50%; width:26px; height:26px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center;">✕</button>
+  </div>
+
+  <div class="section-label" style="margin-top:16px;">
+    <div class="step-num">2</div>
+    <div><div class="step-title">Upload reference video</div><div class="step-hint">The motion style to apply</div></div>
+  </div>
+  <div class="upload-box" id="motionVideoBox" onclick="document.getElementById('motionVideoInput').click()">
+    <div style="font-size:24px;">🎬</div>
+    <div style="font-size:13px; font-weight:700;">Reference Video</div>
+    <div style="font-size:11px; color:var(--muted);">Required</div>
+    <button class="upload-cta" style="padding:8px 14px; font-size:13px;" onclick="event.stopPropagation();document.getElementById('motionVideoInput').click()">Choose</button>
+  </div>
+  <input type="file" id="motionVideoInput" accept="video/*" style="display:none;" onchange="onMotionVideoSelected(event)" />
+  <div style="position:relative; display:none;" id="motionVideoPreviewWrapper">
+    <video id="motionVideoPreview" style="width:100%; border-radius:12px;" controls></video>
+    <button onclick="clearMotionVideo()" style="position:absolute; top:6px; right:6px; background:rgba(0,0,0,0.7); border:none; color:white; border-radius:50%; width:26px; height:26px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center;">✕</button>
+  </div>
+
+  <div style="margin-top:16px;">
+    <textarea id="motionPrompt" placeholder="Describe the scene (optional)..."></textarea>
+  </div>
+
+  <div style="margin-top:12px; display:flex; gap:8px;">
+    <button class="model-btn active" id="motion-model-v2-6-pro" onclick="selectMotionModel(this,'kling-v2-6-pro')">
+      <div class="model-name">💎 V2.6 PRO</div>
+      <div class="model-credit">11 credits / 5s</div>
+    </button>
+    <button class="model-btn" id="motion-model-v3-std" onclick="selectMotionModel(this,'kling-v3-std')">
+      <div class="model-name">👑 V3</div>
+      <div class="model-credit">13 credits / 5s</div>
+    </button>
+  </div>
+</div>
+
     <!-- TEXT SECTION -->
     <div class="section" id="textSection" style="display:none;">
       <div class="section-label">
