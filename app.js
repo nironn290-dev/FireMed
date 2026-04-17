@@ -227,7 +227,6 @@ function selectModel(btn, model) {
   selectedModel = model;
   updateCreditDisplay();
   
-  // Start/End frame sadece PRO ve V3'te çalışır
   const supportsEndFrame = model !== 'kling-v2-5-turbo-std' && model !== 'kling-v2-6-std';
   const endSection = document.getElementById('endFrameSection');
   endSection.style.display = (currentMode === 'image' && supportsEndFrame) ? 'block' : 'none';
@@ -237,7 +236,19 @@ function selectModel(btn, model) {
     document.getElementById('endImagePreview').style.display = 'none';
   }
 
-  function toggleAudio() {
+  const audioOptions = document.getElementById('audioOptions');
+  if (model === 'kling-v2-6-pro') {
+    audioOptions.style.display = 'flex';
+  } else {
+    audioOptions.style.display = 'none';
+    enableAudio = false;
+    enableVoice = false;
+    document.getElementById('btn-audio').classList.remove('active');
+    document.getElementById('btn-voice').classList.remove('active');
+  }
+}
+
+function toggleAudio() {
   enableAudio = !enableAudio;
   document.getElementById('btn-audio').classList.toggle('active', enableAudio);
   if (enableAudio) {
@@ -252,19 +263,6 @@ function toggleVoice() {
   if (enableVoice) {
     enableAudio = false;
     document.getElementById('btn-audio').classList.remove('active');
-  }
-}
-
-  // Ses seçenekleri sadece V2.6 PRO'da görünsün
-  const audioOptions = document.getElementById('audioOptions');
-  if (model === 'kling-v2-6-pro') {
-    audioOptions.style.display = 'flex';
-  } else {
-    audioOptions.style.display = 'none';
-    enableAudio = false;
-    enableVoice = false;
-    document.getElementById('btn-audio').classList.remove('active');
-    document.getElementById('btn-voice').classList.remove('active');
   }
 }
 
