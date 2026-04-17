@@ -551,8 +551,16 @@ async function generateImage() {
             a.click();
             document.body.removeChild(a);
           };
-          userCredits -= 2;
-          document.getElementById('creditsDisplay').textContent = userCredits;
+          try {
+    const profileRes = await fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentSession.access_token}` },
+      body: JSON.stringify({ action: 'getProfile' })
+    });
+    const profileData = await profileRes.json();
+    userCredits = profileData.profile?.credits ?? userCredits;
+    document.getElementById('creditsDisplay').textContent = userCredits;
+  } catch(e) {}
         } else if (statusData.status === 'failed') {
           clearInterval(pollInterval);
           document.getElementById('aiImageLoading').style.display = 'none';
