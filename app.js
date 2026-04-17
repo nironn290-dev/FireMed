@@ -145,6 +145,7 @@ function switchMode(mode) {
   document.getElementById('btnImage').className = mode === 'image' ? 'mode-btn active' : 'mode-btn inactive';
   document.getElementById('btnText').className  = mode === 'text'  ? 'mode-btn active' : 'mode-btn inactive';
   document.getElementById('btnAiImage').className = mode === 'aiimage' ? 'mode-btn active' : 'mode-btn inactive';
+document.getElementById('btnMotion').className = mode === 'motion' ? 'mode-btn active' : 'mode-btn inactive';
 
   document.getElementById('uploadSection').style.display = mode === 'image' ? 'block' : 'none';
   document.getElementById('descSection').style.display = mode === 'image' ? 'block' : 'none';
