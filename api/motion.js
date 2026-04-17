@@ -122,7 +122,7 @@ module.exports = async function handler(req, res) {
         image: imageBase64,
         video_url: videoUrl,
         prompt: prompt || '',
-        duration: '5',
+        duration: '30',
         cfg_scale: 0.5
       })
     });
