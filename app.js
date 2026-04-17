@@ -760,58 +760,6 @@ async function downloadFile(url, filename) {
   }
 }
 
-let selectedMotionModel = 'kling-v2-6-pro';
-let selectedMotionImageBase64 = null;
-let selectedMotionVideoBase64 = null;
-
-function selectMotionModel(btn, model) {
-  document.querySelectorAll('#motion-model-v2-6-pro, #motion-model-v3-std').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  selectedMotionModel = model;
-}
-
-function onMotionImageSelected(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    selectedMotionImageBase64 = e.target.result.split(',')[1];
-    document.getElementById('motionImagePreview').src = e.target.result;
-    document.getElementById('motionImagePreviewWrapper').style.display = 'block';
-    document.getElementById('motionImageBox').style.display = 'none';
-  };
-  reader.readAsDataURL(file);
-}
-
-function onMotionVideoSelected(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    selectedMotionVideoBase64 = e.target.result.split(',')[1];
-    document.getElementById('motionVideoPreview').src = e.target.result;
-    document.getElementById('motionVideoPreviewWrapper').style.display = 'block';
-    document.getElementById('motionVideoBox').style.display = 'none';
-  };
-  reader.readAsDataURL(file);
-}
-
-function clearMotionImage() {
-  selectedMotionImageBase64 = null;
-  document.getElementById('motionImagePreview').src = '';
-  document.getElementById('motionImagePreviewWrapper').style.display = 'none';
-  document.getElementById('motionImageBox').style.display = 'flex';
-  document.getElementById('motionImageInput').value = '';
-}
-
-function clearMotionVideo() {
-  selectedMotionVideoBase64 = null;
-  document.getElementById('motionVideoPreview').src = '';
-  document.getElementById('motionVideoPreviewWrapper').style.display = 'none';
-  document.getElementById('motionVideoBox').style.display = 'flex';
-  document.getElementById('motionVideoInput').value = '';
-}
-
 async function generateMotionVideo() {
   hideError();
   if (!selectedMotionImageBase64) {
