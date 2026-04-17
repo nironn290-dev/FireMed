@@ -25,6 +25,10 @@ let pollingInterval = null;
 let currentUser = null;
 let currentSession = null;
 let userCredits = 0;
+let selectedMotionModel = 'kling-v2-6-pro';
+let selectedMotionImageBase64 = null;
+let selectedMotionVideoBase64 = null;
+let selectedMotionVideoDuration = 5;
 
 async function getSupabase() {
   const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
