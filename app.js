@@ -228,7 +228,7 @@ function clearEndImage() {
 }
 
 function selectMotionModel(btn, model) {
-  document.querySelectorAll('#motion-model-v2-6-pro, #motion-model-v3-std').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#motion-model-v2-6-std, #motion-model-v2-6-pro, #motion-model-v3-std').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   selectedMotionModel = model;
 }
