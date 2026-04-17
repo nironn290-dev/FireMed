@@ -343,7 +343,9 @@ body: JSON.stringify({
         endImageBase64: selectedEndImageBase64,
         selectedModel,
         duration: selectedDuration,
-        aspectRatio: selectedRatio
+        aspectRatio: selectedRatio,
+        enableAudio,
+        enableVoice
       })
     });
 
