@@ -251,18 +251,22 @@ function selectModel(btn, model) {
 function toggleAudio() {
   enableAudio = !enableAudio;
   document.getElementById('btn-audio').classList.toggle('active', enableAudio);
+  document.getElementById('audio-tip').style.display = enableAudio ? 'block' : 'none';
   if (enableAudio) {
     enableVoice = false;
     document.getElementById('btn-voice').classList.remove('active');
+    document.getElementById('voice-tip').style.display = 'none';
   }
 }
 
 function toggleVoice() {
   enableVoice = !enableVoice;
   document.getElementById('btn-voice').classList.toggle('active', enableVoice);
+  document.getElementById('voice-tip').style.display = enableVoice ? 'block' : 'none';
   if (enableVoice) {
     enableAudio = false;
     document.getElementById('btn-audio').classList.remove('active');
+    document.getElementById('audio-tip').style.display = 'none';
   }
 }
 
