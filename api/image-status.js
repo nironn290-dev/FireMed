@@ -20,7 +20,23 @@ module.exports = async function handler(req, res) {
     });
 
     const result = await response.json();
-
+// Zaten kaydedilmiş mi kontrol et
+if (userId && result.status === 'succeeded') {
+  const { data: existing } = await supabase
+    .from('generations')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('prompt', prompt || '')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+  
+  if (existing) {
+    const { data: publicUrlData } = supabase.storage.from('images').getPublicUrl(`${userId}_dummy`);
+    const { data: gen } = await supabase.from('generations').select('url').eq('id', existing.id).single();
+    return res.status(200).json({ status: 'succeeded', imageUrl: gen?.url || '' });
+  }
+}
     if (result.status === 'succeeded' && result.output) {
       const replicateUrl = Array.isArray(result.output) ? result.output[0] : result.output;
 
