@@ -245,6 +245,10 @@ function onMotionImageSelected(event) {
 function onMotionVideoSelected(event) {
   const file = event.target.files[0];
   if (!file) return;
+  if (file.size > 100 * 1024 * 1024) {
+    showError('Reference video must be under 100MB.');
+    return;
+  }
   const reader = new FileReader();
   reader.onload = function(e) {
     selectedMotionVideoBase64 = e.target.result.split(',')[1];
