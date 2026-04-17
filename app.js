@@ -104,7 +104,7 @@ async function handleAuth() {
     });
     const data = await response.json();
     if (data.error) { showAuthError(data.error); return; }
-    if (tab === 'signup') { showAuthError('Account created! Please sign in.'); switchAuthTab('login'); return; }
+    if (tab === 'signup') { showAuthError('✅ Account created! Please check your email to verify your account before signing in.'); switchAuthTab('login'); return; }
     currentUser = data.user;
     currentSession = data.session;
     userCredits = 10;
