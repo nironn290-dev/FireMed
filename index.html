@@ -247,14 +247,18 @@
     <textarea id="motionPrompt" placeholder="Describe the scene (optional)..."></textarea>
   </div>
 
-  <div style="margin-top:12px; display:flex; gap:8px;">
-    <button class="model-btn active" id="motion-model-v2-6-pro" onclick="selectMotionModel(this,'kling-v2-6-pro')">
-      <div class="model-name">💎 V2.6 PRO</div>
+  <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+    <button class="model-btn active" id="motion-model-v2-6-std" onclick="selectMotionModel(this,'kling-v2-6-std')">
+      <div class="model-name">⚡ V2.6 STD</div>
       <div class="model-credit">11 credits / 5s</div>
+    </button>
+    <button class="model-btn" id="motion-model-v2-6-pro" onclick="selectMotionModel(this,'kling-v2-6-pro')">
+      <div class="model-name">💎 V2.6 PRO</div>
+      <div class="model-credit">14 credits / 5s</div>
     </button>
     <button class="model-btn" id="motion-model-v3-std" onclick="selectMotionModel(this,'kling-v3-std')">
       <div class="model-name">👑 V3</div>
-      <div class="model-credit">13 credits / 5s</div>
+      <div class="model-credit">16 credits / 5s</div>
     </button>
   </div>
   <button class="auth-btn" id="motionGenerateBtn" style="margin-top:12px;" onclick="generateMotionVideo()">🎬 GENERATE MOTION VIDEO</button>
