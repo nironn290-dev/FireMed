@@ -151,6 +151,7 @@ document.getElementById('btnMotion').className = mode === 'motion' ? 'mode-btn a
   document.getElementById('descSection').style.display = mode === 'image' ? 'block' : 'none';
   document.getElementById('textSection').style.display = mode === 'text' ? 'block' : 'none';
   document.getElementById('aiImageSection').style.display = mode === 'aiimage' ? 'block' : 'none';
+document.getElementById('motionSection').style.display = mode === 'motion' ? 'block' : 'none';
   document.getElementById('generateBtn').style.display = mode === 'aiimage' ? 'none' : 'block';
 
   // Model section ve mini butonları sadece aiimage'da gizle
