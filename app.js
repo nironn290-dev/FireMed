@@ -764,6 +764,137 @@ async function downloadFile(url, filename) {
   }
 }
 
+let selectedMotionModel = 'kling-v2-6-pro';
+let selectedMotionImageBase64 = null;
+let selectedMotionVideoBase64 = null;
+
+function selectMotionModel(btn, model) {
+  document.querySelectorAll('#motion-model-v2-6-pro, #motion-model-v3-std').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedMotionModel = model;
+}
+
+function onMotionImageSelected(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    selectedMotionImageBase64 = e.target.result.split(',')[1];
+    document.getElementById('motionImagePreview').src = e.target.result;
+    document.getElementById('motionImagePreviewWrapper').style.display = 'block';
+    document.getElementById('motionImageBox').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function onMotionVideoSelected(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    selectedMotionVideoBase64 = e.target.result.split(',')[1];
+    document.getElementById('motionVideoPreview').src = e.target.result;
+    document.getElementById('motionVideoPreviewWrapper').style.display = 'block';
+    document.getElementById('motionVideoBox').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearMotionImage() {
+  selectedMotionImageBase64 = null;
+  document.getElementById('motionImagePreview').src = '';
+  document.getElementById('motionImagePreviewWrapper').style.display = 'none';
+  document.getElementById('motionImageBox').style.display = 'flex';
+  document.getElementById('motionImageInput').value = '';
+}
+
+function clearMotionVideo() {
+  selectedMotionVideoBase64 = null;
+  document.getElementById('motionVideoPreview').src = '';
+  document.getElementById('motionVideoPreviewWrapper').style.display = 'none';
+  document.getElementById('motionVideoBox').style.display = 'flex';
+  document.getElementById('motionVideoInput').value = '';
+}
+
+async function generateMotionVideo() {
+  hideError();
+  if (!selectedMotionImageBase64) {
+    showError('Please upload a character photo first.');
+    return;
+  }
+  if (!selectedMotionVideoBase64) {
+    showError('Please upload a reference video first.');
+    return;
+  }
+  const cost = selectedMotionModel === 'kling-v3-std' ? 13 : 11;
+  if (userCredits < cost) {
+    showError(`You need ${cost} credits. You have ${userCredits} credits.`);
+    return;
+  }
+  showResultArea();
+  try {
+    const response = await fetch('/api/motion', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentSession.access_token}`
+      },
+      body: JSON.stringify({
+        imageBase64: selectedMotionImageBase64,
+        videoBase64: selectedMotionVideoBase64,
+        prompt: document.getElementById('motionPrompt').value.trim(),
+        selectedModel: selectedMotionModel
+      })
+    });
+    const data = await response.json();
+    if (!response.ok || data.error) throw new Error(data.error || 'Something went wrong.');
+    pollMotionResult(data.id, cost);
+  } catch (err) {
+    showError(err.message || 'Could not generate video. Please try again.');
+    hideResult();
+  }
+}
+
+async function pollMotionResult(taskId, cost) {
+  let attempts = 0;
+  const maxAttempts = 120;
+  pollingInterval = setInterval(async () => {
+    attempts++;
+    if (attempts > maxAttempts) {
+      clearInterval(pollingInterval);
+      showError('Video generation timed out. Please try again.');
+      hideResult();
+      return;
+    }
+    try {
+      const response = await fetch('/api/motion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${currentSession.access_token}`
+        },
+        body: JSON.stringify({ taskId })
+      });
+      const result = await response.json();
+      if (result.status === 'succeeded' && result.output) {
+        clearInterval(pollingInterval);
+        await deductCredits(cost);
+        showVideo(result.output);
+      } else if (result.status === 'failed') {
+        clearInterval(pollingInterval);
+        showError('Video generation failed. Please try again.');
+        hideResult();
+      }
+      const pct = Math.min(Math.round((attempts / maxAttempts) * 100), 95);
+      document.getElementById('loadingPct').textContent = pct + '%';
+    } catch (err) {
+      clearInterval(pollingInterval);
+      showError('Connection error. Please try again.');
+      hideResult();
+    }
+  }, 3000);
+}
+
 // Başlat
 updateCreditDisplay();
 document.getElementById('endFrameSection').style.display = 'none';
