@@ -38,7 +38,7 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { prompt, taskId, mode, imageBase64, endImageBase64, selectedModel, duration, aspectRatio } = req.body;
+  const { prompt, taskId, mode, imageBase64, endImageBase64, selectedModel, duration, aspectRatio, enableAudio, enableVoice } = req.body;
   const token = req.headers.authorization?.replace('Bearer ', '');
   const ACCESS_KEY = process.env.KLING_ACCESS_KEY;
   const SECRET_KEY = process.env.KLING_SECRET_KEY;
