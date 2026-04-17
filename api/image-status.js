@@ -24,12 +24,25 @@ module.exports = async function handler(req, res) {
     if (result.status === 'succeeded' && result.output) {
       const replicateUrl = Array.isArray(result.output) ? result.output[0] : result.output;
 
-      // Resmi Replicate'ten indir
+      if (userId) {
+        const { data: existing } = await supabase
+          .from('generations')
+          .select('id, url')
+          .eq('user_id', userId)
+          .eq('prompt', prompt || '')
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        
+        if (existing) {
+          return res.status(200).json({ status: 'succeeded', imageUrl: existing.url });
+        }
+      }
+
       const imageResponse = await fetch(replicateUrl);
       const imageBuffer = await imageResponse.arrayBuffer();
       const imageBytes = new Uint8Array(imageBuffer);
 
-      // Supabase Storage'a yükle
       const fileName = `${userId || 'anon'}_${Date.now()}.png`;
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('images')
@@ -52,14 +65,12 @@ module.exports = async function handler(req, res) {
         return res.status(200).json({ status: 'succeeded', imageUrl: replicateUrl });
       }
 
-      // Public URL al
       const { data: publicUrlData } = supabase.storage
         .from('images')
         .getPublicUrl(fileName);
 
       const permanentUrl = publicUrlData.publicUrl;
 
-      // Supabase'e kalıcı URL ile kaydet
       if (userId) {
         await supabase.from('generations').insert({
           user_id: userId,
