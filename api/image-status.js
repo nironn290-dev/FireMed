@@ -24,22 +24,6 @@ module.exports = async function handler(req, res) {
     if (result.status === 'succeeded' && result.output) {
       const replicateUrl = Array.isArray(result.output) ? result.output[0] : result.output;
 
-      // Zaten kaydedilmiş mi kontrol et
-      if (userId) {
-        const { data: existing } = await supabase
-          .from('generations')
-          .select('id, url')
-          .eq('user_id', userId)
-          .eq('prompt', prompt || '')
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
-        
-        if (existing) {
-          return res.status(200).json({ status: 'succeeded', imageUrl: existing.url });
-        }
-      }
-
       // Resmi Replicate'ten indir
       const imageResponse = await fetch(replicateUrl);
       const imageBuffer = await imageResponse.arrayBuffer();
