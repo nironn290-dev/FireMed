@@ -13,6 +13,8 @@ const CREDIT_COSTS = {
 
 let currentMode = 'image';
 let selectedStyle = 'realistic';
+let enableAudio = false;
+let enableVoice = false;
 let selectedImageBase64 = null;
 let selectedEndImageBase64 = null;
 let selectedModel = 'kling-v2-5-turbo-std';
