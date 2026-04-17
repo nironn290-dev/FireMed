@@ -232,10 +232,21 @@ function selectModel(btn, model) {
   const endSection = document.getElementById('endFrameSection');
   endSection.style.display = (currentMode === 'image' && supportsEndFrame) ? 'block' : 'none';
   
-  // STD seçilince end image'ı sıfırla
   if (!supportsEndFrame) {
     selectedEndImageBase64 = null;
     document.getElementById('endImagePreview').style.display = 'none';
+  }
+
+  // Ses seçenekleri sadece V2.6 PRO'da görünsün
+  const audioOptions = document.getElementById('audioOptions');
+  if (model === 'kling-v2-6-pro') {
+    audioOptions.style.display = 'flex';
+  } else {
+    audioOptions.style.display = 'none';
+    enableAudio = false;
+    enableVoice = false;
+    document.getElementById('btn-audio').classList.remove('active');
+    document.getElementById('btn-voice').classList.remove('active');
   }
 }
 
