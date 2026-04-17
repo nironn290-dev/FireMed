@@ -223,10 +223,6 @@ function clearEndImage() {
   document.getElementById('endFileInput').value = '';
 }
 
-let selectedMotionModel = 'kling-v2-6-pro';
-let selectedMotionImageBase64 = null;
-let selectedMotionVideoBase64 = null;
-
 function selectMotionModel(btn, model) {
   document.querySelectorAll('#motion-model-v2-6-pro, #motion-model-v3-std').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
