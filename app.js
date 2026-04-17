@@ -237,6 +237,24 @@ function selectModel(btn, model) {
     document.getElementById('endImagePreview').style.display = 'none';
   }
 
+  function toggleAudio() {
+  enableAudio = !enableAudio;
+  document.getElementById('btn-audio').classList.toggle('active', enableAudio);
+  if (enableAudio) {
+    enableVoice = false;
+    document.getElementById('btn-voice').classList.remove('active');
+  }
+}
+
+function toggleVoice() {
+  enableVoice = !enableVoice;
+  document.getElementById('btn-voice').classList.toggle('active', enableVoice);
+  if (enableVoice) {
+    enableAudio = false;
+    document.getElementById('btn-audio').classList.remove('active');
+  }
+}
+
   // Ses seçenekleri sadece V2.6 PRO'da görünsün
   const audioOptions = document.getElementById('audioOptions');
   if (model === 'kling-v2-6-pro') {
