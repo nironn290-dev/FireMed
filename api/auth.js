@@ -13,15 +13,14 @@ module.exports = async function handler(req, res) {
   const { action, email, password } = req.body;
 
   try {
-    if (action === 'signup') {
-      const { data, error } = await supabase.auth.admin.createUser({
-        email,
-        password,
-        email_confirm: true
-      });
-      if (error) return res.status(400).json({ error: error.message });
-      return res.status(200).json({ user: data.user });
-    }
+   if (action === 'signup') {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password
+  });
+  if (error) return res.status(400).json({ error: error.message });
+  return res.status(200).json({ user: data.user });
+}
 
     if (action === 'login') {
       const { data, error } = await supabase.auth.signInWithPassword({
