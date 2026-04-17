@@ -249,14 +249,32 @@ function onMotionVideoSelected(event) {
     showError('Reference video must be under 100MB.');
     return;
   }
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    selectedMotionVideoBase64 = e.target.result.split(',')[1];
-    document.getElementById('motionVideoPreview').src = e.target.result;
-    document.getElementById('motionVideoPreviewWrapper').style.display = 'block';
-    document.getElementById('motionVideoBox').style.display = 'none';
+  const video = document.createElement('video');
+  video.preload = 'metadata';
+  video.onloadedmetadata = function() {
+    URL.revokeObjectURL(video.src);
+    const duration = Math.round(video.duration);
+    if (duration < 5) {
+      showError('⚠ Reference video must be at least 5 seconds long. Please upload a longer video.');
+      return;
+    }
+    if (duration > 30) {
+      showError('⚠ Reference video must be under 30 seconds.');
+      return;
+    }
+    selectedMotionVideoDuration = duration;
+    const credits = calculateMotionCredits(duration);
+    document.getElementById('motionGenerateBtn').textContent = `🎬 GENERATE MOTION VIDEO (${credits} credits • ${duration}s)`;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      selectedMotionVideoBase64 = e.target.result.split(',')[1];
+      document.getElementById('motionVideoPreview').src = e.target.result;
+      document.getElementById('motionVideoPreviewWrapper').style.display = 'block';
+      document.getElementById('motionVideoBox').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
   };
-  reader.readAsDataURL(file);
+  video.src = URL.createObjectURL(file);
 }
 
 function clearMotionImage() {
