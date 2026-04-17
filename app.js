@@ -281,6 +281,22 @@ function onMotionVideoSelected(event) {
   video.src = URL.createObjectURL(file);
 }
 
+function calculateMotionCredits(duration) {
+  const baseCredits = {
+    'kling-v2-6-std': 11,
+    'kling-v2-6-pro': 14,
+    'kling-v3-std': 16
+  };
+  const perSecond = {
+    'kling-v2-6-std': 2.2,
+    'kling-v2-6-pro': 2.8,
+    'kling-v3-std': 3.2
+  };
+  const base = baseCredits[selectedMotionModel] || 11;
+  const extra = Math.max(0, duration - 5) * (perSecond[selectedMotionModel] || 2.2);
+  return Math.ceil(base + extra);
+}
+
 function clearMotionImage() {
   selectedMotionImageBase64 = null;
   document.getElementById('motionImagePreview').src = '';
