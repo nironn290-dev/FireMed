@@ -276,6 +276,11 @@
         <div><div class="step-title">What do you want to see?</div><div class="step-hint">Describe your scene</div></div>
       </div>
       <textarea id="textPrompt" placeholder="Example: A lion walking through golden grass at sunset..."></textarea>
+      <div style="margin-top:10px; display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
+        <button class="mini-btn active" id="text-ratio-16-9" onclick="selectTextRatio(this,'16:9')">▬ 16:9</button>
+        <button class="mini-btn" id="text-ratio-9-16" onclick="selectTextRatio(this,'9:16')">▮ 9:16</button>
+        <button class="mini-btn" id="text-ratio-1-1" onclick="selectTextRatio(this,'1:1')">⬛ 1:1</button>
+      </div>
       <div class="chips">
         <div class="chip" onclick="setTextPrompt('A waterfall in a tropical jungle with mist')">🌊 Waterfall</div>
         <div class="chip" onclick="setTextPrompt('A busy city street at night with neon lights')">🌃 City night</div>
