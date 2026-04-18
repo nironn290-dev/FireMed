@@ -381,6 +381,12 @@ function selectRatio(btn, ratio) {
   selectedRatio = ratio;
 }
 
+function selectTextRatio(btn, ratio) {
+  document.querySelectorAll('#text-ratio-16-9, #text-ratio-9-16, #text-ratio-1-1').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedTextRatio = ratio;
+}
+
 function selectImageRatio(btn, ratio) {
   document.querySelectorAll('#img-ratio-1-1, #img-ratio-16-9, #img-ratio-9-16, #img-ratio-4-3, #img-ratio-3-4').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
