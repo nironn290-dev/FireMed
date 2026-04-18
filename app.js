@@ -20,6 +20,7 @@ let selectedEndImageBase64 = null;
 let selectedModel = 'kling-v2-5-turbo-std';
 let selectedDuration = '5';
 let selectedRatio = '16:9';
+let selectedTextRatio = '16:9';
 let selectedImageRatio = '1:1';
 let pollingInterval = null;
 let currentUser = null;
