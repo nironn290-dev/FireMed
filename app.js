@@ -926,4 +926,5 @@ async function pollMotionResult(taskId, cost) {
 // Başlat
 updateCreditDisplay();
 document.getElementById('endFrameSection').style.display = 'none';
+loadTheme();
 initAuth();
