@@ -752,6 +752,22 @@ function hideProfile() {
   document.getElementById('appScreen').querySelector('main').style.display = 'block';
 }
 
+function setTheme(theme) {
+  document.querySelectorAll('[id^="theme-"]').forEach(b => b.classList.remove('active'));
+  document.getElementById('theme-' + theme).classList.add('active');
+  if (theme === 'fire') {
+    document.documentElement.removeAttribute('data-theme');
+  } else {
+    document.documentElement.setAttribute('data-theme', theme);
+  }
+  localStorage.setItem('firemed-theme', theme);
+}
+
+function loadTheme() {
+  const saved = localStorage.getItem('firemed-theme');
+  if (saved) setTheme(saved);
+}
+
 async function loadProfileStats() {
   try {
     const response = await fetch('/api/gallery', {
