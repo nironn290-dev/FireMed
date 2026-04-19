@@ -739,6 +739,37 @@ function hideGallery() {
   document.getElementById('appScreen').querySelector('main').style.display = 'block';
 }
 
+function showProfile() {
+  document.getElementById('appScreen').querySelector('main').style.display = 'none';
+  document.getElementById('profileScreen').style.display = 'block';
+  document.getElementById('profileEmail').textContent = currentUser?.email || '-';
+  document.getElementById('profileCredits').textContent = userCredits;
+  loadProfileStats();
+}
+
+function hideProfile() {
+  document.getElementById('profileScreen').style.display = 'none';
+  document.getElementById('appScreen').querySelector('main').style.display = 'block';
+}
+
+async function loadProfileStats() {
+  try {
+    const response = await fetch('/api/gallery', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentSession.access_token}`
+      },
+      body: JSON.stringify({})
+    });
+    const data = await response.json();
+    const videos = data.generations?.filter(g => g.type === 'video').length || 0;
+    const images = data.generations?.filter(g => g.type === 'image').length || 0;
+    document.getElementById('profileVideos').textContent = videos;
+    document.getElementById('profileImages').textContent = images;
+  } catch(e) {}
+}
+
 function switchGalleryTab(tab) {
   currentGalleryTab = tab;
   document.getElementById('galleryTabVideo').className = tab === 'video' ? 'mini-btn active' : 'mini-btn';
