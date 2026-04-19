@@ -199,7 +199,7 @@
       </div>
       <input type="file" id="endFileInput" accept="image/*" onchange="onEndFileSelected(event)" />
       <div style="position:relative; display:none;" id="endImagePreviewWrapper">
-        <img id="endImagePreview" alt="End photo" style="width:100%; height:auto; border-radius:12px; cursor:pointer; object-fit:contain;" onclick="document.getElementById('endFileInput').click()" />
+        <img id="endImagePreview" alt="End photo" style="width:100%; max-height:250px; border-radius:12px; cursor:pointer; object-fit:contain;" onclick="document.getElementById('endFileInput').click()" />
         <button onclick="clearEndImage()" style="position:absolute; top:6px; right:6px; background:rgba(0,0,0,0.7); border:none; color:white; border-radius:50%; width:26px; height:26px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center;">✕</button>
       </div>
     </div>
