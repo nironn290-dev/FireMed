@@ -709,8 +709,9 @@ let currentGalleryTab = 'image';
 
 async function showGallery() {
   document.getElementById('appScreen').querySelector('main').style.display = 'none';
+  document.getElementById('profileScreen').style.display = 'none';
+  document.getElementById('pricingScreen').style.display = 'none';
   document.getElementById('galleryScreen').style.display = 'block';
-
   // En son üretilen ne ise onu bul
   try {
     const response = await fetch('/api/gallery', {
