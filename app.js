@@ -742,6 +742,8 @@ function hideGallery() {
 
 function showProfile() {
   document.getElementById('appScreen').querySelector('main').style.display = 'none';
+  document.getElementById('galleryScreen').style.display = 'none';
+  document.getElementById('pricingScreen').style.display = 'none';
   document.getElementById('profileScreen').style.display = 'block';
   document.getElementById('profileEmail').textContent = currentUser?.email || '-';
   document.getElementById('profileCredits').textContent = userCredits;
