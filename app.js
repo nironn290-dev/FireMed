@@ -752,6 +752,16 @@ function hideProfile() {
   document.getElementById('appScreen').querySelector('main').style.display = 'block';
 }
 
+function showPricing() {
+  document.getElementById('appScreen').querySelector('main').style.display = 'none';
+  document.getElementById('pricingScreen').style.display = 'block';
+}
+
+function hidePricing() {
+  document.getElementById('pricingScreen').style.display = 'none';
+  document.getElementById('appScreen').querySelector('main').style.display = 'block';
+}
+
 function setTheme(theme) {
   document.querySelectorAll('[id^="theme-"]').forEach(b => b.classList.remove('active'));
   document.getElementById('theme-' + theme).classList.add('active');
