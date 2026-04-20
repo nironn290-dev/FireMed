@@ -754,6 +754,8 @@ function hideProfile() {
 
 function showPricing() {
   document.getElementById('appScreen').querySelector('main').style.display = 'none';
+  document.getElementById('galleryScreen').style.display = 'none';
+  document.getElementById('profileScreen').style.display = 'none';
   document.getElementById('pricingScreen').style.display = 'block';
 }
 
