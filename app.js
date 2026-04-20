@@ -768,6 +768,8 @@ function showPricing() {
 
 function hidePricing() {
   document.getElementById('pricingScreen').style.display = 'none';
+  document.getElementById('galleryScreen').style.display = 'none';
+  document.getElementById('profileScreen').style.display = 'none';
   document.getElementById('appScreen').querySelector('main').style.display = 'block';
 }
 
