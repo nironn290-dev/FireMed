@@ -61,7 +61,7 @@ guidance_scale: 0.0
       return res.status(500).json({ error: data.error });
     }
 
-    return res.status(200).json({ predictionId: data.id });
+    return res.status(200).json({ predictionId: data.id, debug: { aspectRatio, width: aspectRatio === '16:9' ? 1280 : aspectRatio === '9:16' ? 720 : 1024 } });
 
   } catch (err) {
     await supabase.from('profiles').update({ credits: profile.credits }).eq('id', user.id);
