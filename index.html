@@ -562,210 +562,34 @@ window.addEventListener('resize', () => {
 });
 
 let particles = [];
-let waterMode = false;
+let animationActive = true;
 
 class Particle {
-  constructor(water = false) {
+  constructor() {
     this.x = Math.random() * canvas.width;
     this.y = canvas.height + 10;
-    this.size = Math.random() * 4 + 1;
-    this.speedY = -(Math.random() * 1.5 + 0.3);
-    this.speedX = (Math.random() - 0.5) * 0.8;
+    this.size = Math.random() * 3 + 1;
+    this.speedY = -(Math.random() * 0.8 + 0.2);
+    this.speedX = (Math.random() - 0.5) * 0.4;
     this.life = 1.0;
-    this.decay = Math.random() * 0.008 + 0.002;
-    this.water = water;
+    this.decay = Math.random() * 0.004 + 0.001;
   }
   update() {
     this.y += this.speedY;
     this.x += this.speedX;
     this.life -= this.decay;
-    this.size *= 0.995;
   }
   draw() {
     ctx.save();
-    ctx.globalAlpha = this.life * 0.6;
-    if (this.water) {
-      ctx.fillStyle = `rgba(50, 150, 255, ${this.life})`;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fill();
-    } else {
-      const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 2);
-      gradient.addColorStop(0, `rgba(255, 255, 150, ${this.life})`);
-      gradient.addColorStop(0.4, `rgba(255, 80, 0, ${this.life * 0.8})`);
-      gradient.addColorStop(1, `rgba(255, 0, 0, 0)`);
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size * 2, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.restore();
-  }
-}
-
-let firefighter = null;
-let showFirefighter = false;
-
-class Firefighter {
-  constructor() {
-    this.x = -150;
-    this.y = canvas.height - 200;
-    this.targetX = 80;
-    this.speed = 6;
-    this.arrived = false;
-    this.waterDrops = [];
-    this.frame = 0;
-  }
-  update() {
-    this.frame++;
-    if (!this.arrived) {
-      this.x += this.speed;
-      if (this.x >= this.targetX) {
-        this.x = this.targetX;
-        this.arrived = true;
-      }
-    } else {
-      for (let i = 0; i < 4; i++) {
-        this.waterDrops.push({
-          x: this.x + 60,
-          y: this.y + 40,
-          vx: Math.random() * 10 + 6,
-          vy: -(Math.random() * 5 + 1),
-          life: 1.0,
-          size: Math.random() * 5 + 2
-        });
-      }
-    }
-    this.waterDrops = this.waterDrops.filter(d => d.life > 0);
-    this.waterDrops.forEach(d => {
-      d.x += d.vx;
-      d.y += d.vy;
-      d.vy += 0.3;
-      d.life -= 0.015;
-    });
-  }
-  draw() {
-    ctx.save();
-    const x = this.x;
-    const y = this.y;
-    const legSwing = this.arrived ? 0 : Math.sin(this.frame * 0.3) * 10;
-
-    // Gölge
-    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.globalAlpha = this.life * 0.5;
+    const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 2);
+    gradient.addColorStop(0, `rgba(255, 200, 100, ${this.life})`);
+    gradient.addColorStop(0.5, `rgba(255, 60, 0, ${this.life * 0.7})`);
+    gradient.addColorStop(1, `rgba(255, 0, 0, 0)`);
+    ctx.fillStyle = gradient;
     ctx.beginPath();
-    ctx.ellipse(x + 30, y + 105, 30, 8, 0, 0, Math.PI * 2);
+    ctx.arc(this.x, this.y, this.size * 2, 0, Math.PI * 2);
     ctx.fill();
-
-    // Bacaklar
-    ctx.strokeStyle = '#cc2200';
-    ctx.lineWidth = 10;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(x + 30, y + 70);
-    ctx.lineTo(x + 20 + legSwing, y + 105);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x + 30, y + 70);
-    ctx.lineTo(x + 40 - legSwing, y + 105);
-    ctx.stroke();
-
-    // Ayaklar
-    ctx.strokeStyle = '#111';
-    ctx.lineWidth = 8;
-    ctx.beginPath();
-    ctx.moveTo(x + 20 + legSwing, y + 105);
-    ctx.lineTo(x + 10 + legSwing, y + 110);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x + 40 - legSwing, y + 105);
-    ctx.lineTo(x + 30 - legSwing, y + 110);
-    ctx.stroke();
-
-    // Gövde - kıyafet
-    ctx.fillStyle = '#cc2200';
-    ctx.beginPath();
-    ctx.roundRect(x + 15, y + 30, 30, 45, 5);
-    ctx.fill();
-
-    // Gövde şerit
-    ctx.fillStyle = '#ffcc00';
-    ctx.fillRect(x + 15, y + 55, 30, 6);
-
-    // Sol kol (hortum tutan)
-    ctx.strokeStyle = '#cc2200';
-    ctx.lineWidth = 10;
-    ctx.beginPath();
-    ctx.moveTo(x + 20, y + 38);
-    ctx.lineTo(x + 55, y + 50);
-    ctx.stroke();
-
-    // Sağ kol
-    ctx.beginPath();
-    ctx.moveTo(x + 40, y + 38);
-    ctx.lineTo(x + 55, y + 50);
-    ctx.stroke();
-
-    // Hortum
-    ctx.strokeStyle = '#888';
-    ctx.lineWidth = 6;
-    ctx.beginPath();
-    ctx.moveTo(x + 55, y + 50);
-    ctx.quadraticCurveTo(x + 65, y + 55, x + 70, y + 45);
-    ctx.stroke();
-
-    // Boyun
-    ctx.fillStyle = '#ffcc99';
-    ctx.beginPath();
-    ctx.roundRect(x + 24, y + 18, 14, 14, 3);
-    ctx.fill();
-
-    // Kafa
-    ctx.fillStyle = '#ffcc99';
-    ctx.beginPath();
-    ctx.arc(x + 30, y + 10, 18, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Yüz - gözler
-    ctx.fillStyle = '#333';
-    ctx.beginPath();
-    ctx.arc(x + 24, y + 8, 3, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(x + 36, y + 8, 3, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Yüz - gülümseme
-    ctx.strokeStyle = '#333';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(x + 30, y + 12, 7, 0.2, Math.PI - 0.2);
-    ctx.stroke();
-
-    // Kask
-    ctx.fillStyle = '#ffcc00';
-    ctx.beginPath();
-    ctx.arc(x + 30, y - 6, 20, Math.PI, 0);
-    ctx.fill();
-    ctx.fillRect(x + 10, y - 6, 40, 6);
-
-    // Kask siperliği
-    ctx.fillStyle = '#ffaa00';
-    ctx.beginPath();
-    ctx.rect(x + 8, y - 2, 44, 4);
-    ctx.fill();
-
-    // Su damlaları
-    this.waterDrops.forEach(d => {
-      ctx.globalAlpha = d.life;
-      const wGrad = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, d.size);
-      wGrad.addColorStop(0, 'rgba(150, 220, 255, 1)');
-      wGrad.addColorStop(1, 'rgba(50, 100, 255, 0)');
-      ctx.fillStyle = wGrad;
-      ctx.beginPath();
-      ctx.arc(d.x, d.y, d.size, 0, Math.PI * 2);
-      ctx.fill();
-    });
-
     ctx.restore();
   }
 }
@@ -773,284 +597,21 @@ class Firefighter {
 function animate() {
   requestAnimationFrame(animate);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  if (!waterMode) {
-    for (let i = 0; i < 3; i++) {
-      particles.push(new Particle(false));
-    }
-  } else {
+  if (animationActive) {
     for (let i = 0; i < 2; i++) {
-      particles.push(new Particle(true));
+      particles.push(new Particle());
     }
   }
   particles = particles.filter(p => p.life > 0);
   particles.forEach(p => { p.update(); p.draw(); });
-  if (showFirefighter && firefighter) {
-    firefighter.update();
-    firefighter.draw();
-  }
 }
 
 animate();
 
-window.startFirefighterAnimation = function() {
-  waterMode = true;
-  showFirefighter = true;
-  firefighter = new Firefighter();
-  setTimeout(() => {
-    showFirefighter = false;
-    waterMode = false;
-  }, 4000);
-};
-</script><script>
-const canvas = document.getElementById('fireCanvas');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-window.addEventListener('resize', () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
-
-let particles = [];
-let waterMode = false;
-
-class Particle {
-  constructor(water = false) {
-    this.x = Math.random() * canvas.width;
-    this.y = canvas.height + 10;
-    this.size = Math.random() * 4 + 1;
-    this.speedY = -(Math.random() * 1.5 + 0.3);
-    this.speedX = (Math.random() - 0.5) * 0.8;
-    this.life = 1.0;
-    this.decay = Math.random() * 0.008 + 0.002;
-    this.water = water;
-  }
-  update() {
-    this.y += this.speedY;
-    this.x += this.speedX;
-    this.life -= this.decay;
-    this.size *= 0.995;
-  }
-  draw() {
-    ctx.save();
-    ctx.globalAlpha = this.life * 0.6;
-    if (this.water) {
-      ctx.fillStyle = `rgba(50, 150, 255, ${this.life})`;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fill();
-    } else {
-      const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 2);
-      gradient.addColorStop(0, `rgba(255, 255, 150, ${this.life})`);
-      gradient.addColorStop(0.4, `rgba(255, 80, 0, ${this.life * 0.8})`);
-      gradient.addColorStop(1, `rgba(255, 0, 0, 0)`);
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size * 2, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.restore();
-  }
-}
-
-let firefighter = null;
-let showFirefighter = false;
-
-class Firefighter {
-  constructor() {
-    this.x = -150;
-    this.y = canvas.height - 200;
-    this.targetX = 80;
-    this.speed = 6;
-    this.arrived = false;
-    this.waterDrops = [];
-    this.frame = 0;
-  }
-  update() {
-    this.frame++;
-    if (!this.arrived) {
-      this.x += this.speed;
-      if (this.x >= this.targetX) {
-        this.x = this.targetX;
-        this.arrived = true;
-      }
-    } else {
-      for (let i = 0; i < 4; i++) {
-        this.waterDrops.push({
-          x: this.x + 60,
-          y: this.y + 40,
-          vx: Math.random() * 10 + 6,
-          vy: -(Math.random() * 5 + 1),
-          life: 1.0,
-          size: Math.random() * 5 + 2
-        });
-      }
-    }
-    this.waterDrops = this.waterDrops.filter(d => d.life > 0);
-    this.waterDrops.forEach(d => {
-      d.x += d.vx;
-      d.y += d.vy;
-      d.vy += 0.3;
-      d.life -= 0.015;
-    });
-  }
-  draw() {
-    ctx.save();
-    const x = this.x;
-    const y = this.y;
-    const legSwing = this.arrived ? 0 : Math.sin(this.frame * 0.3) * 10;
-
-    // Gölge
-    ctx.fillStyle = 'rgba(0,0,0,0.3)';
-    ctx.beginPath();
-    ctx.ellipse(x + 30, y + 105, 30, 8, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Bacaklar
-    ctx.strokeStyle = '#cc2200';
-    ctx.lineWidth = 10;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(x + 30, y + 70);
-    ctx.lineTo(x + 20 + legSwing, y + 105);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x + 30, y + 70);
-    ctx.lineTo(x + 40 - legSwing, y + 105);
-    ctx.stroke();
-
-    // Ayaklar
-    ctx.strokeStyle = '#111';
-    ctx.lineWidth = 8;
-    ctx.beginPath();
-    ctx.moveTo(x + 20 + legSwing, y + 105);
-    ctx.lineTo(x + 10 + legSwing, y + 110);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x + 40 - legSwing, y + 105);
-    ctx.lineTo(x + 30 - legSwing, y + 110);
-    ctx.stroke();
-
-    // Gövde - kıyafet
-    ctx.fillStyle = '#cc2200';
-    ctx.beginPath();
-    ctx.roundRect(x + 15, y + 30, 30, 45, 5);
-    ctx.fill();
-
-    // Gövde şerit
-    ctx.fillStyle = '#ffcc00';
-    ctx.fillRect(x + 15, y + 55, 30, 6);
-
-    // Sol kol (hortum tutan)
-    ctx.strokeStyle = '#cc2200';
-    ctx.lineWidth = 10;
-    ctx.beginPath();
-    ctx.moveTo(x + 20, y + 38);
-    ctx.lineTo(x + 55, y + 50);
-    ctx.stroke();
-
-    // Sağ kol
-    ctx.beginPath();
-    ctx.moveTo(x + 40, y + 38);
-    ctx.lineTo(x + 55, y + 50);
-    ctx.stroke();
-
-    // Hortum
-    ctx.strokeStyle = '#888';
-    ctx.lineWidth = 6;
-    ctx.beginPath();
-    ctx.moveTo(x + 55, y + 50);
-    ctx.quadraticCurveTo(x + 65, y + 55, x + 70, y + 45);
-    ctx.stroke();
-
-    // Boyun
-    ctx.fillStyle = '#ffcc99';
-    ctx.beginPath();
-    ctx.roundRect(x + 24, y + 18, 14, 14, 3);
-    ctx.fill();
-
-    // Kafa
-    ctx.fillStyle = '#ffcc99';
-    ctx.beginPath();
-    ctx.arc(x + 30, y + 10, 18, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Yüz - gözler
-    ctx.fillStyle = '#333';
-    ctx.beginPath();
-    ctx.arc(x + 24, y + 8, 3, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(x + 36, y + 8, 3, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Yüz - gülümseme
-    ctx.strokeStyle = '#333';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(x + 30, y + 12, 7, 0.2, Math.PI - 0.2);
-    ctx.stroke();
-
-    // Kask
-    ctx.fillStyle = '#ffcc00';
-    ctx.beginPath();
-    ctx.arc(x + 30, y - 6, 20, Math.PI, 0);
-    ctx.fill();
-    ctx.fillRect(x + 10, y - 6, 40, 6);
-
-    // Kask siperliği
-    ctx.fillStyle = '#ffaa00';
-    ctx.beginPath();
-    ctx.rect(x + 8, y - 2, 44, 4);
-    ctx.fill();
-
-    // Su damlaları
-    this.waterDrops.forEach(d => {
-      ctx.globalAlpha = d.life;
-      const wGrad = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, d.size);
-      wGrad.addColorStop(0, 'rgba(150, 220, 255, 1)');
-      wGrad.addColorStop(1, 'rgba(50, 100, 255, 0)');
-      ctx.fillStyle = wGrad;
-      ctx.beginPath();
-      ctx.arc(d.x, d.y, d.size, 0, Math.PI * 2);
-      ctx.fill();
-    });
-
-    ctx.restore();
-  }
-}
-
-function animate() {
-  requestAnimationFrame(animate);
+window.stopFireAnimation = function() {
+  animationActive = false;
+  particles = [];
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  if (!waterMode) {
-    for (let i = 0; i < 3; i++) {
-      particles.push(new Particle(false));
-    }
-  } else {
-    for (let i = 0; i < 2; i++) {
-      particles.push(new Particle(true));
-    }
-  }
-  particles = particles.filter(p => p.life > 0);
-  particles.forEach(p => { p.update(); p.draw(); });
-  if (showFirefighter && firefighter) {
-    firefighter.update();
-    firefighter.draw();
-  }
-}
-
-animate();
-
-window.startFirefighterAnimation = function() {
-  waterMode = true;
-  showFirefighter = true;
-  firefighter = new Firefighter();
-  setTimeout(() => {
-    showFirefighter = false;
-    waterMode = false;
-  }, 4000);
 };
 </script>
 <script src="app.js"></script>
