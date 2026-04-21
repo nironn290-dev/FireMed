@@ -11,7 +11,6 @@ module.exports = async function handler(req, res) {
 
   const { prompt, aspectRatio } = req.body;
   console.log('Received aspectRatio:', aspectRatio);
-console.log('Width:', width, 'Height:', height);
   const token = req.headers.authorization?.replace('Bearer ', '');
   const REPLICATE_TOKEN = process.env.REPLICATE_TOKEN;
 
