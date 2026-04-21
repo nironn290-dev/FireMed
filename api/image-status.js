@@ -33,11 +33,6 @@ module.exports = async function handler(req, res) {
           .order('created_at', { ascending: false })
           .limit(1)
           .maybeSingle();
-        
-        if (existing) {
-          return res.status(200).json({ status: 'succeeded', imageUrl: existing.url });
-        }
-      }
 
       const imageResponse = await fetch(replicateUrl);
       const imageBuffer = await imageResponse.arrayBuffer();
