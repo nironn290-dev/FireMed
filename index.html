@@ -16,6 +16,16 @@
     * { box-sizing:border-box; margin:0; padding:0; }
     body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
 
+    #fireCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+#authScreen { z-index: 1; position: relative; }
+.auth-box { position: relative; z-index: 2; }
+
     #authScreen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:20px; }
     .auth-box { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:32px 28px; width:100%; max-width:400px; }
     .auth-logo { font-family:'Bebas Neue',sans-serif; font-size:36px; letter-spacing:3px; text-align:center; margin-bottom:8px; }
