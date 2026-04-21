@@ -441,6 +441,7 @@ async function generateVideo() {
 
   if (userCredits < cost) {
     showError(`You need ${cost} credits for this video. You have ${userCredits} credits.`);
+    setTimeout(() => showPricing(), 1500);
     return;
   }
 
