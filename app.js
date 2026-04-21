@@ -395,7 +395,6 @@ function selectImageRatio(btn, ratio) {
   document.querySelectorAll('#img-ratio-1-1, #img-ratio-16-9, #img-ratio-9-16, #img-ratio-4-3, #img-ratio-3-4').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   selectedImageRatio = ratio;
-  console.log('Ratio changed to:', selectedImageRatio);
 }
 
 function updateCreditDisplay() {
