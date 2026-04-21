@@ -135,8 +135,8 @@ function showApp() {
   document.getElementById('galleryScreen').style.display = 'none';
   document.getElementById('profileScreen').style.display = 'none';
   document.getElementById('pricingScreen').style.display = 'none';
+  if (window.stopFireAnimation) window.stopFireAnimation();
 }
-
 function logout() {
   currentUser = null;
   currentSession = null;
