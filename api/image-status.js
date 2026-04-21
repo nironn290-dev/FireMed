@@ -60,6 +60,10 @@ module.exports = async function handler(req, res) {
         return res.status(200).json({ status: 'succeeded', imageUrl: replicateUrl });
       }
 
+if (existing) {
+  return res.status(200).json({ status: 'succeeded', imageUrl: existing.url });
+}
+        
       const { data: publicUrlData } = supabase.storage
         .from('images')
         .getPublicUrl(fileName);
