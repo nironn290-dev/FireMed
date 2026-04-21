@@ -620,6 +620,7 @@ async function generateImage() {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${currentSession.access_token}`
       },
+      console.log('Selected ratio:', selectedImageRatio);
       body: JSON.stringify({ prompt, aspectRatio: selectedImageRatio })
     });
     const data = await response.json();
