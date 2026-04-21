@@ -63,7 +63,7 @@ guidance_scale: 0.0
     if (!data.id) {
   return res.status(500).json({ error: 'Failed to start image generation. Please try again.' });
 }
-
+return res.status(200).json({ predictionId: data.id });
   } catch (err) {
     await supabase.from('profiles').update({ credits: profile.credits }).eq('id', user.id);
     return res.status(500).json({ error: 'Something went wrong.' });
