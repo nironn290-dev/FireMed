@@ -45,8 +45,8 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({
         input: {
           prompt: prompt,
-          width: aspectRatio === '16:9' ? 1024 : aspectRatio === '9:16' ? 576 : aspectRatio === '4:3' ? 1024 : aspectRatio === '3:4' ? 768 : 1024,
-height: aspectRatio === '16:9' ? 576 : aspectRatio === '9:16' ? 1024 : aspectRatio === '4:3' ? 768 : aspectRatio === '3:4' ? 1024 : 1024,
+          width: aspectRatio === '16:9' ? 1280 : aspectRatio === '9:16' ? 720 : aspectRatio === '4:3' ? 1152 : aspectRatio === '3:4' ? 864 : 1024,
+height: aspectRatio === '16:9' ? 720 : aspectRatio === '9:16' ? 1280 : aspectRatio === '4:3' ? 864 : aspectRatio === '3:4' ? 1152 : 1024,
           num_inference_steps: 4,
           guidance_scale: 1.0
         }
