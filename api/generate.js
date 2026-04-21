@@ -68,12 +68,18 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: `Insufficient credits. You need ${cost} credits.` });
     }
 
-    // Krediyi düş
-    await supabase
-      .from('profiles')
-      .update({ credits: profile.credits - cost })
-      .eq('id', user.id);
-  }
+    // Krediyi düş - atomik işlem
+const { data: updatedProfile, error: updateError } = await supabase
+  .from('profiles')
+  .update({ credits: profile.credits - cost })
+  .eq('id', user.id)
+  .eq('credits', profile.credits)
+  .select()
+  .single();
+
+if (updateError || !updatedProfile) {
+  return res.status(400).json({ error: 'Credit deduction failed. Please try again.' });
+}
 
   const klingToken = generateJWT(ACCESS_KEY, SECRET_KEY);
 
