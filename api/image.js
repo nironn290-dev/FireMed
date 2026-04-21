@@ -9,9 +9,8 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { prompt, aspectRatio } = req.body;
-  console.log('Received aspectRatio:', aspectRatio);
-  const token = req.headers.authorization?.replace('Bearer ', '');
+ const { prompt, aspectRatio } = req.body;
+const token = req.headers.authorization?.replace('Bearer ', '');
   const REPLICATE_TOKEN = process.env.REPLICATE_TOKEN;
 
   if (!prompt) return res.status(400).json({ error: 'Prompt required.' });
