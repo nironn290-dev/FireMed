@@ -550,6 +550,167 @@
 </div>
 
 </div>
+  <script>
+const canvas = document.getElementById('fireCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+let particles = [];
+let waterMode = false;
+
+class Particle {
+  constructor(water = false) {
+    this.x = Math.random() * canvas.width;
+    this.y = canvas.height + 10;
+    this.size = Math.random() * 6 + 2;
+    this.speedY = -(Math.random() * 3 + 1);
+    this.speedX = (Math.random() - 0.5) * 2;
+    this.life = 1.0;
+    this.decay = Math.random() * 0.02 + 0.005;
+    this.water = water;
+  }
+  update() {
+    this.y += this.speedY;
+    this.x += this.speedX;
+    this.life -= this.decay;
+    this.size *= 0.99;
+  }
+  draw() {
+    ctx.save();
+    ctx.globalAlpha = this.life;
+    if (this.water) {
+      ctx.fillStyle = `rgba(50, 150, 255, ${this.life})`;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+      gradient.addColorStop(0, `rgba(255, 255, 100, ${this.life})`);
+      gradient.addColorStop(0.5, `rgba(255, 100, 0, ${this.life})`);
+      gradient.addColorStop(1, `rgba(255, 0, 0, 0)`);
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+}
+
+let firefighter = null;
+let showFirefighter = false;
+
+class Firefighter {
+  constructor() {
+    this.x = -100;
+    this.y = canvas.height - 150;
+    this.targetX = canvas.width / 2 - 50;
+    this.speed = 8;
+    this.arrived = false;
+    this.waterDrops = [];
+  }
+  update() {
+    if (!this.arrived) {
+      this.x += this.speed;
+      if (this.x >= this.targetX) {
+        this.x = this.targetX;
+        this.arrived = true;
+      }
+    } else {
+      for (let i = 0; i < 3; i++) {
+        this.waterDrops.push({
+          x: this.x + 40,
+          y: this.y + 20,
+          vx: Math.random() * 8 + 4,
+          vy: -(Math.random() * 4 + 2),
+          life: 1.0,
+          size: Math.random() * 4 + 2
+        });
+      }
+    }
+    this.waterDrops = this.waterDrops.filter(d => d.life > 0);
+    this.waterDrops.forEach(d => {
+      d.x += d.vx;
+      d.y += d.vy;
+      d.vy += 0.2;
+      d.life -= 0.02;
+    });
+  }
+  draw() {
+    ctx.save();
+    ctx.fillStyle = '#ff4500';
+    ctx.beginPath();
+    ctx.arc(this.x + 20, this.y - 30, 12, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffcc00';
+    ctx.beginPath();
+    ctx.ellipse(this.x + 20, this.y - 40, 14, 8, 0, Math.PI, 0);
+    ctx.fill();
+    ctx.strokeStyle = '#cc3300';
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.moveTo(this.x + 20, this.y - 18);
+    ctx.lineTo(this.x + 20, this.y + 20);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(this.x + 20, this.y + 20);
+    ctx.lineTo(this.x + 10, this.y + 50);
+    ctx.moveTo(this.x + 20, this.y + 20);
+    ctx.lineTo(this.x + 30, this.y + 50);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(this.x + 20, this.y - 10);
+    ctx.lineTo(this.x + 40, this.y + 20);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(50, 150, 255, 0.8)';
+    this.waterDrops.forEach(d => {
+      ctx.globalAlpha = d.life;
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.size, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.restore();
+  }
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (!waterMode) {
+    for (let i = 0; i < 5; i++) {
+      particles.push(new Particle(false));
+    }
+  } else {
+    for (let i = 0; i < 3; i++) {
+      particles.push(new Particle(true));
+    }
+  }
+  particles = particles.filter(p => p.life > 0);
+  particles.forEach(p => { p.update(); p.draw(); });
+  if (showFirefighter && firefighter) {
+    firefighter.update();
+    firefighter.draw();
+  }
+}
+
+animate();
+
+window.startFirefighterAnimation = function() {
+  waterMode = true;
+  showFirefighter = true;
+  firefighter = new Firefighter();
+  setTimeout(() => {
+    showFirefighter = false;
+    waterMode = false;
+  }, 3000);
+};
+</script>
 <script src="app.js"></script>
 </body>
 </html>
