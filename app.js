@@ -137,6 +137,7 @@ function showApp() {
   document.getElementById('pricingScreen').style.display = 'none';
   if (window.stopFireAnimation) window.stopFireAnimation();
 }
+
 function logout() {
   currentUser = null;
   currentSession = null;
