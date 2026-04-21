@@ -605,7 +605,6 @@ function setAiImagePrompt(text) {
 }
 
 async function generateImage() {
-  console.log('Ratio before generate:', selectedImageRatio);
   const prompt = document.getElementById('aiImagePrompt').value.trim();
   if (!prompt) {
     document.getElementById('aiImageError').textContent = 'Please describe your image.';
