@@ -919,6 +919,7 @@ async function generateMotionVideo() {
   const cost = calculateMotionCredits(selectedMotionVideoDuration || 5);
   if (userCredits < cost) {
     showError(`You need ${cost} credits. You have ${userCredits} credits.`);
+    setTimeout(() => showPricing(), 1500);
     return;
   }
   showResultArea();
