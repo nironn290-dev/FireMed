@@ -594,6 +594,14 @@ function showError(msg) {
   el.textContent = '⚠ ' + msg;
   el.style.display = 'block';
   el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  
+  if (msg.toLowerCase().includes('credit') || msg.toLowerCase().includes('insufficient')) {
+    setTimeout(() => {
+      if (confirm('You need more credits. Would you like to upgrade your plan?')) {
+        showPricing();
+      }
+    }, 500);
+  }
 }
 
 function hideError() {
