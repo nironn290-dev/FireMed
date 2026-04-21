@@ -633,7 +633,15 @@ async function generateImage() {
       body: JSON.stringify({ prompt, aspectRatio: selectedImageRatio })
     });
     const data = await response.json();
-    if (data.error) throw new Error(data.error);
+    if (data.error) {
+  if (data.error.toLowerCase().includes('credit') || data.error.toLowerCase().includes('insufficient')) {
+    showError(data.error);
+    setTimeout(() => showPricing(), 1500);
+    document.getElementById('aiImageLoading').style.display = 'none';
+    return;
+  }
+  throw new Error(data.error);
+}
     const predictionId = data.predictionId;
     let attempts = 0;
     const maxAttempts = 150;
