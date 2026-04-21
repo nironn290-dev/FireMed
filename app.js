@@ -652,15 +652,21 @@ async function generateImage() {
           document.getElementById('aiImageOutput').src = statusData.imageUrl;
           document.getElementById('aiImageResult').style.display = 'block';
           document.getElementById('aiImageLoading').style.display = 'none';
-          document.getElementById('aiImageDownloadBtn').onclick = () => {
-            const a = document.createElement('a');
-            a.href = statusData.imageUrl;
-            a.download = 'firemed-image.png';
-            a.target = '_blank';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-          };
+          document.getElementById('aiImageDownloadBtn').onclick = async () => {
+  try {
+    const response = await fetch(statusData.imageUrl);
+    const blob = await response.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'firemed-image.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  } catch(err) {
+    window.open(statusData.imageUrl, '_blank');
+  }
+};
           try {
     const profileRes = await fetch('/api/auth', {
       method: 'POST',
