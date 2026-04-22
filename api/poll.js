@@ -35,6 +35,9 @@ module.exports = async function handler(req, res) {
     });
 
     const result = await poll.json();
+    if (!result.data) {
+  return res.status(500).json({ error: 'Kling error', details: result });
+}
 
     if (result.data && result.data.task_status === 'succeed') {
       const videoUrl = result.data.works[0].resource.resource;
