@@ -47,6 +47,5 @@ module.exports = async function handler(req, res) {
 
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: 'Polling failed.' });
-  }
+return res.status(500).json({ error: 'Polling failed.', details: err.message });  }
 }
