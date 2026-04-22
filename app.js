@@ -916,7 +916,7 @@ async function generateMotionVideo() {
   }
   showResultArea();
   try {
-    const response = await fetch('/api/motion', {
+    const response = await fetch('/api/poll', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -950,7 +950,7 @@ async function pollMotionResult(taskId, cost) {
       return;
     }
     try {
-      const response = await fetch('/api/motion', {
+      const response = await fetch('/api/poll', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
