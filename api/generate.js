@@ -47,44 +47,11 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'API keys not configured.' });
   }
 
-  // Polling için kredi kontrolü gerekmez
-  if (!taskId) {
-    if (!token) return res.status(401).json({ error: 'No token.' });
-
-    const { data: { user } } = await supabase.auth.getUser(token);
-    if (!user) return res.status(401).json({ error: 'Invalid token.' });
-
-    const modelKey = selectedModel || 'kling-v2-5-turbo-std';
-    const videoDuration = duration || '5';
-    const cost = CREDIT_COSTS[modelKey]?.[videoDuration] || 4;
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('credits')
-      .eq('id', user.id)
-      .single();
-
-    if (!profile || profile.credits < cost) {
-      return res.status(400).json({ error: `Insufficient credits. You need ${cost} credits.` });
-    }
-
-    // Krediyi düş - atomik işlem
-const { data: updatedProfile, error: updateError } = await supabase
-  .from('profiles')
-  .update({ credits: profile.credits - cost })
-  .eq('id', user.id)
-  .eq('credits', profile.credits)
-  .select()
-  .single();
-
-if (updateError || !updatedProfile) {
-  return res.status(400).json({ error: 'Credit deduction failed. Please try again.' });
-}
-
   const klingToken = generateJWT(ACCESS_KEY, SECRET_KEY);
 
-  try {
-    if (taskId) {
+  // Polling modu - taskId varsa kredi kontrolü gerekmez
+  if (taskId) {
+    try {
       const endpoint = mode === 'text'
         ? `https://api.klingai.com/v1/videos/text2video/${taskId}`
         : `https://api.klingai.com/v1/videos/image2video/${taskId}`;
@@ -101,11 +68,46 @@ if (updateError || !updatedProfile) {
         return res.status(200).json({ status: 'failed' });
       }
       return res.status(200).json({ status: 'processing' });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Polling failed.' });
     }
+  }
 
-    const modelKey = selectedModel || 'kling-v2-5-turbo-std';
+  // Yeni video üretimi
+  if (!token) return res.status(401).json({ error: 'No token.' });
+
+  const { data: { user } } = await supabase.auth.getUser(token);
+  if (!user) return res.status(401).json({ error: 'Invalid token.' });
+
+  const modelKey = selectedModel || 'kling-v2-5-turbo-std';
+  const videoDuration = duration || '5';
+  const cost = CREDIT_COSTS[modelKey]?.[videoDuration] || 4;
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('credits')
+    .eq('id', user.id)
+    .single();
+
+  if (!profile || profile.credits < cost) {
+    return res.status(400).json({ error: `Insufficient credits. You need ${cost} credits.` });
+  }
+
+  const { data: updatedProfile, error: updateError } = await supabase
+    .from('profiles')
+    .update({ credits: profile.credits - cost })
+    .eq('id', user.id)
+    .eq('credits', profile.credits)
+    .select()
+    .single();
+
+  if (updateError || !updatedProfile) {
+    return res.status(400).json({ error: 'Credit deduction failed. Please try again.' });
+  }
+
+  try {
     const config = MODEL_CONFIG[modelKey] || MODEL_CONFIG['kling-v2-5-turbo-std'];
-    const videoDuration = duration || '5';
 
     let response;
 
@@ -171,6 +173,11 @@ if (updateError || !updatedProfile) {
     const data = await response.json();
 
     if (!data.data || !data.data.task_id) {
+      // Hata durumunda krediyi geri ver
+      await supabase
+        .from('profiles')
+        .update({ credits: profile.credits })
+        .eq('id', user.id);
       return res.status(500).json({ error: data.message || 'Failed to start video generation.' });
     }
 
@@ -178,6 +185,11 @@ if (updateError || !updatedProfile) {
 
   } catch (err) {
     console.error(err);
+    // Hata durumunda krediyi geri ver
+    await supabase
+      .from('profiles')
+      .update({ credits: profile.credits })
+      .eq('id', user.id);
     return res.status(500).json({ error: 'Something went wrong. Please try again.' });
   }
 }
