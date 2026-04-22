@@ -469,7 +469,7 @@ async function generateVideo() {
       prompt = buildPrompt(document.getElementById('textPrompt').value.trim(), selectedStyle);
     }
 
-    const response = await fetch('/api/generate', {
+    const response = await fetch('/api/poll', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -515,7 +515,7 @@ async function pollResult(taskId, videoMode, cost) {
     }
 
     try {
-      const response = await fetch('/api/generate', {
+      const response = await fetch('/api/poll', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
