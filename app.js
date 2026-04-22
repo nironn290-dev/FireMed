@@ -916,7 +916,7 @@ async function generateMotionVideo() {
   }
   showResultArea();
   try {
-    const response = await fetch('/api/poll', {
+    const response = await fetch('/api/motion', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
