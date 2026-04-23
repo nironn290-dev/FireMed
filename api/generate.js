@@ -125,8 +125,8 @@ module.exports = async function handler(req, res) {
           mode: config.mode,
           aspect_ratio: aspectRatio,
           cfg_scale: 0.5,
-          ...(enableAudio && { enable_audio: true }),
-          ...(enableVoice && { voice_language: 'en' })
+          ...(enableAudio && { enable_audio: true, audio_language: 'en' }),
+...(enableVoice && { enable_audio: true, voice_language: 'en' })
         })
       });
     } else if (imageBase64 && endImageBase64) {
@@ -145,8 +145,8 @@ module.exports = async function handler(req, res) {
           mode: config.mode,
           aspect_ratio: aspectRatio,
           cfg_scale: 0.5,
-          ...(enableAudio && { enable_audio: true }),
-          ...(enableVoice && { voice_language: 'en' })
+          ...(enableAudio && { enable_audio: true, audio_language: 'en' }),
+...(enableVoice && { enable_audio: true, voice_language: 'en' })
         })
       });
     } else {
@@ -164,8 +164,8 @@ module.exports = async function handler(req, res) {
           mode: config.mode,
           aspect_ratio: aspectRatio,
           cfg_scale: 0.5,
-          ...(enableAudio && { enable_audio: true }),
-          ...(enableVoice && { voice_language: 'en' })
+          ...(enableAudio && { enable_audio: true, audio_language: 'en' }),
+...(enableVoice && { enable_audio: true, voice_language: 'en' })
         })
       });
     }
