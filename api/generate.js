@@ -170,6 +170,7 @@ module.exports = async function handler(req, res) {
       });
     }
 
+    const data = await response.json();
     console.log('Kling response:', JSON.stringify(data));
 
     if (!data.data || !data.data.task_id) {
