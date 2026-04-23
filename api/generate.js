@@ -49,7 +49,7 @@ module.exports = async function handler(req, res) {
 
   const klingToken = generateJWT(ACCESS_KEY, SECRET_KEY);
 
-  // Polling modu - taskId varsa kredi kontrolü gerekmez
+  // Polling modu
   if (taskId) {
     try {
       const endpoint = mode === 'text'
@@ -62,7 +62,8 @@ module.exports = async function handler(req, res) {
       const result = await poll.json();
 
       if (result.data && result.data.task_status === 'succeed') {
-        const videoUrl = result.data.works[0].resource.resource;
+        const work = result.data.works?.[0] || result.data.task_result?.videos?.[0];
+        const videoUrl = work?.resource?.resource || work?.url;
         return res.status(200).json({ status: 'succeeded', output: videoUrl });
       } else if (result.data && result.data.task_status === 'failed') {
         return res.status(200).json({ status: 'failed' });
@@ -82,7 +83,8 @@ module.exports = async function handler(req, res) {
 
   const modelKey = selectedModel || 'kling-v2-5-turbo-std';
   const videoDuration = duration || '5';
-  const cost = CREDIT_COSTS[modelKey]?.[videoDuration] || 4;
+  const baseCost = CREDIT_COSTS[modelKey]?.[videoDuration] || 4;
+  const cost = enableAudio ? baseCost * 2 : baseCost;
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -108,6 +110,8 @@ module.exports = async function handler(req, res) {
 
   try {
     const config = MODEL_CONFIG[modelKey] || MODEL_CONFIG['kling-v2-5-turbo-std'];
+    // Ses açıkken mode zorla pro olsun
+    const videoMode = enableAudio ? 'pro' : config.mode;
 
     let response;
 
@@ -122,14 +126,15 @@ module.exports = async function handler(req, res) {
           model_name: config.model_name,
           prompt: prompt,
           duration: videoDuration,
-          mode: config.mode,
+          mode: videoMode,
           aspect_ratio: aspectRatio,
           cfg_scale: 0.5,
           ...(enableAudio && { enable_audio: true }),
-...(enableVoice && { enable_audio: true })
+          ...(enableVoice && { enable_audio: true })
         })
       });
-    } else if (imageBase64 && endImageBase64) {
+    } else if (imageBase64 && endImageBase64 && !enableAudio) {
+      // Ses açıkken end frame göndermiyoruz (Kling kısıtlaması)
       response = await fetch('https://api.klingai.com/v1/videos/image2video', {
         method: 'POST',
         headers: {
@@ -142,11 +147,9 @@ module.exports = async function handler(req, res) {
           image_tail: endImageBase64,
           prompt: prompt || '',
           duration: videoDuration,
-          mode: config.mode,
+          mode: videoMode,
           aspect_ratio: aspectRatio,
           cfg_scale: 0.5,
-          ...(enableAudio && { enable_audio: true }),
-...(enableVoice && { enable_audio: true })
         })
       });
     } else {
@@ -161,17 +164,16 @@ module.exports = async function handler(req, res) {
           image: imageBase64,
           prompt: prompt || 'animate this image naturally',
           duration: videoDuration,
-          mode: config.mode,
+          mode: videoMode,
           aspect_ratio: aspectRatio,
           cfg_scale: 0.5,
           ...(enableAudio && { enable_audio: true }),
-...(enableVoice && { enable_audio: true })
+          ...(enableVoice && { enable_audio: true })
         })
       });
     }
 
     const data = await response.json();
-    console.log('Kling response:', JSON.stringify(data));
 
     if (!data.data || !data.data.task_id) {
       // Hata durumunda krediyi geri ver
