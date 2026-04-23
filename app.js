@@ -413,7 +413,7 @@ function selectImageRatio(btn, ratio) {
 }
 
 function updateCreditDisplay() {
-  const baseCost = CREDIT_COSTS[modelKey]?.[videoDuration] || 4;
+  const baseCost = CREDIT_COSTS[selectedModel]?.[selectedDuration] || 4;
 const cost = enableAudio ? baseCost * 2 : baseCost;
   document.getElementById('generateBtn').textContent = `GENERATE VIDEO (${cost} credits)`;
 }
