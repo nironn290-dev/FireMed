@@ -364,7 +364,7 @@ function selectModel(btn, model) {
   }
 }
 
-function updateCreditDisplay(); {
+function toggleAudio() {
   enableAudio = !enableAudio;
   document.getElementById('btn-audio').classList.toggle('active', enableAudio);
   document.getElementById('audio-tip').style.display = enableAudio ? 'block' : 'none';
@@ -373,6 +373,7 @@ function updateCreditDisplay(); {
     document.getElementById('btn-voice').classList.remove('active');
     document.getElementById('voice-tip').style.display = 'none';
   }
+  updateCreditDisplay();
 }
 
 function toggleVoice() {
