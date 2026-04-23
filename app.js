@@ -182,13 +182,28 @@ function onFileSelected(event) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = function(e) {
-    selectedImageBase64 = e.target.result.split(',')[1];
-    const preview = document.getElementById('imagePreview');
-    const wrapper = document.getElementById('imagePreviewWrapper');
-    const uploadBox = document.querySelector('#uploadSection .upload-box');
-    preview.src = e.target.result;
-    wrapper.style.display = 'block';
-    uploadBox.style.display = 'none';
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      let w = img.width, h = img.height;
+      const maxSize = 1024;
+      if (w > maxSize || h > maxSize) {
+        if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+        else { w = Math.round(w * maxSize / h); h = maxSize; }
+      }
+      canvas.width = w;
+      canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const compressed = canvas.toDataURL('image/jpeg', 0.85);
+      selectedImageBase64 = compressed.split(',')[1];
+      const preview = document.getElementById('imagePreview');
+      const wrapper = document.getElementById('imagePreviewWrapper');
+      const uploadBox = document.querySelector('#uploadSection .upload-box');
+      preview.src = compressed;
+      wrapper.style.display = 'block';
+      uploadBox.style.display = 'none';
+    };
+    img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
