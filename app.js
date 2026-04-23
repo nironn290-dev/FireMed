@@ -364,7 +364,7 @@ function selectModel(btn, model) {
   }
 }
 
-function toggleAudio() {
+function updateCreditDisplay(); {
   enableAudio = !enableAudio;
   document.getElementById('btn-audio').classList.toggle('active', enableAudio);
   document.getElementById('audio-tip').style.display = enableAudio ? 'block' : 'none';
