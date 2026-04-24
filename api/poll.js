@@ -26,9 +26,11 @@ module.exports = async function handler(req, res) {
   try {
     const klingToken = generateJWT(ACCESS_KEY, SECRET_KEY);
 
-    const endpoint = mode === 'text'
-      ? `https://api.klingai.com/v1/videos/text2video/${taskId}`
-      : `https://api.klingai.com/v1/videos/image2video/${taskId}`;
+    const endpoint = mode === 'motion'
+  ? `https://api.klingai.com/v1/videos/motion-control/${taskId}`
+  : mode === 'text'
+  ? `https://api.klingai.com/v1/videos/text2video/${taskId}`
+  : `https://api.klingai.com/v1/videos/image2video/${taskId}`;
 
     const poll = await fetch(endpoint, {
       headers: { 'Authorization': `Bearer ${klingToken}` }
