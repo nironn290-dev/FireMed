@@ -47,7 +47,8 @@ module.exports = async function handler(req, res) {
       const result = await poll.json();
 
       if (result.data && result.data.task_status === 'succeed') {
-        const videoUrl = result.data.works[0].resource.resource;
+        const work = result.data.works?.[0] || result.data.task_result?.videos?.[0];
+const videoUrl = work?.resource?.resource || work?.url;
         return res.status(200).json({ status: 'succeeded', output: videoUrl });
       } else if (result.data && result.data.task_status === 'failed') {
         return res.status(200).json({ status: 'failed' });
