@@ -164,7 +164,8 @@ document.getElementById('motionSection').style.display = mode === 'motion' ? 'bl
   document.getElementById('generateBtn').style.display = (mode === 'aiimage' || mode === 'motion') ? 'none' : 'block';
   const audioOptions = document.getElementById('audioOptions');
 if (audioOptions) {
-  audioOptions.style.display = (mode === 'text' || mode === 'image') ? 'flex' : 'none';
+  const showAudio = (mode === 'text' || mode === 'image') && selectedModel === 'kling-v2-6-pro';
+  audioOptions.style.display = showAudio ? 'flex' : 'none';
 }
   // Model section ve mini butonları sadece aiimage'da gizle
   const modelSection = document.getElementById('model-kling-v2-5-turbo-std')?.closest('.section');
