@@ -130,7 +130,7 @@ module.exports = async function handler(req, res) {
           aspect_ratio: aspectRatio,
           cfg_scale: 0.5,
           ...(enableAudio && { sound: 'on' }),
-          ...(enableVoice && { enable_audio: true })
+          ...(enableVoice && { sound: 'on' }),
         })
       });
     } else if (imageBase64 && endImageBase64 && !enableAudio) {
