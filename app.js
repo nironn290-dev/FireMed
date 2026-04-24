@@ -162,6 +162,10 @@ document.getElementById('btnMotion').className = mode === 'motion' ? 'mode-btn a
   document.getElementById('aiImageSection').style.display = mode === 'aiimage' ? 'block' : 'none';
 document.getElementById('motionSection').style.display = mode === 'motion' ? 'block' : 'none';
   document.getElementById('generateBtn').style.display = (mode === 'aiimage' || mode === 'motion') ? 'none' : 'block';
+  const audioOptions = document.getElementById('audioOptions');
+if (audioOptions) {
+  audioOptions.style.display = (mode === 'text' || mode === 'image') ? 'flex' : 'none';
+}
   // Model section ve mini butonları sadece aiimage'da gizle
   const modelSection = document.getElementById('model-kling-v2-5-turbo-std')?.closest('.section');
 if (modelSection) modelSection.style.display = (mode === 'aiimage' || mode === 'motion') ? 'none' : 'block';
