@@ -978,7 +978,7 @@ async function pollMotionResult(taskId, cost) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${currentSession.access_token}`
         },
-        body: JSON.stringify({ taskId })
+        body: JSON.stringify({ taskId, mode: 'motion' })
       });
       const result = await response.json();
       if (result.status === 'succeeded' && result.output) {
