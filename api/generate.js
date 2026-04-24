@@ -129,7 +129,7 @@ module.exports = async function handler(req, res) {
           mode: videoMode,
           aspect_ratio: aspectRatio,
           cfg_scale: 0.5,
-          ...(enableAudio && { enable_audio: true }),
+          ...(enableAudio && { sound: 'on' }),
           ...(enableVoice && { enable_audio: true })
         })
       });
@@ -167,7 +167,7 @@ module.exports = async function handler(req, res) {
           mode: videoMode,
           aspect_ratio: aspectRatio,
           cfg_scale: 0.5,
-          ...(enableAudio && { enable_audio: true }),
+          ...(enableAudio && { sound: 'on' }),
           ...(enableVoice && { enable_audio: true })
         })
       });
