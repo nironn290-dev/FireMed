@@ -267,14 +267,28 @@ function onMotionImageSelected(event) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = function(e) {
-    selectedMotionImageBase64 = e.target.result.split(',')[1];
-    document.getElementById('motionImagePreview').src = e.target.result;
-    document.getElementById('motionImagePreviewWrapper').style.display = 'block';
-    document.getElementById('motionImageBox').style.display = 'none';
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      let w = img.width, h = img.height;
+      const maxSize = 1024;
+      if (w > maxSize || h > maxSize) {
+        if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+        else { w = Math.round(w * maxSize / h); h = maxSize; }
+      }
+      canvas.width = w;
+      canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const compressed = canvas.toDataURL('image/jpeg', 0.85);
+      selectedMotionImageBase64 = compressed.split(',')[1];
+      document.getElementById('motionImagePreview').src = compressed;
+      document.getElementById('motionImagePreviewWrapper').style.display = 'block';
+      document.getElementById('motionImageBox').style.display = 'none';
+    };
+    img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
-
 function onMotionVideoSelected(event) {
   const file = event.target.files[0];
   if (!file) return;
