@@ -96,14 +96,13 @@ module.exports = async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model_name: modelName,
-        mode: mode,
-        image: finalImageUrl,
-        video_url: videoUrl,
-        prompt: prompt || '',
-        duration: '30',
-        cfg_scale: 0.5
-      })
+  model_name: modelName,
+  mode: mode,
+  image_url: finalImageUrl,
+  video_url: videoUrl,
+  prompt: prompt || '',
+  character_orientation: 'image',
+})
     });
 
     const data = await response.json();
