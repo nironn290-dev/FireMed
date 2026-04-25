@@ -27,7 +27,7 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { imageBase64, imageUrl, videoUrl, prompt, selectedModel, taskId } = req.body;
+  console.log('Motion params:', { imageUrl, videoUrl, hasImageBase64: !!imageBase64 });
   const token = req.headers.authorization?.replace('Bearer ', '');
   const ACCESS_KEY = process.env.KLING_ACCESS_KEY;
   const SECRET_KEY = process.env.KLING_SECRET_KEY;
