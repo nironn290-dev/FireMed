@@ -48,8 +48,8 @@ module.exports = async function handler(req, res) {
 
       if (result.data && result.data.task_status === 'succeed') {
         const work = result.data.works?.[0] || result.data.task_result?.videos?.[0];
-const videoUrl = work?.resource?.resource || work?.url;
-        return res.status(200).json({ status: 'succeeded', output: videoUrl });
+        const outputUrl = work?.resource?.resource || work?.url;
+        return res.status(200).json({ status: 'succeeded', output: outputUrl });
       } else if (result.data && result.data.task_status === 'failed') {
         return res.status(200).json({ status: 'failed' });
       }
@@ -78,17 +78,16 @@ const videoUrl = work?.resource?.resource || work?.url;
     return res.status(400).json({ error: `Insufficient credits. You need ${cost} credits.` });
   }
 
-  // Krediyi düş
   await supabase
     .from('profiles')
     .update({ credits: profile.credits - cost })
     .eq('id', user.id);
 
   try {
-
-    // Kling API'ye gönder
     const modelName = selectedModel === 'kling-v3-std' ? 'kling-v3' : 'kling-v2-6';
-const mode = selectedModel === 'kling-v3-std' ? 'std' : selectedModel === 'kling-v2-6-std' ? 'std' : 'pro';
+    const mode = selectedModel === 'kling-v3-std' ? 'std' : 'pro';
+
+    const finalImageUrl = imageUrl || imageBase64;
 
     const response = await fetch('https://api.klingai.com/v1/videos/motion-control', {
       method: 'POST',
@@ -99,7 +98,7 @@ const mode = selectedModel === 'kling-v3-std' ? 'std' : selectedModel === 'kling
       body: JSON.stringify({
         model_name: modelName,
         mode: mode,
-        image: imageUrl || imageBase64,
+        image: finalImageUrl,
         video_url: videoUrl,
         prompt: prompt || '',
         duration: '30',
