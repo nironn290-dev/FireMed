@@ -966,6 +966,11 @@ async function generateMotionVideo() {
     }
     const { data: publicUrlData } = supabase.storage.from('images').getPublicUrl(videoFileName);
     const videoUrl = publicUrlData.publicUrl;
+    const imageBytes = Uint8Array.from(atob(selectedMotionImageBase64), c => c.charCodeAt(0));
+    const imageFileName = `motion_img_${currentUser.id}_${Date.now()}.jpg`;
+    await supabase.storage.from('images').upload(imageFileName, imageBytes, { contentType: 'image/jpeg' });
+    const { data: imgUrlData } = supabase.storage.from('images').getPublicUrl(imageFileName);
+    const imageUrl = imgUrlData.publicUrl;
 
     const response = await fetch('/api/motion', {
       method: 'POST',
