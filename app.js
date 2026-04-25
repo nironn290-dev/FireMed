@@ -952,6 +952,57 @@ async function generateMotionVideo() {
   }
   showResultArea();
   try {
+    // Videoyu direkt Supabase'e yükle
+    const supabase = await getSupabase();
+    const videoBytes = Uint8Array.from(atob(selectedMotionVideoBase64), c => c.charCodeAt(0));
+    const videoFileName = `motion_${currentUser.id}_${Date.now()}.mp4`;
+    const { error: uploadError } = await supabase.storage
+      .from('images')
+      .upload(videoFileName, videoBytes, { contentType: 'video/mp4' });
+    if (uploadError) {
+      showError('Failed to upload video. Please try again.');
+      hideResult();
+      return;
+    }
+    const { data: publicUrlData } = supabase.storage.from('images').getPublicUrl(videoFileName);
+    const videoUrl = publicUrlData.publicUrl;
+
+    const response = await fetch('/api/motion', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentSession.access_token}`
+      },
+      body: JSON.stringify({
+        imageBase64: selectedMotionImageBase64,
+        videoUrl: videoUrl,
+        prompt: document.getElementById('motionPrompt').value.trim(),
+        selectedModel: selectedMotionModel
+      })
+    });
+    const data = await response.json();
+    if (!response.ok || data.error) throw new Error(data.error || 'Something went wrong.');
+    pollMotionResult(data.id, cost);
+  } catch (err) {
+    showError(err.message || 'Could not generate video. Please try again.');
+    hideResult();
+  }
+}
+    showError('Please upload a character photo first.');
+    return;
+  }
+  if (!selectedMotionVideoBase64) {
+    showError('Please upload a reference video first.');
+    return;
+  }
+  const cost = calculateMotionCredits(selectedMotionVideoDuration || 5);
+  if (userCredits < cost) {
+    showError(`You need ${cost} credits. You have ${userCredits} credits.`);
+    setTimeout(() => showPricing(), 1500);
+    return;
+  }
+  showResultArea();
+  try {
     const response = await fetch('/api/motion', {
       method: 'POST',
       headers: {
