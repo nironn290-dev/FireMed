@@ -950,6 +950,8 @@ async function generateMotionVideo() {
     setTimeout(() => showPricing(), 1500);
     return;
   }
+  let imageUrl = null;
+  let videoUrl = null;
   showResultArea();
   try {
     // Videoyu direkt Supabase'e yükle
