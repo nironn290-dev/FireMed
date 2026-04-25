@@ -99,7 +99,7 @@ const mode = selectedModel === 'kling-v3-std' ? 'std' : selectedModel === 'kling
       body: JSON.stringify({
         model_name: modelName,
         mode: mode,
-        image: imageBase64,
+        image: imageUrl || imageBase64,
         video_url: videoUrl,
         prompt: prompt || '',
         duration: '30',
