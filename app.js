@@ -950,34 +950,37 @@ async function generateMotionVideo() {
     setTimeout(() => showPricing(), 1500);
     return;
   }
-  let imageUrl = null;
-  let videoUrl = null;
   showResultArea();
   try {
-    // Videoyu direkt Supabase'e yükle
     const supabase = await getSupabase();
+
+    // Videoyu Supabase'e yükle
     const videoBytes = Uint8Array.from(atob(selectedMotionVideoBase64), c => c.charCodeAt(0));
     const videoFileName = `motion_${currentUser.id}_${Date.now()}.mp4`;
     const { error: uploadError } = await supabase.storage
       .from('images')
       .upload(videoFileName, videoBytes, { contentType: 'video/mp4' });
     if (uploadError) {
-      showError('Failed to upload video. Please try again.');
+      showError('Failed to upload video: ' + uploadError.message);
       hideResult();
       return;
     }
-    const { data: publicUrlData } = supabase.storage.from('images').getPublicUrl(videoFileName);
-    const videoUrl = publicUrlData.publicUrl;
+    const { data: videoUrlData } = supabase.storage.from('images').getPublicUrl(videoFileName);
+    const videoUrl = videoUrlData.publicUrl;
+
+    // Resmi Supabase'e yükle
     const imageBytes = Uint8Array.from(atob(selectedMotionImageBase64), c => c.charCodeAt(0));
     const imageFileName = `motion_img_${currentUser.id}_${Date.now()}.jpg`;
-    const { error: imgUploadError } = await supabase.storage.from('images').upload(imageFileName, imageBytes, { contentType: 'image/jpeg' });
-if (imgUploadError) {
-  showError('Failed to upload image: ' + imgUploadError.message);
-  hideResult();
-  return;
-}
-const { data: imgUrlData } = supabase.storage.from('images').getPublicUrl(imageFileName);
-alert('Image URL: ' + imageUrl);
+    const { error: imgUploadError } = await supabase.storage
+      .from('images')
+      .upload(imageFileName, imageBytes, { contentType: 'image/jpeg' });
+    if (imgUploadError) {
+      showError('Failed to upload image: ' + imgUploadError.message);
+      hideResult();
+      return;
+    }
+    const { data: imgUrlData } = supabase.storage.from('images').getPublicUrl(imageFileName);
+    const imageUrl = imgUrlData.publicUrl;
 
     const response = await fetch('/api/motion', {
       method: 'POST',
@@ -987,7 +990,7 @@ alert('Image URL: ' + imageUrl);
       },
       body: JSON.stringify({
         imageUrl: imageUrl,
-videoUrl: videoUrl,
+        videoUrl: videoUrl,
         prompt: document.getElementById('motionPrompt').value.trim(),
         selectedModel: selectedMotionModel
       })
@@ -1000,47 +1003,6 @@ videoUrl: videoUrl,
     hideResult();
   }
 }
-
-async function pollMotionResult(taskId, cost) {
-  let attempts = 0;
-  const maxAttempts = 120;
-  pollingInterval = setInterval(async () => {
-    attempts++;
-    if (attempts > maxAttempts) {
-      clearInterval(pollingInterval);
-      showError('Video generation timed out. Please try again.');
-      hideResult();
-      return;
-    }
-    try {
-      const response = await fetch('/api/poll', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${currentSession.access_token}`
-        },
-        body: JSON.stringify({ taskId, mode: 'motion' })
-      });
-      const result = await response.json();
-      if (result.status === 'succeeded' && result.output) {
-        clearInterval(pollingInterval);
-        await deductCredits(cost);
-        showVideo(result.output);
-      } else if (result.status === 'failed') {
-        clearInterval(pollingInterval);
-        showError('Video generation failed. Please try again.');
-        hideResult();
-      }
-      const pct = Math.min(Math.round((attempts / maxAttempts) * 100), 95);
-      document.getElementById('loadingPct').textContent = pct + '%';
-    } catch (err) {
-      clearInterval(pollingInterval);
-      showError('Connection error. Please try again.');
-      hideResult();
-    }
-  }, 3000);
-}
-
 // Başlat
 updateCreditDisplay();
 document.getElementById('endFrameSection').style.display = 'none';
