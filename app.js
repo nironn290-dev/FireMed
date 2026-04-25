@@ -979,8 +979,8 @@ async function generateMotionVideo() {
         'Authorization': `Bearer ${currentSession.access_token}`
       },
       body: JSON.stringify({
-        imageBase64: selectedMotionImageBase64,
-        videoUrl: videoUrl,
+        imageUrl: imageUrl,
+videoUrl: videoUrl,
         prompt: document.getElementById('motionPrompt').value.trim(),
         selectedModel: selectedMotionModel
       })
