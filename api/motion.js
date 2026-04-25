@@ -85,27 +85,6 @@ const videoUrl = work?.resource?.resource || work?.url;
     .eq('id', user.id);
 
   try {
-    // Önce videoyu Supabase Storage'a yükle
-    const videoBytes = Buffer.from(videoBase64, 'base64');
-    const videoFileName = `motion_${user.id}_${Date.now()}.mp4`;
-    
-    const { error: uploadError } = await supabase.storage
-      .from('images')
-      .upload(videoFileName, videoBytes, {
-        contentType: 'video/mp4',
-        upsert: false
-      });
-
-    if (uploadError) {
-      await supabase.from('profiles').update({ credits: profile.credits }).eq('id', user.id);
-      return res.status(500).json({ error: 'Failed to upload reference video.' });
-    }
-
-    const { data: publicUrlData } = supabase.storage
-      .from('images')
-      .getPublicUrl(videoFileName);
-
-    const videoUrl = publicUrlData.publicUrl;
 
     // Kling API'ye gönder
     const modelName = selectedModel === 'kling-v3-std' ? 'kling-v3' : 'kling-v2-6';
