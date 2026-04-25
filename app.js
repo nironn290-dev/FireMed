@@ -975,7 +975,7 @@ if (imgUploadError) {
   return;
 }
 const { data: imgUrlData } = supabase.storage.from('images').getPublicUrl(imageFileName);
-const imageUrl = imgUrlData.publicUrl;
+alert('Image URL: ' + imageUrl);
 
     const response = await fetch('/api/motion', {
       method: 'POST',
