@@ -1003,6 +1003,45 @@ async function generateMotionVideo() {
     hideResult();
   }
 }
+async function pollMotionResult(taskId, cost) {
+  let attempts = 0;
+  const maxAttempts = 120;
+  pollingInterval = setInterval(async () => {
+    attempts++;
+    if (attempts > maxAttempts) {
+      clearInterval(pollingInterval);
+      showError('Video generation timed out. Please try again.');
+      hideResult();
+      return;
+    }
+    try {
+      const response = await fetch('/api/poll', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${currentSession.access_token}`
+        },
+        body: JSON.stringify({ taskId, mode: 'motion' })
+      });
+      const result = await response.json();
+      if (result.status === 'succeeded' && result.output) {
+        clearInterval(pollingInterval);
+        await deductCredits(cost);
+        showVideo(result.output);
+      } else if (result.status === 'failed') {
+        clearInterval(pollingInterval);
+        showError('Video generation failed. Please try again.');
+        hideResult();
+      }
+      const pct = Math.min(Math.round((attempts / maxAttempts) * 100), 95);
+      document.getElementById('loadingPct').textContent = pct + '%';
+    } catch (err) {
+      clearInterval(pollingInterval);
+      showError('Connection error. Please try again.');
+      hideResult();
+    }
+  }, 3000);
+}
 // Başlat
 updateCreditDisplay();
 document.getElementById('endFrameSection').style.display = 'none';
