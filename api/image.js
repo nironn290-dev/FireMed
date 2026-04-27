@@ -63,6 +63,12 @@ guidance_scale: 0.0
     if (!data.id) {
   return res.status(500).json({ error: 'Failed to start image generation. Please try again.' });
 }
+    // Sıraya ekle
+await supabase.from('image_queue').insert({
+  user_id: user.id,
+  prediction_id: data.id,
+  status: 'processing'
+});
 return res.status(200).json({ predictionId: data.id });
   } catch (err) {
     await supabase.from('profiles').update({ credits: profile.credits }).eq('id', user.id);
