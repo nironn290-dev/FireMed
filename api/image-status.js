@@ -53,6 +53,7 @@ module.exports = async function handler(req, res) {
           model: 'z-image-turbo'
         });
       }
+      await supabase.from('image_queue').update({ status: 'completed' }).eq('prediction_id', predictionId);
       return res.status(200).json({ status: 'succeeded', imageUrl: permanentUrl });
     } else if (result.status === 'failed') {
       return res.status(200).json({ status: 'failed' });
