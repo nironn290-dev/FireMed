@@ -35,6 +35,28 @@ const token = req.headers.authorization?.replace('Bearer ', '');
     .update({ credits: profile.credits - 2 })
     .eq('id', user.id);
 
+// Şu an işlenen istek var mı?
+    const { count } = await supabase
+      .from('image_queue')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'processing');
+
+    if (count > 0) {
+      const { data: queueJob } = await supabase
+        .from('image_queue')
+        .insert({
+          user_id: user.id,
+          prediction_id: null,
+          status: 'waiting',
+          prompt: prompt,
+          width: aspectRatio === '16:9' ? 1280 : aspectRatio === '9:16' ? 720 : aspectRatio === '4:3' ? 1024 : aspectRatio === '3:4' ? 768 : 1024,
+          height: aspectRatio === '16:9' ? 720 : aspectRatio === '9:16' ? 1280 : aspectRatio === '4:3' ? 768 : aspectRatio === '3:4' ? 1024 : 1024
+        })
+        .select()
+        .single();
+      return res.status(200).json({ queued: true, queueId: queueJob.id, position: count });
+    }
+  
   try {
     const response = await fetch('https://api.replicate.com/v1/models/prunaai/z-image-turbo/predictions', {
       method: 'POST',
