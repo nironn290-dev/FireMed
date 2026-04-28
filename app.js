@@ -670,6 +670,45 @@ async function generateImage() {
   }
   throw new Error(data.error);
 }
+    if (data.queued) {
+      document.getElementById('aiImageError').textContent = '⏳ Queue position: ' + data.position;
+      document.getElementById('aiImageError').style.display = 'block';
+      const checkQueue = setInterval(async () => {
+        const queueRes = await fetch('/api/image-queue', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentSession.access_token}` },
+          body: JSON.stringify({ action: 'check', queueId: data.queueId })
+        });
+        const queueData = await queueRes.json();
+        if (queueData.status === 'processing' && queueData.predictionId) {
+          clearInterval(checkQueue);
+          document.getElementById('aiImageError').style.display = 'none';
+          const pid = queueData.predictionId;
+          const pollInterval = setInterval(async () => {
+            const statusRes = await fetch('/api/image-status', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ predictionId: pid, userId: currentUser.id, prompt })
+            });
+            const statusData = await statusRes.json();
+            if (statusData.status === 'succeeded') {
+              clearInterval(pollInterval);
+              document.getElementById('aiImageOutput').src = statusData.imageUrl;
+              document.getElementById('aiImageResult').style.display = 'block';
+              document.getElementById('aiImageLoading').style.display = 'none';
+            } else if (statusData.status === 'failed') {
+              clearInterval(pollInterval);
+              document.getElementById('aiImageLoading').style.display = 'none';
+              document.getElementById('aiImageError').textContent = '⚠ Image generation failed.';
+              document.getElementById('aiImageError').style.display = 'block';
+            }
+          }, 2000);
+        } else if (queueData.position !== undefined) {
+          document.getElementById('aiImageError').textContent = '⏳ Queue position: ' + queueData.position;
+        }
+      }, 3000);
+      return;
+    }
     const predictionId = data.predictionId;
     let attempts = 0;
     const maxAttempts = 150;
