@@ -63,13 +63,16 @@ guidance_scale: 0.0
     if (!data.id) {
   return res.status(500).json({ error: 'Failed to start image generation. Please try again.' });
 }
-    // Sıraya ekle
-await supabase.from('image_queue').insert({
-  user_id: user.id,
-  prediction_id: data.id,
-  status: 'processing'
-});
-return res.status(200).json({ predictionId: data.id });
+   // Sıraya ekle
+    const { data: queueJob } = await supabase.from('image_queue').insert({
+      user_id: user.id,
+      prediction_id: data.id,
+      status: 'processing',
+      prompt: prompt,
+      width: aspectRatio === '16:9' ? 1280 : aspectRatio === '9:16' ? 720 : aspectRatio === '4:3' ? 1024 : aspectRatio === '3:4' ? 768 : 1024,
+      height: aspectRatio === '16:9' ? 720 : aspectRatio === '9:16' ? 1280 : aspectRatio === '4:3' ? 768 : aspectRatio === '3:4' ? 1024 : 1024
+    }).select().single();
+    return res.status(200).json({ predictionId: data.id, queueId: queueJob.id, position: 0 });
   } catch (err) {
     await supabase.from('profiles').update({ credits: profile.credits }).eq('id', user.id);
     return res.status(500).json({ error: 'Something went wrong.' });
