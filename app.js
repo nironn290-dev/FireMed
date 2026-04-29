@@ -765,8 +765,8 @@ async function generateImage() {
           document.getElementById('aiImageOutput').src = statusData.imageUrl;
           document.getElementById('aiImageResult').style.display = 'block';
           document.getElementById('aiImageLoading').style.display = 'none';
-          const aiBtn = document.querySelector('#aiImageSection button[onclick]');
-          if (aiBtn) { aiBtn.disabled = false; aiBtn.style.opacity = '1'; }
+          const aiBtn = document.getElementById('aiImageGenerateBtn');
+  if (aiBtn) { aiBtn.disabled = false; aiBtn.style.opacity = '1'; }
           document.getElementById('aiImageDownloadBtn').onclick = async () => {
   try {
     const response = await fetch(statusData.imageUrl);
