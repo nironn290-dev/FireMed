@@ -526,6 +526,26 @@ body: JSON.stringify({
 
     const data = await response.json();
     if (!response.ok || data.error) throw new Error(data.error || 'Something went wrong.');
+    
+    if (data.queued) {
+      document.getElementById('loadingPct').textContent = 'Queue: ' + data.position;
+      const checkVideoQueue = setInterval(async () => {
+        const queueRes = await fetch('/api/video-queue', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentSession.access_token}` },
+          body: JSON.stringify({ action: 'check', queueId: data.queueId })
+        });
+        const queueData = await queueRes.json();
+        if (queueData.taskId) {
+          clearInterval(checkVideoQueue);
+          pollResult(queueData.taskId, currentMode, cost);
+        } else if (queueData.position !== undefined) {
+          document.getElementById('loadingPct').textContent = 'Queue: ' + queueData.position;
+        }
+      }, 3000);
+      return;
+    }
+    
     pollResult(data.id, data.videoMode || currentMode, cost);
 
   } catch (err) {
