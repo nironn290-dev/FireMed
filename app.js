@@ -471,6 +471,9 @@ function buildPrompt(userPrompt, style) {
 
 // ---- Main generate ----
 async function generateVideo() {
+  if (document.getElementById('generateBtn').disabled) {
+    return;
+  }
   hideError();
 
   const cost = CREDIT_COSTS[selectedModel]?.[selectedDuration] || 4;
