@@ -677,6 +677,8 @@ async function generateImage() {
   document.getElementById('aiImageError').style.display = 'none';
   document.getElementById('aiImageLoading').style.display = 'block';
   document.getElementById('aiImageResult').style.display = 'none';
+  const aiBtn = document.querySelector('#aiImageSection button[onclick]');
+  if (aiBtn) { aiBtn.disabled = true; aiBtn.style.opacity = '0.5'; }
   try {
     const response = await fetch('/api/image', {
       method: 'POST',
