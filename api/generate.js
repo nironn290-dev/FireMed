@@ -218,6 +218,7 @@ module.exports = async function handler(req, res) {
       return res.status(500).json({ error: data.message || 'Failed to start video generation.' });
     }
 
+    await supabase.from('video_queue').update({ status: 'completed', task_id: data.data.task_id }).eq('user_id', user.id).eq('status', 'processing');
     return res.status(200).json({ id: data.data.task_id, status: 'processing', videoMode: mode });
 
   } catch (err) {
