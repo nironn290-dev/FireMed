@@ -108,6 +108,40 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'Credit deduction failed. Please try again.' });
   }
 
+// Queue kontrolü - 5'ten fazla aktif istek varsa sıraya al
+  const { count } = await supabase
+    .from('video_queue')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'processing');
+
+  if (count >= 5) {
+    const { data: queueJob } = await supabase
+      .from('video_queue')
+      .insert({
+        user_id: user.id,
+        status: 'waiting',
+        prompt,
+        mode,
+        image_base64: imageBase64,
+        end_image_base64: endImageBase64,
+        selected_model: selectedModel,
+        duration,
+        aspect_ratio: aspectRatio,
+        enable_audio: enableAudio,
+        enable_voice: enableVoice
+      })
+      .select()
+      .single();
+    return res.status(200).json({ queued: true, queueId: queueJob.id, position: count - 4 });
+  }
+
+  // Queue'ya processing olarak ekle
+  await supabase.from('video_queue').insert({
+    user_id: user.id,
+    status: 'processing',
+    prompt, mode, selected_model: selectedModel, duration
+  });
+  
   try {
     const config = MODEL_CONFIG[modelKey] || MODEL_CONFIG['kling-v2-5-turbo-std'];
     // Ses açıkken mode zorla pro olsun
