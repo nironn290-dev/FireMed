@@ -1102,6 +1102,8 @@ async function pollMotionResult(taskId, cost) {
         clearInterval(pollingInterval);
         await deductCredits(cost);
         showVideo(result.output);
+        document.getElementById('motionGenerateBtn').disabled = false;
+        document.getElementById('motionGenerateBtn').style.opacity = '1';
       } else if (result.status === 'failed') {
         clearInterval(pollingInterval);
         showError('Video generation failed. Please try again.');
