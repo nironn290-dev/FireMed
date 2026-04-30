@@ -1108,6 +1108,8 @@ async function pollMotionResult(taskId, cost) {
         clearInterval(pollingInterval);
         showError('Video generation failed. Please try again.');
         hideResult();
+        document.getElementById('motionGenerateBtn').disabled = false;
+        document.getElementById('motionGenerateBtn').style.opacity = '1';
       }
       const pct = Math.min(Math.round((attempts / maxAttempts) * 100), 95);
       document.getElementById('loadingPct').textContent = pct + '%';
