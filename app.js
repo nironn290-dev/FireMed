@@ -1004,6 +1004,9 @@ async function downloadFile(url, filename) {
 }
 
 async function generateMotionVideo() {
+  if (document.getElementById('motionGenerateBtn').disabled) {
+    return;
+  }
   hideError();
   if (!selectedMotionImageBase64) {
     showError('Please upload a character photo first.');
