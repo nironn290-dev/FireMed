@@ -1023,6 +1023,8 @@ async function generateMotionVideo() {
     return;
   }
   showResultArea();
+  document.getElementById('motionGenerateBtn').disabled = true;
+  document.getElementById('motionGenerateBtn').style.opacity = '0.5';
   try {
     const supabase = await getSupabase();
 
