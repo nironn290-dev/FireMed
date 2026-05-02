@@ -808,6 +808,8 @@ async function generateImage() {
     document.getElementById('aiImageLoading').style.display = 'none';
     document.getElementById('aiImageError').textContent = '⚠ ' + (err.message || 'Something went wrong.');
     document.getElementById('aiImageError').style.display = 'block';
+    const aiBtn = document.getElementById('aiImageGenerateBtn');
+    if (aiBtn) { aiBtn.disabled = false; aiBtn.style.opacity = '1'; }
   }
 }
 async function deductCredits(amount) {
