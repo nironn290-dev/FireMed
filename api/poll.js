@@ -43,8 +43,27 @@ module.exports = async function handler(req, res) {
 
     if (result.data && result.data.task_status === 'succeed') {
       const work = result.data.works?.[0] || result.data.task_result?.videos?.[0];
-const videoUrl = work?.resource?.resource || work?.url;
-return res.status(200).json({ status: 'succeeded', output: videoUrl });
+      const videoUrl = work?.resource?.resource || work?.url;
+
+      // Galeri'ye kaydet
+      const token = req.headers.authorization?.replace('Bearer ', '');
+      if (token) {
+        const { createClient } = require('@supabase/supabase-js');
+        const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+        const { data: { user } } = await supabase.auth.getUser(token);
+        if (user) {
+          await supabase.from('generations').insert({
+            user_id: user.id,
+            type: 'video',
+            url: videoUrl,
+            prompt: '',
+            model: 'kling'
+          });
+          await supabase.from('video_queue').update({ status: 'completed' }).eq('user_id', user.id).eq('status', 'processing');
+        }
+      }
+
+      return res.status(200).json({ status: 'succeeded', output: videoUrl });
     } else if (result.data && result.data.task_status === 'failed') {
       return res.status(200).json({ status: 'failed' });
     }
