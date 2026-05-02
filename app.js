@@ -1101,6 +1101,8 @@ async function pollMotionResult(taskId, cost) {
       clearInterval(pollingInterval);
       showError('Video generation timed out. Please try again.');
       hideResult();
+      document.getElementById('motionGenerateBtn').disabled = false;
+      document.getElementById('motionGenerateBtn').style.opacity = '1';
       return;
     }
     try {
