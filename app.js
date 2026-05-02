@@ -544,6 +544,11 @@ body: JSON.stringify({
           pollResult(queueData.taskId, currentMode, cost);
         } else if (queueData.position !== undefined) {
           document.getElementById('loadingPct').textContent = 'Queue: ' + queueData.position;
+        } else if (queueData.error) {
+          clearInterval(checkVideoQueue);
+          showError(queueData.error);
+          hideResult();
+          setLoading(false);
         }
       }, 3000);
       return;
