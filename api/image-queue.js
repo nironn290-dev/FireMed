@@ -42,7 +42,7 @@ module.exports = async function handler(req, res) {
     const { count } = await supabase
       .from('image_queue')
       .select('*', { count: 'exact', head: true })
-      .eq('status', 'processing')
+      .eq('status', 'waiting')
       .lt('created_at', myJob.created_at);
 
     if (count === 0) {
