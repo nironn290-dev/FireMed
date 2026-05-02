@@ -1084,6 +1084,26 @@ async function generateMotionVideo() {
     });
     const data = await response.json();
     if (!response.ok || data.error) throw new Error(data.error || 'Something went wrong.');
+    
+    if (data.queued) {
+      document.getElementById('loadingPct').textContent = 'Queue: ' + data.position;
+      const checkMotionQueue = setInterval(async () => {
+        const queueRes = await fetch('/api/motion-queue', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentSession.access_token}` },
+          body: JSON.stringify({ action: 'check', queueId: data.queueId })
+        });
+        const queueData = await queueRes.json();
+        if (queueData.taskId) {
+          clearInterval(checkMotionQueue);
+          pollMotionResult(queueData.taskId, cost);
+        } else if (queueData.position !== undefined) {
+          document.getElementById('loadingPct').textContent = 'Queue: ' + queueData.position;
+        }
+      }, 3000);
+      return;
+    }
+    
     pollMotionResult(data.id, cost);
   } catch (err) {
     showError(err.message || 'Could not generate video. Please try again.');
