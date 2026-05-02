@@ -49,6 +49,7 @@ module.exports = async function handler(req, res) {
       if (result.data && result.data.task_status === 'succeed') {
         const work = result.data.works?.[0] || result.data.task_result?.videos?.[0];
         const outputUrl = work?.resource?.resource || work?.url;
+        await supabase.from('motion_queue').update({ status: 'completed' }).eq('task_id', taskId);
         return res.status(200).json({ status: 'succeeded', output: outputUrl });
       } else if (result.data && result.data.task_status === 'failed') {
         return res.status(200).json({ status: 'failed' });
