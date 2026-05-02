@@ -83,6 +83,38 @@ module.exports = async function handler(req, res) {
     .update({ credits: profile.credits - cost })
     .eq('id', user.id);
 
+  // Queue kontrolü
+  const { count } = await supabase
+    .from('motion_queue')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'processing');
+
+  if (count >= 5) {
+    const { count: waitingCount } = await supabase
+      .from('motion_queue')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'waiting');
+    const { data: queueJob } = await supabase
+      .from('motion_queue')
+      .insert({
+        user_id: user.id,
+        status: 'waiting',
+        image_url: imageUrl,
+        video_url: videoUrl,
+        prompt: prompt || '',
+        selected_model: selectedModel
+      })
+      .select()
+      .single();
+    return res.status(200).json({ queued: true, queueId: queueJob.id, position: waitingCount + 1 });
+  }
+
+  await supabase.from('motion_queue').insert({
+    user_id: user.id,
+    status: 'processing',
+    selected_model: selectedModel
+  });
+  
   try {
     const modelName = selectedModel === 'kling-v3-std' ? 'kling-v3' : 'kling-v2-6';
     const mode = selectedModel === 'kling-v3-std' ? 'std' : 'pro';
