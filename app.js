@@ -1043,6 +1043,8 @@ async function generateMotionVideo() {
       hideResult();
       return;
     }
+    document.getElementById('motionGenerateBtn').disabled = false;
+      document.getElementById('motionGenerateBtn').style.opacity = '1';
     const { data: videoUrlData } = supabase.storage.from('images').getPublicUrl(videoFileName);
     const videoUrl = videoUrlData.publicUrl;
 
