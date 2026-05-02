@@ -54,7 +54,11 @@ const token = req.headers.authorization?.replace('Bearer ', '');
         })
         .select()
         .single();
-      return res.status(200).json({ queued: true, queueId: queueJob.id, position: count });
+      const { count: waitingCount } = await supabase
+      .from('image_queue')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'waiting');
+    return res.status(200).json({ queued: true, queueId: queueJob.id, position: waitingCount + 1 });
     }
   
   try {
