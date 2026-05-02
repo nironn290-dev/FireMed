@@ -1083,6 +1083,8 @@ async function generateMotionVideo() {
   } catch (err) {
     showError(err.message || 'Could not generate video. Please try again.');
     hideResult();
+    document.getElementById('motionGenerateBtn').disabled = false;
+    document.getElementById('motionGenerateBtn').style.opacity = '1';
   }
 }
 async function pollMotionResult(taskId, cost) {
