@@ -724,11 +724,15 @@ async function generateImage() {
               document.getElementById('aiImageOutput').src = statusData.imageUrl;
               document.getElementById('aiImageResult').style.display = 'block';
               document.getElementById('aiImageLoading').style.display = 'none';
+              const aiBtn = document.getElementById('aiImageGenerateBtn');
+              if (aiBtn) { aiBtn.disabled = false; aiBtn.style.opacity = '1'; }
             } else if (statusData.status === 'failed') {
               clearInterval(pollInterval);
               document.getElementById('aiImageLoading').style.display = 'none';
               document.getElementById('aiImageError').textContent = '⚠ Image generation failed.';
               document.getElementById('aiImageError').style.display = 'block';
+              const aiBtn = document.getElementById('aiImageGenerateBtn');
+              if (aiBtn) { aiBtn.disabled = false; aiBtn.style.opacity = '1'; }
             }
           }, 2000);
         } else if (queueData.position !== undefined) {
