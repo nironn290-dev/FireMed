@@ -384,7 +384,7 @@
     <div class="chip" onclick="setAiImagePrompt('An astronaut floating in space, earth in background, cinematic')">🚀 Space</div>
   </div>
   <div id="aiImageResult" style="display:none; margin-top:16px;">
-    <img id="aiImageOutput" style="width:100%; border-radius:12px;" alt="Generated image" />
+    <img id="aiImageOutput" style="width:100%; max-height:300px; object-fit:contain; border-radius:12px;" alt="Generated image" />
     <button class="action-btn primary" style="width:100%; margin-top:10px;" id="aiImageDownloadBtn">Download Image</button>
   </div>
   <div id="aiImageLoading" style="display:none; text-align:center; padding:20px; color:var(--muted);">
