@@ -973,7 +973,7 @@ async function loadGallery(type) {
     grid.innerHTML = data.generations.map(item => `
       <div style="background:var(--surface); border-radius:12px; overflow:hidden; border:1px solid var(--border); cursor:pointer; display:inline-block; width:100%;">
         ${type === 'video'
-          ? `<video src="${item.url}" style="width:100%; height:160px; object-fit:cover;" controls playsinline></video>`
+          ? `<video src="${item.url}" style="width:100%; height:auto; object-fit:contain;" controls playsinline></video>`
           : `<img src="${item.url}" style="width:100%; height:auto; display:block;" onclick="openLightbox('${item.url}')" onerror="this.parentElement.style.display='none'" />`
         }
         <div style="padding:6px 8px; display:flex; align-items:center; justify-content:space-between; gap:8px;">
