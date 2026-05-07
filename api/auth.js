@@ -16,10 +16,24 @@ module.exports = async function handler(req, res) {
    if (action === 'signup') {
   const { data, error } = await supabase.auth.signUp({
     email,
-    password
+    password,
+    options: {
+      emailRedirectTo: null
+    }
   });
   if (error) return res.status(400).json({ error: error.message });
-  return res.status(200).json({ user: data.user });
+  return res.status(200).json({ user: data.user, needsVerification: true });
+}
+
+if (action === 'verifyOtp') {
+  const { token } = req.body;
+  const { data, error } = await supabase.auth.verifyOtp({
+    email,
+    token,
+    type: 'signup'
+  });
+  if (error) return res.status(400).json({ error: error.message });
+  return res.status(200).json({ user: data.user, session: data.session });
 }
 
     if (action === 'login') {
