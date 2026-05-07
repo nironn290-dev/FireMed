@@ -16,10 +16,7 @@ module.exports = async function handler(req, res) {
    if (action === 'signup') {
   const { data, error } = await supabase.auth.signUp({
     email,
-    password,
-    options: {
-      emailRedirectTo: null
-    }
+    password
   });
   if (error) return res.status(400).json({ error: error.message });
   return res.status(200).json({ user: data.user, needsVerification: true });
