@@ -134,6 +134,37 @@ async function handleAuth() {
   }
 }
 
+async function verifyOtp() {
+  const code = document.getElementById('otpInput').value.trim();
+  if (!code || code.length < 6) {
+    showAuthError('Please enter the 6-digit code.');
+    return;
+  }
+  const btn = document.querySelector('#otpSection button');
+  btn.disabled = true;
+  btn.textContent = 'Verifying...';
+  try {
+    const response = await fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'verifyOtp', email: pendingEmail, token: code })
+    });
+    const data = await response.json();
+    if (data.error) { showAuthError(data.error); return; }
+    currentUser = data.user;
+    currentSession = data.session;
+    userCredits = 10;
+    document.getElementById('creditsDisplay').textContent = userCredits;
+    document.getElementById('otpSection').style.display = 'none';
+    showApp();
+  } catch (err) {
+    showAuthError('Something went wrong. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'VERIFY';
+  }
+}
+
 function showAuthError(msg) {
   const el = document.getElementById('authError');
   el.textContent = msg;
