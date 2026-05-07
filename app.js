@@ -11,6 +11,8 @@ const CREDIT_COSTS = {
   'kling-v3-std':         { '5': 13, '10': 22 },
 };
 
+let pendingEmail = null;
+let pendingPassword = null;
 let currentMode = 'image';
 let selectedStyle = 'realistic';
 let enableAudio = false;
