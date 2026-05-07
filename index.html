@@ -157,7 +157,7 @@
   <div style="text-align:center; margin-bottom:24px;">
     <div style="font-size:40px; margin-bottom:12px;">📧</div>
     <div style="font-size:18px; font-weight:700; margin-bottom:8px;">Check your email</div>
-    <div style="font-size:14px; color:var(--muted);">We sent a verification code to your email</div>
+    <div style="font-size:14px; color:var(--muted);">We sent a verification code to <span id="otpEmailDisplay" style="color:var(--fire); font-weight:700;"></span></div>
   </div>
   <input type="text" id="otpInput" class="auth-input" placeholder="000000" maxlength="6" style="text-align:center; font-size:28px; letter-spacing:12px; margin-bottom:16px;" />
   <button class="auth-btn" onclick="verifyOtp()">VERIFY CODE</button>
