@@ -115,9 +115,13 @@ async function handleAuth() {
       if (data.needsVerification) {
         pendingEmail = email;
         pendingPassword = password;
+        document.querySelector('.auth-tabs').style.display = 'none';
+        document.querySelectorAll('.input-group').forEach(el => el.style.display = 'none');
+        document.querySelector('.google-btn').style.display = 'none';
+        document.querySelector('.or-divider').style.display = 'none';
+        document.getElementById('authBtn').style.display = 'none';
+        document.getElementById('authError').style.display = 'none';
         document.getElementById('otpSection').style.display = 'block';
-        document.getElementById('authError').textContent = '📧 Check your email for a verification code!';
-        document.getElementById('authError').style.display = 'block';
         return;
       }
     }
