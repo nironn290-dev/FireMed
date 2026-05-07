@@ -121,6 +121,7 @@ async function handleAuth() {
         document.querySelector('.or-divider').style.display = 'none';
         document.getElementById('authBtn').style.display = 'none';
         document.getElementById('authError').style.display = 'none';
+        document.getElementById('otpEmailDisplay').textContent = email;
         document.getElementById('otpSection').style.display = 'block';
         return;
       }
