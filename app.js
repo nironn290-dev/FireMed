@@ -109,7 +109,16 @@ async function handleAuth() {
     });
     const data = await response.json();
     if (data.error) { showAuthError(data.error); return; }
-    if (tab === 'signup') { showAuthError('✅ Account created! Please check your email to verify your account before signing in.'); switchAuthTab('login'); return; }
+    if (tab === 'signup') {
+      if (data.needsVerification) {
+        pendingEmail = email;
+        pendingPassword = password;
+        document.getElementById('otpSection').style.display = 'block';
+        document.getElementById('authError').textContent = '📧 Check your email for a verification code!';
+        document.getElementById('authError').style.display = 'block';
+        return;
+      }
+    }
     currentUser = data.user;
     currentSession = data.session;
     userCredits = 10;
