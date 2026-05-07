@@ -153,6 +153,14 @@
     </button>
     <div class="or-divider"><span>or</span></div>
     <button class="auth-btn" id="authBtn" onclick="handleAuth()">SIGN IN</button>
+    <div id="otpSection" style="display:none;">
+  <div style="text-align:center; margin-bottom:16px; font-size:14px; color:var(--muted);">📧 Check your email for a 6-digit code</div>
+  <div class="input-group">
+    <label class="input-label">Verification Code</label>
+    <input type="text" id="otpInput" class="auth-input" placeholder="Enter 6-digit code" maxlength="6" style="text-align:center; font-size:20px; letter-spacing:8px;" />
+  </div>
+  <button class="auth-btn" onclick="verifyOtp()">VERIFY</button>
+</div>
     <div class="auth-error" id="authError"></div>
   <div style="text-align:center; margin-top:16px;">
     <a href="/terms" style="color:#555; font-size:11px; text-decoration:none; margin:0 8px;">Terms</a>
