@@ -30,6 +30,21 @@ if (action === 'verifyOtp') {
     type: 'signup'
   });
   if (error) return res.status(400).json({ error: error.message });
+  
+  // Profile oluştur - 5 kredi ver
+  const { data: existing } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('id', data.user.id)
+    .single();
+    
+  if (!existing) {
+    await supabase.from('profiles').insert({
+      id: data.user.id,
+      credits: 5
+    });
+  }
+  
   return res.status(200).json({ user: data.user, session: data.session });
 }
 
