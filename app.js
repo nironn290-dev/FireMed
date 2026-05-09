@@ -156,8 +156,6 @@ async function verifyOtp() {
     if (data.error) { showAuthError(data.error); return; }
     currentUser = data.user;
     currentSession = data.session;
-    userCredits = 10;
-    document.getElementById('creditsDisplay').textContent = userCredits;
     document.getElementById('otpSection').style.display = 'none';
     showApp();
   } catch (err) {
