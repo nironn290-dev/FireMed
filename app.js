@@ -193,6 +193,13 @@ function logout() {
   document.getElementById('appScreen').style.display = 'none';
   document.getElementById('authEmail').value = '';
   document.getElementById('authPassword').value = '';
+  document.getElementById('otpSection').style.display = 'none';
+  document.querySelector('.auth-tabs').style.display = 'flex';
+  document.querySelectorAll('.input-group').forEach(el => el.style.display = 'block');
+  document.querySelector('.google-btn').style.display = 'flex';
+  document.querySelector('.or-divider').style.display = 'flex';
+  document.getElementById('authBtn').style.display = 'block';
+  document.getElementById('authError').style.display = 'none';
 }
 
 // ---- Mode switch ----
