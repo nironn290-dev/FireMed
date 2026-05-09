@@ -128,8 +128,6 @@ async function handleAuth() {
     }
     currentUser = data.user;
     currentSession = data.session;
-    userCredits = 10;
-    document.getElementById('creditsDisplay').textContent = userCredits;
     showApp();
   } catch (err) {
     showAuthError('Something went wrong. Please try again.');
