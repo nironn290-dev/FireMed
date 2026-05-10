@@ -209,6 +209,7 @@ function showAuthError(msg) {
 }
 
 function showApp() {
+  document.getElementById('authScreen').style.opacity = '0';
   document.getElementById('authScreen').style.display = 'none';
   document.getElementById('appScreen').style.display = 'block';
   document.getElementById('appScreen').querySelector('main').style.display = '';
