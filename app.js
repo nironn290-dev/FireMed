@@ -66,6 +66,16 @@ async function initAuth() {
         });
         const data = await response.json();
         userCredits = data.profile?.credits ?? 0;
+        if (data.profile && !data.profile.welcomed) {
+          await fetch('/api/auth', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+            body: JSON.stringify({ action: 'markWelcomed' })
+          });
+          setTimeout(() => {
+            document.getElementById('welcomeModal').style.display = 'flex';
+          }, 5000);
+        }
       } catch (err) {
         userCredits = 0;
       }
