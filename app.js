@@ -123,6 +123,10 @@ async function handleAuth() {
   const password = document.getElementById('authPassword').value.trim();
   const tab = document.getElementById('authBtn').dataset.tab || 'login';
   if (!email || !password) { showAuthError('Please enter email and password.'); return; }
+  if (tab === 'signup' && !document.getElementById('termsCheckbox').checked) {
+    showAuthError('Please accept the Terms of Service and Privacy Policy.');
+    return;
+  }
   const btn = document.getElementById('authBtn');
   btn.disabled = true;
   btn.textContent = 'Please wait...';
