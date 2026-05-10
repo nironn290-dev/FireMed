@@ -165,12 +165,6 @@ async function verifyOtp() {
     };
     document.getElementById('otpSection').style.display = 'none';
     showApp();
-    setTimeout(() => {
-      showError('🎉 Welcome to FireMax! You have received 5 free credits!');
-      document.getElementById('errorMsg').style.background = 'rgba(0,200,100,0.1)';
-      document.getElementById('errorMsg').style.border = '1px solid rgba(0,200,100,0.3)';
-      document.getElementById('errorMsg').style.color = '#00c864';
-    }, 500);
   } catch (err) {
     showAuthError('Something went wrong. Please try again.');
   } finally {
