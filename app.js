@@ -165,6 +165,9 @@ async function verifyOtp() {
     };
     document.getElementById('otpSection').style.display = 'none';
     showApp();
+    setTimeout(() => {
+      document.getElementById('welcomeModal').style.display = 'flex';
+    }, 2000);
   } catch (err) {
     showAuthError('Something went wrong. Please try again.');
   } finally {
