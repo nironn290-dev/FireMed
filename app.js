@@ -164,6 +164,7 @@ async function verifyOtp() {
       document.getElementById('welcomeModal').style.display = 'flex';
     };
     document.getElementById('otpSection').style.display = 'none';
+    localStorage.setItem('showWelcome', '1');
     showApp();
     setTimeout(() => {
       document.getElementById('welcomeModal').style.display = 'flex';
