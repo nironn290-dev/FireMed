@@ -77,6 +77,11 @@ async function initAuth() {
         setTimeout(() => {
           document.getElementById('welcomeModal').style.display = 'flex';
         }, 5000);
+      } else if (event === 'SIGNED_IN' && !localStorage.getItem('visited_' + session.user.id)) {
+        localStorage.setItem('visited_' + session.user.id, '1');
+        setTimeout(() => {
+          document.getElementById('welcomeModal').style.display = 'flex';
+        }, 5000);
       }
     }
   });
