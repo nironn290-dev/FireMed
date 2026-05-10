@@ -224,6 +224,7 @@ function logout() {
   currentSession = null;
   userCredits = 0;
   document.getElementById('authScreen').style.display = 'flex';
+  document.getElementById('authScreen').style.opacity = '1';
   document.getElementById('appScreen').style.display = 'none';
   document.getElementById('authEmail').value = '';
   document.getElementById('authPassword').value = '';
