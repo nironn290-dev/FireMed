@@ -50,9 +50,13 @@ if (action === 'verifyOtp') {
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
+    secure: false,
     auth: {
       user: 'firemax.app@gmail.com',
       pass: 'tjfmkumwtbdusxmz'
+    },
+    tls: {
+      rejectUnauthorized: false
     }
   });
   await transporter.sendMail({
