@@ -38,6 +38,14 @@ async function getSupabase() {
   return createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
+function handleGoogleWithTerms() {
+  const tab = document.getElementById('authBtn').dataset.tab || 'login';
+  if (tab === 'signup' && !document.getElementById('termsCheckbox').checked) {
+    showAuthError('Please accept the Terms of Service and Privacy Policy.');
+    return;
+  }
+  handleGoogleAuth();
+}
 async function handleGoogleAuth() {
   const supabase = await getSupabase();
   const { error } = await supabase.auth.signInWithOAuth({
