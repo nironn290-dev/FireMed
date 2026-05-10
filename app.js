@@ -163,7 +163,6 @@ async function verifyOtp() {
       document.getElementById('errorMsg').style.background = 'rgba(0,200,100,0.1)';
       document.getElementById('errorMsg').style.border = '1px solid rgba(0,200,100,0.3)';
       document.getElementById('errorMsg').style.color = '#00c864';
-      setTimeout(() => hideError(), 4000);
     }, 500);
   } catch (err) {
     showAuthError('Something went wrong. Please try again.');
