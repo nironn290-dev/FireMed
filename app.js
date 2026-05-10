@@ -245,7 +245,7 @@ if (miniBtnDiv) miniBtnDiv.style.display = (mode === 'aiimage' || mode === 'moti
   const supportsEndFrame = selectedModel !== 'kling-v2-5-turbo-std';
   document.getElementById('endFrameSection').style.display = (mode === 'image' && supportsEndFrame) ? 'block' : 'none';
 
-  hideError();
+  if (!window.showWelcomeMessage) hideError();
   hideResult();
 }
 
