@@ -161,12 +161,7 @@ async function verifyOtp() {
     currentUser = data.user;
     currentSession = data.session;
     window.showWelcomeMessage = () => {
-      const el = document.getElementById('errorMsg');
-      el.textContent = '🎉 Welcome to FireMax! You have received 5 free credits!';
-      el.style.display = 'block';
-      el.style.background = 'rgba(0,200,100,0.1)';
-      el.style.border = '1px solid rgba(0,200,100,0.3)';
-      el.style.color = '#00c864';
+      document.getElementById('welcomeModal').style.display = 'flex';
     };
     document.getElementById('otpSection').style.display = 'none';
     showApp();
