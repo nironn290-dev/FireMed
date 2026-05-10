@@ -211,6 +211,7 @@ function showAuthError(msg) {
 function showApp() {
   document.getElementById('authScreen').style.display = 'none';
   document.getElementById('appScreen').style.display = 'block';
+  document.getElementById('appScreen').querySelector('main').style.display = '';
   document.getElementById('galleryScreen').style.display = 'none';
   document.getElementById('profileScreen').style.display = 'none';
   document.getElementById('pricingScreen').style.display = 'none';
