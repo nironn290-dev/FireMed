@@ -115,7 +115,7 @@ function switchAuthTab(tab) {
     loginBtn.className = 'auth-tab active';
     signupBtn.className = 'auth-tab inactive';
     authBtn.textContent = 'SIGN IN';
-    document.getElementById('termsCheck').style.display = 'none';
+    document.getElementById('termsCheck').style.display = 'block';
   } else {
     loginBtn.className = 'auth-tab inactive';
     signupBtn.className = 'auth-tab active';
