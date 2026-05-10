@@ -1046,7 +1046,7 @@ async function loadGallery(type) {
       <div style="background:var(--surface); border-radius:12px; overflow:hidden; border:1px solid var(--border); width:100%;">
         ${type === 'video'
           ? `<video src="${item.url}" style="width:100%; height:auto; object-fit:contain;" controls playsinline></video>`
-          : `<img src="${item.url}" style="width:100%; display:block; object-fit:contain; aspect-ratio:auto;" onclick="openLightbox('${item.url}')" onerror="this.parentElement.style.display='none'" />`
+          : `<img src="${item.url}" style="width:100%; height:auto; display:block;" onclick="openLightbox('${item.url}')" onerror="this.parentElement.style.display='none'" />`
         }
         <div style="padding:8px; display:flex; flex-direction:column; gap:6px;">
           <div style="font-size:11px; color:var(--muted);">${new Date(item.created_at).toLocaleDateString()}</div>
