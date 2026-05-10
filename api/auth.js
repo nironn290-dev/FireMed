@@ -14,6 +14,16 @@ module.exports = async function handler(req, res) {
 
   try {
    if (action === 'signup') {
+  const { data: existingUser } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('email', email)
+    .single();
+  
+  if (existingUser) {
+    return res.status(400).json({ error: 'This email is already registered. Please sign in.' });
+  }
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password
