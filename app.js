@@ -72,9 +72,11 @@ async function initAuth() {
       
       document.getElementById('creditsDisplay').textContent = userCredits;
       showApp();
-      if (window.showWelcomeMessage) {
-        window.showWelcomeMessage();
-        window.showWelcomeMessage = null;
+      if (localStorage.getItem('showWelcome')) {
+        localStorage.removeItem('showWelcome');
+        setTimeout(() => {
+          document.getElementById('welcomeModal').style.display = 'flex';
+        }, 500);
       }
     }
   });
