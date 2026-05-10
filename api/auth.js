@@ -41,7 +41,8 @@ if (action === 'verifyOtp') {
   if (!existing) {
     await supabase.from('profiles').insert({
       id: data.user.id,
-      credits: 5
+      credits: 5,
+      welcomed: false
     });
   }
 
