@@ -162,15 +162,9 @@ async function verifyOtp() {
     if (data.error) { showAuthError(data.error); return; }
     currentUser = data.user;
     currentSession = data.session;
-    window.showWelcomeMessage = () => {
-      document.getElementById('welcomeModal').style.display = 'flex';
-    };
     document.getElementById('otpSection').style.display = 'none';
     localStorage.setItem('showWelcome', '1');
     showApp();
-    setTimeout(() => {
-      document.getElementById('welcomeModal').style.display = 'flex';
-    }, 2000);
   } catch (err) {
     showAuthError('Something went wrong. Please try again.');
   } finally {
