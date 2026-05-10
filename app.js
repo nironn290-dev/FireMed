@@ -107,10 +107,12 @@ function switchAuthTab(tab) {
     loginBtn.className = 'auth-tab active';
     signupBtn.className = 'auth-tab inactive';
     authBtn.textContent = 'SIGN IN';
+    document.getElementById('termsCheck').style.display = 'none';
   } else {
     loginBtn.className = 'auth-tab inactive';
     signupBtn.className = 'auth-tab active';
     authBtn.textContent = 'SIGN UP';
+    document.getElementById('termsCheck').style.display = 'block';
   }
   authBtn.dataset.tab = tab;
   document.getElementById('authError').style.display = 'none';
