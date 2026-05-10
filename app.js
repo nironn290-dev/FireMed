@@ -76,7 +76,7 @@ async function initAuth() {
         localStorage.removeItem('showWelcome');
         setTimeout(() => {
           document.getElementById('welcomeModal').style.display = 'flex';
-        }, 500);
+        }, 5000);
       }
     }
   });
