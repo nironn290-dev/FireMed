@@ -44,7 +44,31 @@ if (action === 'verifyOtp') {
       credits: 5
     });
   }
-  
+
+  // Hoş geldin emaili gönder
+  const nodemailer = require('nodemailer');
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    auth: {
+      user: 'firemax.app@gmail.com',
+      pass: 'tjfmkumwtbdusxmz'
+    }
+  });
+  await transporter.sendMail({
+    from: '"FireMax" <firemax.app@gmail.com>',
+    to: email,
+    subject: '🔥 Welcome to FireMax!',
+    html: `
+      <h2>Welcome to FireMax! 🔥</h2>
+      <p>Your account has been created successfully.</p>
+      <p>You have received <strong>5 free credits</strong> to get started!</p>
+      <p>With your credits you can generate AI images for free.</p>
+      <br>
+      <p>Enjoy creating amazing AI videos!</p>
+      <p>The FireMax Team 🔥</p>
+    `
+  });
   return res.status(200).json({ user: data.user, session: data.session });
 }
 
