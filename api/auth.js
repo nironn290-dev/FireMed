@@ -104,6 +104,14 @@ if (action === 'verifyOtp') {
 
       return res.status(200).json({ profile });
     }
+    if (action === 'markWelcomed') {
+      const token = req.headers.authorization?.replace('Bearer ', '');
+      if (!token) return res.status(401).json({ error: 'No token' });
+      const { data: { user } } = await supabase.auth.getUser(token);
+      if (!user) return res.status(401).json({ error: 'Invalid token' });
+      await supabase.from('profiles').update({ welcomed: true }).eq('id', user.id);
+      return res.status(200).json({ success: true });
+    }
     if (action === 'deductCredits') {
   const token = req.headers.authorization?.replace('Bearer ', '');
   if (!token) return res.status(401).json({ error: 'No token' });
