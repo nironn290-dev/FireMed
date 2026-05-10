@@ -32,6 +32,7 @@ let selectedMotionModel = 'kling-v2-6-pro';
 let selectedMotionImageBase64 = null;
 let selectedMotionVideoBase64 = null;
 let selectedMotionVideoDuration = 5;
+let authHandled = false;
 
 async function getSupabase() {
   const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
