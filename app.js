@@ -58,7 +58,7 @@ async function handleGoogleAuth() {
 async function initAuth() {
   const supabase = await getSupabase();
   supabase.auth.onAuthStateChange(async (event, session) => {
-    if (session) {
+    if (session && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED')) {
       currentUser = session.user;
       currentSession = session;
       
