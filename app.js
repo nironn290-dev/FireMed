@@ -72,6 +72,10 @@ async function initAuth() {
       
       document.getElementById('creditsDisplay').textContent = userCredits;
       showApp();
+      if (window.showWelcomeMessage) {
+        window.showWelcomeMessage();
+        window.showWelcomeMessage = null;
+      }
     }
   });
   await supabase.auth.getSession();
