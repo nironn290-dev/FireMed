@@ -222,10 +222,45 @@ function showApp() {
 }
 
 function showDeleteModal() {
-  document.getElementById('deleteWarning').style.display = 'block';
-  document.getElementById('deleteOtp').style.display = 'none';
-  document.getElementById('deleteOtpInput').value = '';
+  const btn = document.getElementById('deleteConfirmBtn');
+  btn.disabled = false;
+  btn.textContent = 'Yes, Delete My Account';
+  btn.style.background = '#ff4444';
+  btn.style.cursor = 'pointer';
   document.getElementById('deleteModal').style.display = 'flex';
+}
+
+async function confirmDeleteAccount() {
+  const btn = document.getElementById('deleteConfirmBtn');
+  btn.disabled = true;
+  btn.textContent = 'Deleting...';
+  btn.style.background = '#333';
+  btn.style.cursor = 'not-allowed';
+  try {
+    const response = await fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentSession.access_token}` },
+      body: JSON.stringify({ action: 'deleteAccount' })
+    });
+    const data = await response.json();
+    if (data.error) { 
+      alert('Error: ' + data.error);
+      btn.disabled = false;
+      btn.textContent = 'Yes, Delete My Account';
+      btn.style.background = '#ff4444';
+      btn.style.cursor = 'pointer';
+      return; 
+    }
+    document.getElementById('deleteModal').style.display = 'none';
+    alert('Your account has been deleted successfully.');
+    logout();
+  } catch (err) {
+    alert('Something went wrong. Please try again.');
+    btn.disabled = false;
+    btn.textContent = 'Yes, Delete My Account';
+    btn.style.background = '#ff4444';
+    btn.style.cursor = 'pointer';
+  }
 }
 
 function logout() {
