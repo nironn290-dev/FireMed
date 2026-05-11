@@ -759,11 +759,18 @@ function reportContent() {
   document.getElementById('reportModal').style.display = 'flex';
 }
 
-function submitReport(reason) {
+async function submitReport(reason) {
   document.getElementById('reportModal').style.display = 'none';
-  const subject = encodeURIComponent('FireMax - Content Report: ' + reason);
-  const body = encodeURIComponent('Report reason: ' + reason + '\n\nUser email: ' + (currentUser?.email || '') + '\n\nAdditional details:\n');
-  window.location.href = `mailto:firemax.app@gmail.com?subject=${subject}&body=${body}`;
+  try {
+    await fetch('/api/report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentSession.access_token}` },
+      body: JSON.stringify({ reason })
+    });
+    alert('✅ Report submitted. Thank you!');
+  } catch (err) {
+    alert('Something went wrong. Please try again.');
+  }
 }
 
 function setAiImagePrompt(text) {
