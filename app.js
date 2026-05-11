@@ -228,25 +228,6 @@ function showDeleteModal() {
   document.getElementById('deleteModal').style.display = 'flex';
 }
 
-async function sendDeleteOtp() {
-  try {
-    const supabase = await getSupabase();
-    const { error } = await supabase.auth.signInWithOtp({ 
-      email: currentUser.email,
-      options: { 
-        shouldCreateUser: false,
-        emailRedirectTo: null
-      }
-    });
-    if (error) { alert('Error: ' + error.message); return; }
-    document.getElementById('deleteEmailDisplay').textContent = currentUser.email;
-    document.getElementById('deleteWarning').style.display = 'none';
-    document.getElementById('deleteOtp').style.display = 'block';
-  } catch (err) {
-    alert('Something went wrong. Please try again.');
-  }
-}
-
 async function confirmDelete() {
   const code = document.getElementById('deleteOtpInput').value.trim();
   if (!code || code.length < 6) { alert('Please enter the 6-digit code.'); return; }
