@@ -789,8 +789,23 @@ function selectReport(btn, reason) {
 
 async function submitReport() {
   if (!selectedReportReason) return;
+  const btn = document.getElementById('reportSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
   try {
     await fetch('/api/report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentSession.access_token}` },
+      body: JSON.stringify({ reason: selectedReportReason })
+    });
+    document.getElementById('reportForm').style.display = 'none';
+    document.getElementById('reportThanks').style.display = 'block';
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = 'Send Report';
+    alert('Something went wrong. Please try again.');
+  }
+}
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentSession.access_token}` },
       body: JSON.stringify({ reason: selectedReportReason })
