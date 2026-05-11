@@ -228,27 +228,6 @@ function showDeleteModal() {
   document.getElementById('deleteModal').style.display = 'flex';
 }
 
-async function confirmDelete() {
-  const code = document.getElementById('deleteOtpInput').value.trim();
-  if (!code || code.length < 6) { alert('Please enter the 6-digit code.'); return; }
-  try {
-    const supabase = await getSupabase();
-    const { error } = await supabase.auth.verifyOtp({ email: currentUser.email, token: code, type: 'email' });
-    if (error) { alert('Invalid code. Please try again.'); return; }
-    const response = await fetch('/api/auth', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentSession.access_token}` },
-      body: JSON.stringify({ action: 'deleteAccount' })
-    });
-    const data = await response.json();
-    if (data.error) { alert('Error: ' + data.error); return; }
-    document.getElementById('deleteModal').style.display = 'none';
-    alert('Your account has been deleted successfully.');
-    logout();
-  } catch (err) {
-    alert('Something went wrong. Please try again.');
-  }
-}
 function logout() {
   currentUser = null;
   currentSession = null;
