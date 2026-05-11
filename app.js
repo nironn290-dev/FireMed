@@ -787,15 +787,16 @@ function selectReport(btn, reason) {
   submitBtn.style.cursor = 'pointer';
 }
 
-async function submitReport(reason) {
-  document.getElementById('reportModal').style.display = 'none';
+async function submitReport() {
+  if (!selectedReportReason) return;
   try {
     await fetch('/api/report', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentSession.access_token}` },
-      body: JSON.stringify({ reason })
+      body: JSON.stringify({ reason: selectedReportReason })
     });
-    alert('✅ Report submitted. Thank you!');
+    document.getElementById('reportForm').style.display = 'none';
+    document.getElementById('reportThanks').style.display = 'block';
   } catch (err) {
     alert('Something went wrong. Please try again.');
   }
