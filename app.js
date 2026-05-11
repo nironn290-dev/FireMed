@@ -1050,6 +1050,14 @@ function showProfile() {
   document.getElementById('profileCredits').textContent = userCredits;
   loadProfileStats();
 }
+function switchProfileTab(tab) {
+  document.getElementById('profileTab').style.display = tab === 'profile' ? 'block' : 'none';
+  document.getElementById('accountTab').style.display = tab === 'account' ? 'block' : 'none';
+  document.getElementById('settingsTab').style.display = tab === 'settings' ? 'block' : 'none';
+  document.getElementById('profileTabBtn').className = tab === 'profile' ? 'mini-btn active' : 'mini-btn';
+  document.getElementById('accountTabBtn').className = tab === 'account' ? 'mini-btn active' : 'mini-btn';
+  document.getElementById('settingsTabBtn').className = tab === 'settings' ? 'mini-btn active' : 'mini-btn';
+}
 
 function hideProfile() {
   document.getElementById('profileScreen').style.display = 'none';
