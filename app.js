@@ -255,11 +255,39 @@ async function sendDeleteOtp() {
 }
 
 async function confirmDeleteAccount() {
-  const btn = document.getElementById('deleteConfirmBtn');
+  const code = document.getElementById('deleteOtpInput').value.trim();
+  if (!code || code.length < 6) { alert('Please enter the 6-digit code.'); return; }
+  const btn = document.getElementById('deleteVerifyBtn');
   btn.disabled = true;
   btn.textContent = 'Deleting...';
   btn.style.background = '#333';
   btn.style.cursor = 'not-allowed';
+  try {
+    const response = await fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentSession.access_token}` },
+      body: JSON.stringify({ action: 'deleteAccount' })
+    });
+    const data = await response.json();
+    if (data.error) { 
+      alert('Error: ' + data.error);
+      btn.disabled = false;
+      btn.textContent = 'Confirm Delete';
+      btn.style.background = '#ff4444';
+      btn.style.cursor = 'pointer';
+      return; 
+    }
+    document.getElementById('deleteModal').style.display = 'none';
+    alert('Your account has been deleted successfully.');
+    logout();
+  } catch (err) {
+    alert('Something went wrong. Please try again.');
+    btn.disabled = false;
+    btn.textContent = 'Confirm Delete';
+    btn.style.background = '#ff4444';
+    btn.style.cursor = 'pointer';
+  }
+}
   try {
     const response = await fetch('/api/auth', {
       method: 'POST',
