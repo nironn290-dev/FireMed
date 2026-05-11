@@ -466,42 +466,80 @@
     <button class="logout-btn" onclick="hideProfile()">← Back</button>
     <h2 style="font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:2px;">My Profile</h2>
   </div>
-  <div class="section">
-    <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;">
-      <div style="width:60px; height:60px; background:var(--fire); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px;">👤</div>
-      <div>
-        <div style="font-size:18px; font-weight:700;" id="profileEmail">-</div>
-        <div style="font-size:13px; color:var(--muted);">Free Plan</div>
+
+  <div style="display:flex; gap:8px; margin-bottom:20px;">
+    <button class="mini-btn active" id="profileTabBtn" onclick="switchProfileTab('profile')">👤 Profile</button>
+    <button class="mini-btn" id="accountTabBtn" onclick="switchProfileTab('account')">⚙️ Account</button>
+    <button class="mini-btn" id="settingsTabBtn" onclick="switchProfileTab('settings')">🎨 Settings</button>
+  </div>
+
+  <div id="profileTab">
+    <div class="section">
+      <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;">
+        <div style="width:60px; height:60px; background:var(--fire); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px;">👤</div>
+        <div>
+          <div style="font-size:18px; font-weight:700;" id="profileEmail">-</div>
+          <div style="font-size:13px; color:var(--muted);" id="profilePlan">Free Plan</div>
+        </div>
+      </div>
+      <div style="display:flex; gap:12px;">
+        <div style="flex:1; background:var(--surface2); border-radius:12px; padding:16px; text-align:center;">
+          <div style="font-size:24px; font-weight:700; color:var(--fire);" id="profileCredits">0</div>
+          <div style="font-size:12px; color:var(--muted);">Credits</div>
+        </div>
+        <div style="flex:1; background:var(--surface2); border-radius:12px; padding:16px; text-align:center;">
+          <div style="font-size:24px; font-weight:700; color:var(--fire);" id="profileVideos">0</div>
+          <div style="font-size:12px; color:var(--muted);">Videos</div>
+        </div>
+        <div style="flex:1; background:var(--surface2); border-radius:12px; padding:16px; text-align:center;">
+          <div style="font-size:24px; font-weight:700; color:var(--fire);" id="profileImages">0</div>
+          <div style="font-size:12px; color:var(--muted);">Images</div>
+        </div>
       </div>
     </div>
-    <div style="display:flex; gap:12px;">
-      <div style="flex:1; background:var(--surface2); border-radius:12px; padding:16px; text-align:center;">
-        <div style="font-size:24px; font-weight:700; color:var(--fire);" id="profileCredits">0</div>
-        <div style="font-size:12px; color:var(--muted);">Credits</div>
-      </div>
-      <div style="flex:1; background:var(--surface2); border-radius:12px; padding:16px; text-align:center;">
-        <div style="font-size:24px; font-weight:700; color:var(--fire);" id="profileVideos">0</div>
-        <div style="font-size:12px; color:var(--muted);">Videos</div>
-      </div>
-      <div style="flex:1; background:var(--surface2); border-radius:12px; padding:16px; text-align:center;">
-        <div style="font-size:24px; font-weight:700; color:var(--fire);" id="profileImages">0</div>
-        <div style="font-size:12px; color:var(--muted);">Images</div>
-      </div>
+    <div class="section" style="margin-top:14px;">
+      <div style="font-size:15px; font-weight:700; margin-bottom:12px;">💎 Upgrade Plan</div>
+      <div style="font-size:13px; color:var(--muted); margin-bottom:12px;">Get more credits and unlock premium features.</div>
+      <button class="auth-btn" onclick="showPricing()">View Plans</button>
     </div>
   </div>
-  <div class="section" style="margin-top:14px;">
-    <div style="font-size:15px; font-weight:700; margin-bottom:16px;">🎨 Theme</div>
-    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px;">
-      <button class="mini-btn active" id="theme-fire" onclick="setTheme('fire')">🔥 Fire</button>
-      <button class="mini-btn" id="theme-darkblue" onclick="setTheme('darkblue')">🌙 Dark Blue</button>
-      <button class="mini-btn" id="theme-purple" onclick="setTheme('purple')">💜 Purple</button>
-      <button class="mini-btn" id="theme-green" onclick="setTheme('green')">🌿 Green</button>
-      <button class="mini-btn" id="theme-yellow" onclick="setTheme('yellow')">⚡ Yellow</button>
-      <button class="mini-btn" id="theme-pink" onclick="setTheme('pink')">🩷 Pink</button>
+
+  <div id="accountTab" style="display:none;">
+    <div class="section">
+      <div style="font-size:15px; font-weight:700; margin-bottom:16px;">🔐 Account</div>
+      <button class="logout-btn" style="width:100%; padding:14px; border-radius:12px; margin-bottom:10px; text-align:left;" onclick="logout()">🚪 Sign Out</button>
+      <button class="logout-btn" style="width:100%; padding:14px; border-radius:12px; margin-bottom:10px; text-align:left;" onclick="window.location.href='mailto:firemax.app@gmail.com'">📧 Contact Support</button>
     </div>
-    <div style="font-size:15px; font-weight:700; margin-bottom:16px;">Account</div>
-    <button class="logout-btn" style="width:100%; padding:14px; border-radius:12px; margin-bottom:10px; text-align:left;" onclick="logout()">🚪 Sign Out</button>
-    <button class="logout-btn" style="width:100%; padding:14px; border-radius:12px; margin-bottom:10px; text-align:left; border-color:#444; color:#888;" onmouseover="this.style.borderColor='#ff4444';this.style.color='#ff4444';" onmouseout="this.style.borderColor='#444';this.style.color='#888';" onclick="showDeleteModal()">🗑️ Delete Account</button>
+    <div class="section" style="margin-top:14px; border:1px solid #ff4444;">
+      <div style="font-size:15px; font-weight:700; color:#ff4444; margin-bottom:8px;">⚠️ Danger Zone</div>
+      <div style="font-size:13px; color:var(--muted); margin-bottom:16px;">Deleting your account is permanent and cannot be undone. All your data, credits, and generated content will be permanently deleted.</div>
+      <button class="logout-btn" style="width:100%; padding:14px; border-radius:12px; text-align:left; border-color:#ff4444; color:#ff4444;" onclick="showDeleteModal()">🗑️ Delete Account</button>
+    </div>
+  </div>
+
+  <div id="settingsTab" style="display:none;">
+    <div class="section">
+      <div style="font-size:15px; font-weight:700; margin-bottom:16px;">🎨 Theme</div>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        <button class="mini-btn active" id="theme-fire" onclick="setTheme('fire')">🔥 Fire</button>
+        <button class="mini-btn" id="theme-darkblue" onclick="setTheme('darkblue')">🌙 Dark Blue</button>
+        <button class="mini-btn" id="theme-purple" onclick="setTheme('purple')">💜 Purple</button>
+        <button class="mini-btn" id="theme-green" onclick="setTheme('green')">🌿 Green</button>
+        <button class="mini-btn" id="theme-yellow" onclick="setTheme('yellow')">⚡ Yellow</button>
+        <button class="mini-btn" id="theme-pink" onclick="setTheme('pink')">🩷 Pink</button>
+      </div>
+    </div>
+    <div class="section" style="margin-top:14px;">
+      <div style="font-size:15px; font-weight:700; margin-bottom:16px;">📋 Legal</div>
+      <a href="/terms" style="display:block; color:var(--muted); font-size:13px; text-decoration:none; padding:10px 0; border-bottom:1px solid var(--border);">Terms of Service →</a>
+      <a href="/privacy" style="display:block; color:var(--muted); font-size:13px; text-decoration:none; padding:10px 0; border-bottom:1px solid var(--border);">Privacy Policy →</a>
+      <a href="/refund" style="display:block; color:var(--muted); font-size:13px; text-decoration:none; padding:10px 0;">Refund Policy →</a>
+    </div>
+    <div class="section" style="margin-top:14px;">
+      <div style="font-size:15px; font-weight:700; margin-bottom:8px;">ℹ️ App Info</div>
+      <div style="font-size:13px; color:var(--muted);">FireMax v1.0.0</div>
+      <div style="font-size:13px; color:var(--muted);">AI Video & Image Generator</div>
+    </div>
   </div>
 </div>
 
