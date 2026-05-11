@@ -222,12 +222,36 @@ function showApp() {
 }
 
 function showDeleteModal() {
-  const btn = document.getElementById('deleteConfirmBtn');
-  btn.disabled = false;
-  btn.textContent = 'Yes, Delete My Account';
-  btn.style.background = '#ff4444';
-  btn.style.cursor = 'pointer';
+  document.getElementById('deleteWarning').style.display = 'block';
+  document.getElementById('deleteOtp').style.display = 'none';
+  document.getElementById('deleteOtpInput').value = '';
   document.getElementById('deleteModal').style.display = 'flex';
+}
+
+async function sendDeleteOtp() {
+  const btn = document.getElementById('deleteConfirmBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  try {
+    const supabase = await getSupabase();
+    const { error } = await supabase.auth.signInWithOtp({
+      email: currentUser.email,
+      options: { shouldCreateUser: false }
+    });
+    if (error) { 
+      alert('Error: ' + error.message);
+      btn.disabled = false;
+      btn.textContent = 'Yes, Delete My Account';
+      return; 
+    }
+    document.getElementById('deleteEmailDisplay').textContent = currentUser.email;
+    document.getElementById('deleteWarning').style.display = 'none';
+    document.getElementById('deleteOtp').style.display = 'block';
+  } catch (err) {
+    alert('Something went wrong. Please try again.');
+    btn.disabled = false;
+    btn.textContent = 'Yes, Delete My Account';
+  }
 }
 
 async function confirmDeleteAccount() {
