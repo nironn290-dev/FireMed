@@ -793,6 +793,10 @@ async function submitReport() {
   const btn = document.getElementById('reportSubmitBtn');
   btn.disabled = true;
   btn.textContent = 'Sending...';
+  btn.style.background = '#333';
+  btn.style.color = '#666';
+  btn.style.cursor = 'not-allowed';
+  btn.style.opacity = '0.7';
   try {
     await fetch('/api/report', {
       method: 'POST',
