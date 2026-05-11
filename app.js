@@ -765,6 +765,7 @@ function reportContent() {
   document.getElementById('reportSubmitBtn').style.background = '#333';
   document.getElementById('reportSubmitBtn').style.color = '#666';
   document.getElementById('reportSubmitBtn').style.cursor = 'not-allowed';
+  document.getElementById('reportSubmitBtn').textContent = 'Send Report';
   document.querySelectorAll('#reportOptions button').forEach(b => {
     b.style.background = 'var(--surface2)';
     b.style.borderColor = 'var(--border)';
