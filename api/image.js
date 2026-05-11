@@ -15,6 +15,11 @@ const token = req.headers.authorization?.replace('Bearer ', '');
 
   if (!prompt) return res.status(400).json({ error: 'Prompt required.' });
   if (!token) return res.status(401).json({ error: 'No token.' });
+  const bannedWords = ['nude', 'naked', 'sex', 'porn', 'pornographic', 'explicit', 'nsfw', 'kill', 'murder', 'terrorist', 'terrorism', 'weapon', 'bomb', 'child abuse', 'rape', 'racist', 'genocide'];
+  const promptLower = (req.body.prompt || '').toLowerCase();
+  if (bannedWords.some(word => promptLower.includes(word))) {
+    return res.status(400).json({ error: 'Your prompt contains content that violates our content policy. Please modify your prompt.' });
+  }
 
   const { data: { user } } = await supabase.auth.getUser(token);
   if (!user) return res.status(401).json({ error: 'Invalid token.' });
