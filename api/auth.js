@@ -122,6 +122,18 @@ if (action === 'verifyOtp') {
       await supabase.from('profiles').update({ welcomed: true }).eq('id', user.id);
       return res.status(200).json({ success: true });
     }
+    if (action === 'deleteAccount') {
+      const token = req.headers.authorization?.replace('Bearer ', '');
+      if (!token) return res.status(401).json({ error: 'No token' });
+      const { data: { user } } = await supabase.auth.getUser(token);
+      if (!user) return res.status(401).json({ error: 'Invalid token' });
+      
+      await supabase.from('generations').delete().eq('user_id', user.id);
+      await supabase.from('profiles').delete().eq('id', user.id);
+      await supabase.auth.admin.deleteUser(user.id);
+      
+      return res.status(200).json({ success: true });
+    }
     if (action === 'deductCredits') {
   const token = req.headers.authorization?.replace('Bearer ', '');
   if (!token) return res.status(401).json({ error: 'No token' });
