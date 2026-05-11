@@ -221,6 +221,23 @@ function showApp() {
   if (window.stopFireAnimation) window.stopFireAnimation();
 }
 
+async function deleteAccount() {
+  const confirmed = confirm('Are you sure you want to delete your account? This action cannot be undone. All your data will be permanently deleted.');
+  if (!confirmed) return;
+  try {
+    const response = await fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentSession.access_token}` },
+      body: JSON.stringify({ action: 'deleteAccount' })
+    });
+    const data = await response.json();
+    if (data.error) { alert('Error: ' + data.error); return; }
+    alert('Your account has been deleted successfully.');
+    logout();
+  } catch (err) {
+    alert('Something went wrong. Please try again.');
+  }
+}
 function logout() {
   currentUser = null;
   currentSession = null;
