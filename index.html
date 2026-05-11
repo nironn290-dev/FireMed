@@ -7,7 +7,28 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
     :root { --bg:#0d0d0d; --surface:#1a1a1a; --surface2:#222; --border:#2a2a2a; --fire:#ff4500; --text:#ffffff; --muted:#888; }
-    [data-theme="white"] { --bg:#f0f0f0; --surface:#ffffff; --surface2:#f5f5f5; --border:#e0e0e0; --fire:#ff4500; --text:#111111; --muted:#666666; }
+    [data-theme="white"] { 
+  --bg:#f2f2f2; 
+  --surface:#ffffff; 
+  --surface2:#ebebeb; 
+  --border:#d0d0d0; 
+  --fire:#ff4500; 
+  --text:#111111; 
+  --muted:#555555; 
+}
+
+[data-theme="white"] .mode-toggle { background:#e0e0e0; }
+[data-theme="white"] .mode-btn.inactive { color:#333; }
+[data-theme="white"] .auth-input { color:#111; background:#fff; }
+[data-theme="white"] textarea { color:#111; background:#fff; border-color:#d0d0d0; }
+[data-theme="white"] .upload-box { background:#f5f5f5; }
+[data-theme="white"] .model-btn { color:#333; background:#f0f0f0; }
+[data-theme="white"] .mini-btn { color:#333; background:#e8e8e8; border-color:#d0d0d0; }
+[data-theme="white"] #errorMsg { background:rgba(255,50,50,0.08); }
+[data-theme="white"] .result-card { background:#fff; }
+[data-theme="white"] .credits-pill { background:#fff; border-color:#d0d0d0; }
+[data-theme="white"] .logout-btn { color:#333; border-color:#d0d0d0; }
+[data-theme="white"] header { background:#f2f2f2; }
 
 [data-theme="darkblue"] { --bg:#0a0e1a; --surface:#111827; --surface2:#1f2937; --border:#374151; --fire:#3b82f6; --text:#ffffff; --muted:#9ca3af; }
 [data-theme="purple"] { --bg:#0d0a1a; --surface:#1a1127; --surface2:#241a37; --border:#3d2a5c; --fire:#a855f7; --text:#ffffff; --muted:#9ca3af; }
