@@ -288,32 +288,6 @@ async function confirmDeleteAccount() {
     btn.style.cursor = 'pointer';
   }
 }
-  try {
-    const response = await fetch('/api/auth', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentSession.access_token}` },
-      body: JSON.stringify({ action: 'deleteAccount' })
-    });
-    const data = await response.json();
-    if (data.error) { 
-      alert('Error: ' + data.error);
-      btn.disabled = false;
-      btn.textContent = 'Yes, Delete My Account';
-      btn.style.background = '#ff4444';
-      btn.style.cursor = 'pointer';
-      return; 
-    }
-    document.getElementById('deleteModal').style.display = 'none';
-    alert('Your account has been deleted successfully.');
-    logout();
-  } catch (err) {
-    alert('Something went wrong. Please try again.');
-    btn.disabled = false;
-    btn.textContent = 'Yes, Delete My Account';
-    btn.style.background = '#ff4444';
-    btn.style.cursor = 'pointer';
-  }
-}
 
 function logout() {
   currentUser = null;
