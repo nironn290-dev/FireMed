@@ -231,7 +231,10 @@ function showDeleteModal() {
 async function sendDeleteOtp() {
   try {
     const supabase = await getSupabase();
-    const { error } = await supabase.auth.signInWithOtp({ email: currentUser.email });
+    const { error } = await supabase.auth.signInWithOtp({ 
+      email: currentUser.email,
+      options: { shouldCreateUser: false }
+    });
     if (error) { alert('Error: ' + error.message); return; }
     document.getElementById('deleteEmailDisplay').textContent = currentUser.email;
     document.getElementById('deleteWarning').style.display = 'none';
