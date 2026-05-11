@@ -1109,6 +1109,17 @@ function switchProfileTab(tab) {
   document.getElementById('accountTabBtn').className = tab === 'account' ? 'mini-btn active' : 'mini-btn';
   document.getElementById('settingsTabBtn').className = tab === 'settings' ? 'mini-btn active' : 'mini-btn';
 }
+function toggleDangerZone() {
+  const content = document.getElementById('dangerZoneContent');
+  const arrow = document.getElementById('dangerZoneArrow');
+  if (content.style.display === 'none') {
+    content.style.display = 'block';
+    arrow.textContent = '▲';
+  } else {
+    content.style.display = 'none';
+    arrow.textContent = '▼';
+  }
+}
 
 function hideProfile() {
   document.getElementById('profileScreen').style.display = 'none';
