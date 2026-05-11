@@ -806,16 +806,6 @@ async function submitReport() {
     alert('Something went wrong. Please try again.');
   }
 }
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentSession.access_token}` },
-      body: JSON.stringify({ reason: selectedReportReason })
-    });
-    document.getElementById('reportForm').style.display = 'none';
-    document.getElementById('reportThanks').style.display = 'block';
-  } catch (err) {
-    alert('Something went wrong. Please try again.');
-  }
-}
 
 function setAiImagePrompt(text) {
   document.getElementById('aiImagePrompt').value = text;
