@@ -233,7 +233,10 @@ async function sendDeleteOtp() {
     const supabase = await getSupabase();
     const { error } = await supabase.auth.signInWithOtp({ 
       email: currentUser.email,
-      options: { shouldCreateUser: false }
+      options: { 
+        shouldCreateUser: false,
+        emailRedirectTo: null
+      }
     });
     if (error) { alert('Error: ' + error.message); return; }
     document.getElementById('deleteEmailDisplay').textContent = currentUser.email;
