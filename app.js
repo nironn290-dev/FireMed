@@ -755,8 +755,36 @@ function showError(msg) {
 function hideError() {
   document.getElementById('errorMsg').style.display = 'none';
 }
+let selectedReportReason = null;
+
 function reportContent() {
+  selectedReportReason = null;
+  document.getElementById('reportForm').style.display = 'block';
+  document.getElementById('reportThanks').style.display = 'none';
+  document.getElementById('reportSubmitBtn').disabled = true;
+  document.getElementById('reportSubmitBtn').style.background = '#333';
+  document.getElementById('reportSubmitBtn').style.color = '#666';
+  document.getElementById('reportSubmitBtn').style.cursor = 'not-allowed';
+  document.querySelectorAll('#reportOptions button').forEach(b => {
+    b.style.background = 'var(--surface2)';
+    b.style.borderColor = 'var(--border)';
+  });
   document.getElementById('reportModal').style.display = 'flex';
+}
+
+function selectReport(btn, reason) {
+  selectedReportReason = reason;
+  document.querySelectorAll('#reportOptions button').forEach(b => {
+    b.style.background = 'var(--surface2)';
+    b.style.borderColor = 'var(--border)';
+  });
+  btn.style.background = 'rgba(255,69,0,0.15)';
+  btn.style.borderColor = 'var(--fire)';
+  const submitBtn = document.getElementById('reportSubmitBtn');
+  submitBtn.disabled = false;
+  submitBtn.style.background = 'var(--fire)';
+  submitBtn.style.color = '#fff';
+  submitBtn.style.cursor = 'pointer';
 }
 
 async function submitReport(reason) {
