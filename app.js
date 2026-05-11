@@ -221,10 +221,33 @@ function showApp() {
   if (window.stopFireAnimation) window.stopFireAnimation();
 }
 
-async function deleteAccount() {
-  const confirmed = confirm('Are you sure you want to delete your account? This action cannot be undone. All your data will be permanently deleted.');
-  if (!confirmed) return;
+function showDeleteModal() {
+  document.getElementById('deleteWarning').style.display = 'block';
+  document.getElementById('deleteOtp').style.display = 'none';
+  document.getElementById('deleteOtpInput').value = '';
+  document.getElementById('deleteModal').style.display = 'flex';
+}
+
+async function sendDeleteOtp() {
   try {
+    const supabase = await getSupabase();
+    const { error } = await supabase.auth.signInWithOtp({ email: currentUser.email });
+    if (error) { alert('Error: ' + error.message); return; }
+    document.getElementById('deleteEmailDisplay').textContent = currentUser.email;
+    document.getElementById('deleteWarning').style.display = 'none';
+    document.getElementById('deleteOtp').style.display = 'block';
+  } catch (err) {
+    alert('Something went wrong. Please try again.');
+  }
+}
+
+async function confirmDelete() {
+  const code = document.getElementById('deleteOtpInput').value.trim();
+  if (!code || code.length < 6) { alert('Please enter the 6-digit code.'); return; }
+  try {
+    const supabase = await getSupabase();
+    const { error } = await supabase.auth.verifyOtp({ email: currentUser.email, token: code, type: 'email' });
+    if (error) { alert('Invalid code. Please try again.'); return; }
     const response = await fetch('/api/auth', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentSession.access_token}` },
@@ -232,6 +255,7 @@ async function deleteAccount() {
     });
     const data = await response.json();
     if (data.error) { alert('Error: ' + data.error); return; }
+    document.getElementById('deleteModal').style.display = 'none';
     alert('Your account has been deleted successfully.');
     logout();
   } catch (err) {
