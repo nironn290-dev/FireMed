@@ -39,6 +39,7 @@ module.exports = async function handler(req, res) {
     await transporter.sendMail({
       from: '"FireMax Reports" <firemax.app@gmail.com>',
       to: 'firemax.app@gmail.com',
+      replyTo: user.email,
       subject: '🚩 New Content Report - FireMax',
       html: `
         <h2>New Content Report</h2>
